@@ -1,6 +1,7 @@
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
 
+import { Logo } from "@/components/shared/logo";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -36,12 +37,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-4">
-            <Link
-              href="/"
-              className="font-display tracking-luxury text-lg uppercase"
-            >
-              {siteConfig.name}
-            </Link>
+            <Logo />
             <p className="text-muted-foreground max-w-xs text-sm">
               {siteConfig.description}
             </p>

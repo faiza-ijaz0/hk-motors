@@ -26,6 +26,11 @@ const playfairDisplay = Playfair_Display({
 export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.description,
+  icons: {
+    icon: [{ url: "/icon.png", type: "image/png" }],
+    shortcut: [{ url: "/favicon.ico" }],
+    apple: [{ url: "/apple-icon.png" }],
+  },
 };
 
 export const viewport: Viewport = {
