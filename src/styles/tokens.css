@@ -1,0 +1,127 @@
+/**
+ * HK Motors Luxury Theme — design tokens.
+ * Single source of truth for color, typography, radius and shadow primitives.
+ * Consumed by src/app/globals.css and mapped into Tailwind via @theme inline.
+ */
+
+:root {
+  /* ---- Brand ---- */
+  --brand-primary: #c00000; /* HK Motors red */
+  --brand-secondary: #d9d9d9; /* platinum grey */
+  --brand-background: #050505; /* near-black */
+
+  /* ---- Surfaces ---- */
+  --background: var(--brand-background);
+  --foreground: #f5f5f5;
+  --card: #0d0d0d;
+  --card-foreground: #f5f5f5;
+  --popover: #0d0d0d;
+  --popover-foreground: #f5f5f5;
+
+  /* ---- Brand-mapped semantic roles ---- */
+  --primary: var(--brand-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--brand-secondary);
+  --secondary-foreground: #0a0a0a;
+  --muted: #1a1a1a;
+  --muted-foreground: #a6a6a6;
+  --accent: #1a1a1a;
+  --accent-foreground: #f5f5f5;
+  --destructive: #e11d2e;
+  --destructive-foreground: #ffffff;
+  --success: #1f9d55;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #050505;
+
+  /* ---- Structure ---- */
+  --border: #262626;
+  --input: #262626;
+  --ring: var(--brand-primary);
+  --radius: 0.5rem;
+
+  /* ---- Data visualization ---- */
+  --chart-1: #c00000;
+  --chart-2: #d9d9d9;
+  --chart-3: #7a7a7a;
+  --chart-4: #6e0000;
+  --chart-5: #f5f5f5;
+
+  /* ---- Sidebar (enterprise shell) ---- */
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: var(--brand-primary);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #262626;
+  --sidebar-ring: var(--brand-primary);
+
+  /* ---- Typography ---- */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --tracking-luxury: 0.18em;
+
+  /* ---- Elevation ---- */
+  --shadow-luxury: 0 8px 30px -8px rgb(192 0 0 / 0.35);
+  --shadow-elevated: 0 12px 40px -12px rgb(0 0 0 / 0.6);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-heading: var(--font-display);
+  --font-mono: var(--font-mono);
+  --tracking-luxury: var(--tracking-luxury);
+
+  --shadow-luxury: var(--shadow-luxury);
+  --shadow-elevated: var(--shadow-elevated);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
