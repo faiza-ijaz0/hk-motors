@@ -247,9 +247,29 @@ Every table with staff or public write access has RLS **enabled**, with no table
 
 ### 6.3 Storage
 
-- Bucket `vehicle-media` (public-read, authenticated-write) for listing photos. Path convention: `vehicle-media/{vehicle_id}/{image_id}.{ext}` so cleanup on vehicle deletion is a prefix operation.
-- Upload restricted to authenticated staff via Storage RLS mirroring the `vehicle_images` table policy; delete restricted per §4.1 (Employee: upload only).
-- Image variants (thumbnail/hero/full) handled via Next.js `<Image>` + a remote loader against the Storage public URL rather than pre-generating multiple files, unless CDN transform costs later justify it.
+The database schema shipped beyond this document's original v1 scope (§5 here predates the approved schema — see the actual migrations in Supabase for ground truth on tables). Storage buckets below reflect what's actually live as of the last migration (`add_cars_blogs_ceo_users_buckets`).
+
+**Current bucket convention — use these for all new uploads:**
+
+| Module              | Bucket               | Public     | Path convention               | Write access                                             |
+| ------------------- | -------------------- | ---------- | ----------------------------- | -------------------------------------------------------- |
+| Cars                | `cars`               | ✅         | free-form                     | any active staff insert/update; Admin/Super Admin delete |
+| Blogs               | `blogs`              | ✅         | free-form                     | any active staff insert; Admin/Super Admin update/delete |
+| CEO / leadership    | `ceo`                | ✅         | free-form                     | Admin/Super Admin only                                   |
+| User profile images | `users`              | ❌ private | `{user_id}/{filename}`        | owner manages own; any active staff can view             |
+| Gallery             | `gallery`            | ✅         | `{album_id}/{image_id}.{ext}` | Admin/Super Admin only                                   |
+| Testimonials        | `testimonial-photos` | ✅         | free-form                     | Admin/Super Admin only                                   |
+
+**Legacy buckets — still exist and functional, but deprecated for new code:**
+
+| Bucket        | Superseded by | Status                                                                                          |
+| ------------- | ------------- | ----------------------------------------------------------------------------------------------- |
+| `car-images`  | `cars`        | Legacy — do not reference in new upload code. Not deleted; existing objects/policies untouched. |
+| `blog-images` | `blogs`       | Legacy — do not reference in new upload code. Not deleted; existing objects/policies untouched. |
+
+`testimonial-photos` is **not** deprecated — it remains the active bucket for the testimonials module (no successor was introduced). `avatars` remains live and private (fixed from an earlier public-bucket misconfiguration) but new staff-profile-photo code should target `users` per the convention above; `team-photos` is unaffected and remains the bucket for the `team_members` module.
+
+Upload/list/delete code (services layer, `src/services/storage.ts` when written) must read the bucket name from a single constant map keyed by module, not inline bucket-id strings, so this table stays the only place the mapping needs to change.
 
 ### 6.4 Realtime
 
