@@ -3,6 +3,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Key `dark:` utilities off next-themes' `.dark` class instead of OS-level
+   prefers-color-scheme, so the navbar toggle actually controls them. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   * {
     border-color: var(--border);

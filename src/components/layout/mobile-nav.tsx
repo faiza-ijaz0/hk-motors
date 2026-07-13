@@ -4,6 +4,8 @@ import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -13,7 +15,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { siteConfig } from "@/config/site";
 import { mainNav } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
 
@@ -34,9 +35,8 @@ export function MobileNav({ pathname }: { pathname: string }) {
       </SheetTrigger>
       <SheetContent side="right" className="max-w-xs">
         <SheetHeader className="border-border border-b">
-          <SheetTitle className="font-display tracking-luxury text-base uppercase">
-            {siteConfig.name}
-          </SheetTitle>
+          <Logo />
+          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
         </SheetHeader>
 
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4">
@@ -62,12 +62,13 @@ export function MobileNav({ pathname }: { pathname: string }) {
           })}
         </nav>
 
-        <div className="border-border border-t p-4">
+        <div className="border-border flex items-center gap-3 border-t p-4">
           <SheetClose asChild>
-            <Button asChild className="w-full">
+            <Button asChild className="flex-1">
               <Link href="/contact">Contact Us</Link>
             </Button>
           </SheetClose>
+          <ThemeToggle />
         </div>
       </SheetContent>
     </Sheet>
