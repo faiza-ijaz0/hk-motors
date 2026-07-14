@@ -615,6 +615,7 @@ export type Database = {
         Row: {
           album_id: string | null;
           caption: string | null;
+          category: Database["public"]["Enums"]["gallery_category"];
           created_at: string;
           id: string;
           position: number;
@@ -623,6 +624,7 @@ export type Database = {
         Insert: {
           album_id?: string | null;
           caption?: string | null;
+          category: Database["public"]["Enums"]["gallery_category"];
           created_at?: string;
           id?: string;
           position?: number;
@@ -631,6 +633,7 @@ export type Database = {
         Update: {
           album_id?: string | null;
           caption?: string | null;
+          category?: Database["public"]["Enums"]["gallery_category"];
           created_at?: string;
           id?: string;
           position?: number;
@@ -1092,6 +1095,7 @@ export type Database = {
         | "archived";
       drivetrain_type: "fwd" | "rwd" | "awd" | "4wd";
       fuel_type: "petrol" | "diesel" | "hybrid" | "electric" | "lpg";
+      gallery_category: "cars" | "showroom" | "deliveries" | "events";
       homepage_section_type:
         | "hero"
         | "featured_cars"
@@ -1261,6 +1265,7 @@ export const Constants = {
       ],
       drivetrain_type: ["fwd", "rwd", "awd", "4wd"],
       fuel_type: ["petrol", "diesel", "hybrid", "electric", "lpg"],
+      gallery_category: ["cars", "showroom", "deliveries", "events"],
       homepage_section_type: [
         "hero",
         "featured_cars",
