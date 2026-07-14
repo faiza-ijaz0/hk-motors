@@ -7,22 +7,33 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { submitContactMessage } from "@/services/contact";
 
-type Status = "idle" | "submitting" | "success";
+type Status = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("submitting");
 
-    // TODO: wire to Supabase `contact_messages` insert once the data layer
-    // (src/services) and env-configured client exist. Anon insert is
-    // already permitted by RLS — see docs/ARCHITECTURE.md §16.
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    const form = new FormData(event.currentTarget);
+    const result = await submitContactMessage({
+      fullName: String(form.get("full_name") ?? ""),
+      email: String(form.get("email") ?? ""),
+      phone: String(form.get("phone") ?? ""),
+      subject: String(form.get("subject") ?? ""),
+      message: String(form.get("message") ?? ""),
+    });
 
-    setStatus("success");
+    if (result.success) {
+      setStatus("success");
+    } else {
+      setStatus("error");
+      setErrorMessage(result.error);
+    }
   }
 
   if (status === "success") {
@@ -72,6 +83,10 @@ export function ContactForm() {
         <Label htmlFor="message">Message</Label>
         <Textarea id="message" name="message" required rows={5} />
       </div>
+
+      {status === "error" && (
+        <p className="text-destructive text-sm">{errorMessage}</p>
+      )}
 
       <Button type="submit" disabled={status === "submitting"} size="lg">
         {status === "submitting" ? "Sending…" : "Send Message"}

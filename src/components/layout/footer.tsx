@@ -2,24 +2,12 @@ import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
 
 import { Logo } from "@/components/shared/logo";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  TwitterIcon,
-  YoutubeIcon,
-} from "@/components/shared/social-icons";
 import { siteConfig } from "@/config/site";
 import { mainNav } from "@/constants/navigation";
+import { socialLinks } from "@/constants/social-links";
 
-const socialLinks = [
-  { label: "Facebook", href: "#", icon: FacebookIcon },
-  { label: "Instagram", href: "#", icon: InstagramIcon },
-  { label: "Twitter", href: "#", icon: TwitterIcon },
-  { label: "YouTube", href: "#", icon: YoutubeIcon },
-];
-
-// Placeholder values — replace with a `website_settings` fetch once the
-// Supabase data layer is wired up; social hrefs are "#" for the same reason.
+// Placeholder values — replace with a `website_settings` fetch once that
+// part of the data layer is wired up.
 const contactDetails = [
   { label: "+92 300 1234567", href: "tel:+923001234567", icon: Phone },
   { label: "info@hkmotors.com", href: "mailto:info@hkmotors.com", icon: Mail },

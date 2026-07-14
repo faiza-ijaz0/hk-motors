@@ -1,28 +1,26 @@
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 import { FadeIn } from "@/components/shared/fade-in";
 import { PageHero } from "@/components/shared/page-hero";
+import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { siteConfig } from "@/config/site";
+import { socialLinks } from "@/constants/social-links";
 import { ContactForm } from "@/features/contact/contact-form";
+import { GoogleMap } from "@/features/contact/google-map";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: `Contact | ${siteConfig.name}`,
   description:
-    "Get in touch with HK Motors — visit our showroom, call, or send a message and our team will respond shortly.",
+    "Get in touch with HK Motors — visit our showroom, call, message us on WhatsApp, or send a message and our team will respond shortly.",
 };
 
-// Placeholder values — replace with a `website_settings` fetch once the
-// Supabase data layer is wired up (matches the footer, see src/components/layout/footer.tsx).
+// Placeholder values — replace with a `website_settings` fetch once that
+// part of the data layer is wired up (matches the footer).
 const contactDetails = [
   { label: "+92 300 1234567", href: "tel:+923001234567", icon: Phone },
   { label: "info@hkmotors.com", href: "mailto:info@hkmotors.com", icon: Mail },
-  {
-    label: "Message on WhatsApp",
-    href: "https://wa.me/923001234567",
-    icon: MessageCircle,
-  },
   { label: "Lahore, Pakistan", href: undefined, icon: MapPin },
 ];
 
@@ -41,7 +39,7 @@ export default function ContactPage() {
             <ContactForm />
           </FadeIn>
 
-          <FadeIn delay={0.1}>
+          <FadeIn delay={0.1} className="space-y-6">
             <div className="border-border bg-card space-y-6 rounded-2xl border p-6 sm:p-8">
               <h2 className="font-display text-xl">Contact Details</h2>
               <ul className="space-y-4">
@@ -64,9 +62,37 @@ export default function ContactPage() {
                   </li>
                 ))}
               </ul>
+
+              <WhatsAppButton
+                className="w-full"
+                message="Hi, I have a question about HK Motors."
+              />
+            </div>
+
+            <div className="border-border bg-card rounded-2xl border p-6 sm:p-8">
+              <h2 className="font-display text-xl">Follow Us</h2>
+              <div className="mt-4 flex items-center gap-3">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    aria-label={social.label}
+                    className="text-muted-foreground hover:border-primary hover:text-foreground border-border flex size-10 items-center justify-center rounded-full border transition-colors"
+                  >
+                    <social.icon className="size-4" />
+                  </a>
+                ))}
+              </div>
             </div>
           </FadeIn>
         </div>
+
+        <FadeIn delay={0.15} className="mt-10">
+          <h2 className="font-display text-xl">Find Us</h2>
+          <div className="mt-4">
+            <GoogleMap />
+          </div>
+        </FadeIn>
       </section>
     </>
   );
