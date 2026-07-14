@@ -5,6 +5,14 @@ const supabaseHostname = process.env.NEXT_PUBLIC_SUPABASE_URL
   : undefined;
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Default is 1mb, which real photo uploads (car/gallery images,
+      // logos) routinely exceed — that shows up client-side as a bare
+      // "Failed to fetch" with no useful error message.
+      bodySizeLimit: "15mb",
+    },
+  },
   images: {
     qualities: [75, 100],
     remotePatterns: supabaseHostname

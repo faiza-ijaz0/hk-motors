@@ -56,23 +56,42 @@ export function GalleryImagesManager({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(event.target.files ?? []);
+    if (files.length === 0) return;
 
     setUploading(true);
-    const formData = new FormData();
-    formData.set("file", file);
-    formData.set("caption", caption);
-    formData.set("category", category);
-    const result = await uploadGalleryImageAction(albumId, formData);
+    let successCount = 0;
+    let firstError: string | undefined;
+
+    // Uploaded sequentially, not in parallel — each upload reads the
+    // current image count to assign the new image's position, so
+    // concurrent uploads would race and could assign duplicate positions.
+    for (const file of files) {
+      const formData = new FormData();
+      formData.set("file", file);
+      formData.set("caption", caption);
+      formData.set("category", category);
+      const result = await uploadGalleryImageAction(albumId, formData);
+      if (result.success) successCount++;
+      else firstError ??= result.error;
+    }
+
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
     setCaption("");
 
-    if (result.success) {
-      toast.success("Image uploaded");
+    if (successCount === files.length) {
+      toast.success(
+        files.length === 1
+          ? "Image uploaded"
+          : `${successCount} images uploaded`,
+      );
+    } else if (successCount > 0) {
+      toast.warning(`${successCount} of ${files.length} images uploaded`, {
+        description: firstError,
+      });
     } else {
-      toast.error("Upload failed", { description: result.error });
+      toast.error("Upload failed", { description: firstError });
     }
   }
 
@@ -138,6 +157,7 @@ export function GalleryImagesManager({
             ref={fileInputRef}
             type="file"
             accept="image/*"
+            multiple
             className="hidden"
             onChange={handleFileChange}
           />
@@ -149,7 +169,7 @@ export function GalleryImagesManager({
             onClick={() => fileInputRef.current?.click()}
           >
             <Upload />
-            {uploading ? "Uploading…" : "Upload Photo"}
+            {uploading ? "Uploading…" : "Upload Photos"}
           </Button>
         </div>
       </div>
