@@ -3,6 +3,19 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { Enums } from "@/types/supabase";
 
 export type GalleryCategory = Enums<"gallery_category">;
+export type GalleryMediaType = Enums<"gallery_media_type">;
+
+/** `cover_image_path` holds either a storage-relative path or, for pasted
+ * URLs, the full external URL itself — distinguished by an http(s) prefix. */
+function resolveCoverUrl(
+  supabase: ReturnType<typeof createAdminClient>,
+  coverImagePath: string | null,
+): string | null {
+  if (!coverImagePath) return null;
+  if (coverImagePath.startsWith("http")) return coverImagePath;
+  return supabase.storage.from("gallery").getPublicUrl(coverImagePath).data
+    .publicUrl;
+}
 
 export type AdminAlbumListItem = {
   id: string;
@@ -10,6 +23,7 @@ export type AdminAlbumListItem = {
   slug: string;
   description: string | null;
   coverUrl: string | null;
+  coverIsExternal: boolean;
   isPublished: boolean;
   imageCount: number;
   createdAt: string;
@@ -36,10 +50,8 @@ export async function getAdminAlbums(): Promise<AdminAlbumListItem[]> {
       title: row.title,
       slug: row.slug,
       description: row.description,
-      coverUrl: row.cover_image_path
-        ? supabase.storage.from("gallery").getPublicUrl(row.cover_image_path)
-            .data.publicUrl
-        : null,
+      coverUrl: resolveCoverUrl(supabase, row.cover_image_path),
+      coverIsExternal: row.cover_image_path?.startsWith("http") ?? false,
       isPublished: row.is_published,
       imageCount: row.gallery_images?.[0]?.count ?? 0,
       createdAt: row.created_at,
@@ -62,9 +74,11 @@ export type AdminAlbumDetail = {
 export type AdminAlbumImage = {
   id: string;
   url: string;
-  storagePath: string;
+  storagePath: string | null;
+  externalUrl: string | null;
   caption: string | null;
   category: GalleryCategory;
+  mediaType: GalleryMediaType;
   position: number;
 };
 
@@ -77,7 +91,7 @@ export async function getAdminAlbumById(id: string): Promise<{
     const { data, error } = await supabase
       .from("gallery_albums")
       .select(
-        "id, title, slug, description, cover_image_path, is_published, gallery_images ( id, storage_path, caption, category, position )",
+        "id, title, slug, description, cover_image_path, is_published, gallery_images ( id, storage_path, external_url, caption, category, media_type, position )",
       )
       .eq("id", id)
       .maybeSingle();
@@ -92,11 +106,15 @@ export async function getAdminAlbumById(id: string): Promise<{
       .sort((a, b) => a.position - b.position)
       .map((img) => ({
         id: img.id,
-        url: supabase.storage.from("gallery").getPublicUrl(img.storage_path)
-          .data.publicUrl,
+        url:
+          img.external_url ??
+          supabase.storage.from("gallery").getPublicUrl(img.storage_path ?? "")
+            .data.publicUrl,
         storagePath: img.storage_path,
+        externalUrl: img.external_url,
         caption: img.caption,
         category: img.category,
+        mediaType: img.media_type,
         position: img.position,
       }));
 

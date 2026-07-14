@@ -62,6 +62,7 @@ export function AlbumsGrid({ albums }: { albums: AdminAlbumListItem[] }) {
                   alt={album.title}
                   fill
                   sizes="300px"
+                  unoptimized={album.coverIsExternal}
                   className="object-cover"
                 />
               ) : (

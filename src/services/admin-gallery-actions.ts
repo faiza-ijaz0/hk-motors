@@ -8,7 +8,10 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { logActivity } from "@/services/activity";
 
-import type { GalleryCategory } from "@/services/admin-gallery";
+import type {
+  GalleryCategory,
+  GalleryMediaType,
+} from "@/services/admin-gallery";
 
 export type ActionResult =
   { success: true } | { success: false; error: string };
@@ -150,10 +153,11 @@ export async function deleteAlbumAction(
       .select("storage_path")
       .eq("album_id", id);
 
-    if (images && images.length > 0) {
-      await supabase.storage
-        .from("gallery")
-        .remove(images.map((img) => img.storage_path));
+    const storagePaths = (images ?? [])
+      .map((img) => img.storage_path)
+      .filter((path): path is string => path !== null);
+    if (storagePaths.length > 0) {
+      await supabase.storage.from("gallery").remove(storagePaths);
     }
 
     const { error } = await supabase
@@ -192,6 +196,9 @@ export async function uploadGalleryImageAction(
     if (!file || file.size === 0) {
       return { success: false, error: "No file selected." };
     }
+    const mediaType: GalleryMediaType = file.type.startsWith("video/")
+      ? "video"
+      : "image";
 
     const supabase = createAdminClient();
     const ext = file.name.split(".").pop() ?? "jpg";
@@ -214,11 +221,14 @@ export async function uploadGalleryImageAction(
         storage_path: path,
         caption: caption || null,
         category,
+        media_type: mediaType,
         position: count ?? 0,
       });
     if (insertError) return { success: false, error: insertError.message };
 
-    if ((count ?? 0) === 0) {
+    // Videos can't stand in for a thumbnail, so only images get promoted
+    // to the album cover automatically.
+    if ((count ?? 0) === 0 && mediaType === "image") {
       await supabase
         .from("gallery_albums")
         .update({ cover_image_path: path })
@@ -232,7 +242,65 @@ export async function uploadGalleryImageAction(
     console.error("uploadGalleryImageAction failed", err);
     return {
       success: false,
-      error: "Something went wrong uploading the image.",
+      error: "Something went wrong uploading the media.",
+    };
+  }
+}
+
+export type AddGalleryUrlInput = {
+  url: string;
+  caption: string;
+  category: GalleryCategory;
+  mediaType: GalleryMediaType;
+};
+
+export async function addGalleryUrlAction(
+  albumId: string,
+  input: AddGalleryUrlInput,
+): Promise<ActionResult> {
+  const url = input.url.trim();
+  if (!url) return { success: false, error: "A URL is required." };
+  try {
+    new URL(url);
+  } catch {
+    return { success: false, error: "That doesn't look like a valid URL." };
+  }
+
+  try {
+    const supabase = createAdminClient();
+
+    const { count } = await supabase
+      .from("gallery_images")
+      .select("id", { count: "exact", head: true })
+      .eq("album_id", albumId);
+
+    const { error: insertError } = await supabase
+      .from("gallery_images")
+      .insert({
+        album_id: albumId,
+        external_url: url,
+        caption: input.caption.trim() || null,
+        category: input.category,
+        media_type: input.mediaType,
+        position: count ?? 0,
+      });
+    if (insertError) return { success: false, error: insertError.message };
+
+    if ((count ?? 0) === 0 && input.mediaType === "image") {
+      await supabase
+        .from("gallery_albums")
+        .update({ cover_image_path: url })
+        .eq("id", albumId);
+    }
+
+    revalidatePath(`/super-admin/gallery/${albumId}/edit`);
+    revalidatePath("/super-admin/gallery");
+    return { success: true };
+  } catch (err) {
+    console.error("addGalleryUrlAction failed", err);
+    return {
+      success: false,
+      error: "Something went wrong adding the URL.",
     };
   }
 }
@@ -240,11 +308,14 @@ export async function uploadGalleryImageAction(
 export async function deleteGalleryImageAction(
   albumId: string,
   imageId: string,
-  storagePath: string,
+  storagePath: string | null,
+  externalUrl: string | null,
 ): Promise<ActionResult> {
   try {
     const supabase = createAdminClient();
-    await supabase.storage.from("gallery").remove([storagePath]);
+    if (storagePath) {
+      await supabase.storage.from("gallery").remove([storagePath]);
+    }
     const { error } = await supabase
       .from("gallery_images")
       .delete()
@@ -257,18 +328,24 @@ export async function deleteGalleryImageAction(
       .eq("id", albumId)
       .maybeSingle();
 
-    if (album?.cover_image_path === storagePath) {
+    const deletedCoverValue = storagePath ?? externalUrl;
+    if (album?.cover_image_path === deletedCoverValue) {
       const { data: next } = await supabase
         .from("gallery_images")
-        .select("storage_path")
+        .select("storage_path, external_url")
         .eq("album_id", albumId)
+        .eq("media_type", "image")
         .order("position", { ascending: true })
         .limit(1)
         .maybeSingle();
 
       await supabase
         .from("gallery_albums")
-        .update({ cover_image_path: next?.storage_path ?? null })
+        .update({
+          cover_image_path: next
+            ? (next.storage_path ?? next.external_url)
+            : null,
+        })
         .eq("id", albumId);
     }
 
@@ -279,20 +356,20 @@ export async function deleteGalleryImageAction(
     console.error("deleteGalleryImageAction failed", err);
     return {
       success: false,
-      error: "Something went wrong deleting the image.",
+      error: "Something went wrong deleting the media.",
     };
   }
 }
 
 export async function setAlbumCoverAction(
   albumId: string,
-  storagePath: string,
+  coverValue: string,
 ): Promise<ActionResult> {
   try {
     const supabase = createAdminClient();
     const { error } = await supabase
       .from("gallery_albums")
-      .update({ cover_image_path: storagePath })
+      .update({ cover_image_path: coverValue })
       .eq("id", albumId);
     if (error) return { success: false, error: error.message };
 

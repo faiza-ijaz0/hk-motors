@@ -617,27 +617,33 @@ export type Database = {
           caption: string | null;
           category: Database["public"]["Enums"]["gallery_category"];
           created_at: string;
+          external_url: string | null;
           id: string;
+          media_type: Database["public"]["Enums"]["gallery_media_type"];
           position: number;
-          storage_path: string;
+          storage_path: string | null;
         };
         Insert: {
           album_id?: string | null;
           caption?: string | null;
           category: Database["public"]["Enums"]["gallery_category"];
           created_at?: string;
+          external_url?: string | null;
           id?: string;
+          media_type?: Database["public"]["Enums"]["gallery_media_type"];
           position?: number;
-          storage_path: string;
+          storage_path?: string | null;
         };
         Update: {
           album_id?: string | null;
           caption?: string | null;
           category?: Database["public"]["Enums"]["gallery_category"];
           created_at?: string;
+          external_url?: string | null;
           id?: string;
+          media_type?: Database["public"]["Enums"]["gallery_media_type"];
           position?: number;
-          storage_path?: string;
+          storage_path?: string | null;
         };
         Relationships: [
           {
@@ -1125,6 +1131,7 @@ export type Database = {
       drivetrain_type: "fwd" | "rwd" | "awd" | "4wd";
       fuel_type: "petrol" | "diesel" | "hybrid" | "electric" | "lpg";
       gallery_category: "cars" | "showroom" | "deliveries" | "events";
+      gallery_media_type: "image" | "video";
       homepage_section_type:
         | "hero"
         | "featured_cars"
@@ -1295,6 +1302,7 @@ export const Constants = {
       drivetrain_type: ["fwd", "rwd", "awd", "4wd"],
       fuel_type: ["petrol", "diesel", "hybrid", "electric", "lpg"],
       gallery_category: ["cars", "showroom", "deliveries", "events"],
+      gallery_media_type: ["image", "video"],
       homepage_section_type: [
         "hero",
         "featured_cars",
