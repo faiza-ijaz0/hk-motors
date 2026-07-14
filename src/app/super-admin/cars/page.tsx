@@ -1,19 +1,13 @@
-import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { AdminPageHeader } from "@/features/admin/admin-page-header";
-import { formatPrice } from "@/lib/format";
-import { mockCars, type MockCarStatus } from "@/lib/mock/admin";
+import { AdminPagination } from "@/features/admin/admin-pagination";
+import { CarsTable } from "@/features/admin/cars/cars-table";
+import { CarsToolbar } from "@/features/admin/cars/cars-toolbar";
+import { ADMIN_CARS_PAGE_SIZE, getAdminCars } from "@/services/admin-cars";
 
 import type { Metadata } from "next";
 
@@ -21,89 +15,62 @@ export const metadata: Metadata = {
   title: "Cars | HK Motors Super Admin",
 };
 
-const STATUS_VARIANT: Record<
-  MockCarStatus,
-  "default" | "secondary" | "outline" | "destructive"
-> = {
-  draft: "outline",
-  pending_review: "secondary",
-  published: "default",
-  reserved: "secondary",
-  sold: "outline",
-  archived: "outline",
-};
+type SearchParams = Record<string, string | string[] | undefined>;
 
-const STATUS_LABEL: Record<MockCarStatus, string> = {
-  draft: "Draft",
-  pending_review: "Pending Review",
-  published: "Published",
-  reserved: "Reserved",
-  sold: "Sold",
-  archived: "Archived",
-};
+function toSingle(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
-export default function AdminCarsPage() {
+export default async function AdminCarsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = await searchParams;
+  const filters = {
+    q: toSingle(params.q),
+    status: toSingle(params.status),
+    condition: toSingle(params.condition),
+    page: toSingle(params.page),
+  };
+
+  const { cars, total, page } = await getAdminCars(filters);
+  const totalPages = Math.max(1, Math.ceil(total / ADMIN_CARS_PAGE_SIZE));
+  const hasFilters = Boolean(filters.q || filters.status || filters.condition);
+
+  const flatSearchParams: Record<string, string | undefined> = {
+    q: filters.q,
+    status: filters.status,
+    condition: filters.condition,
+  };
+
   return (
     <>
       <AdminPageHeader title="Cars" description="Manage inventory listings.">
-        <Button size="sm">
-          <Plus />
-          Add Vehicle
+        <Button size="sm" asChild>
+          <Link href="/super-admin/cars/new">
+            <Plus />
+            Add Vehicle
+          </Link>
         </Button>
       </AdminPageHeader>
 
+      <div className="mb-4">
+        <CarsToolbar />
+      </div>
+
       <Card>
-        <CardContent className="px-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="pl-6">Vehicle</TableHead>
-                <TableHead>Year</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="pr-6 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mockCars.map((car) => (
-                <TableRow key={car.id}>
-                  <TableCell className="pl-6 font-medium">
-                    {car.title}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {car.year}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatPrice(car.price, "PKR")}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={STATUS_VARIANT[car.status]}>
-                      {STATUS_LABEL[car.status]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {car.createdAt}
-                  </TableCell>
-                  <TableCell className="pr-6">
-                    <div className="flex justify-end gap-1">
-                      <Button variant="ghost" size="icon-sm">
-                        <Eye />
-                      </Button>
-                      <Button variant="ghost" size="icon-sm">
-                        <Pencil />
-                      </Button>
-                      <Button variant="ghost" size="icon-sm">
-                        <Trash2 />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <CardContent className={cars.length > 0 ? "px-0" : undefined}>
+          <CarsTable cars={cars} hasFilters={hasFilters} />
         </CardContent>
       </Card>
+
+      <AdminPagination
+        basePath="/super-admin/cars"
+        page={page}
+        totalPages={totalPages}
+        searchParams={flatSearchParams}
+      />
     </>
   );
 }

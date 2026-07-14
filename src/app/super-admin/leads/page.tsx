@@ -1,22 +1,9 @@
-import { Eye } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { AdminPageHeader } from "@/features/admin/admin-page-header";
-import {
-  mockLeads,
-  type MockLeadStatus,
-  type MockLeadType,
-} from "@/lib/mock/admin";
+import { AdminPagination } from "@/features/admin/admin-pagination";
+import { LeadsTable } from "@/features/admin/leads/leads-table";
+import { LeadsToolbar } from "@/features/admin/leads/leads-toolbar";
+import { ADMIN_LEADS_PAGE_SIZE, getAdminLeads } from "@/services/admin-leads";
 
 import type { Metadata } from "next";
 
@@ -24,26 +11,35 @@ export const metadata: Metadata = {
   title: "Leads | HK Motors Super Admin",
 };
 
-const TYPE_LABEL: Record<MockLeadType, string> = {
-  car_inquiry: "Car Inquiry",
-  service_inquiry: "Service Inquiry",
-  trade_in: "Trade-In",
-  financing: "Financing",
-  general: "General",
-};
+type SearchParams = Record<string, string | string[] | undefined>;
 
-const STATUS_VARIANT: Record<
-  MockLeadStatus,
-  "default" | "secondary" | "outline" | "destructive"
-> = {
-  new: "default",
-  contacted: "secondary",
-  qualified: "secondary",
-  converted: "default",
-  lost: "destructive",
-};
+function toSingle(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
-export default function AdminLeadsPage() {
+export default async function AdminLeadsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = await searchParams;
+  const filters = {
+    q: toSingle(params.q),
+    status: toSingle(params.status),
+    type: toSingle(params.type),
+    page: toSingle(params.page),
+  };
+
+  const { leads, total, page } = await getAdminLeads(filters);
+  const totalPages = Math.max(1, Math.ceil(total / ADMIN_LEADS_PAGE_SIZE));
+  const hasFilters = Boolean(filters.q || filters.status || filters.type);
+
+  const flatSearchParams: Record<string, string | undefined> = {
+    q: filters.q,
+    status: filters.status,
+    type: filters.type,
+  };
+
   return (
     <>
       <AdminPageHeader
@@ -51,54 +47,22 @@ export default function AdminLeadsPage() {
         description="Inquiries submitted across the website."
       />
 
+      <div className="mb-4">
+        <LeadsToolbar />
+      </div>
+
       <Card>
-        <CardContent className="px-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="pl-6">Name</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Assigned To</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="pr-6 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mockLeads.map((lead) => (
-                <TableRow key={lead.id}>
-                  <TableCell className="pl-6 font-medium">
-                    {lead.name}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {lead.contact}
-                  </TableCell>
-                  <TableCell>{TYPE_LABEL[lead.type]}</TableCell>
-                  <TableCell>
-                    <Badge variant={STATUS_VARIANT[lead.status]}>
-                      {lead.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {lead.assignedTo ?? "Unassigned"}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {lead.createdAt}
-                  </TableCell>
-                  <TableCell className="pr-6">
-                    <div className="flex justify-end">
-                      <Button variant="ghost" size="icon-sm">
-                        <Eye />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <CardContent className={leads.length > 0 ? "px-0" : undefined}>
+          <LeadsTable leads={leads} hasFilters={hasFilters} />
         </CardContent>
       </Card>
+
+      <AdminPagination
+        basePath="/super-admin/leads"
+        page={page}
+        totalPages={totalPages}
+        searchParams={flatSearchParams}
+      />
     </>
   );
 }

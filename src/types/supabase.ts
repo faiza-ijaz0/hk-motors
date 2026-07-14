@@ -685,6 +685,35 @@ export type Database = {
         };
         Relationships: [];
       };
+      lead_notes: {
+        Row: {
+          created_at: string;
+          id: string;
+          lead_id: string;
+          note: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          lead_id: string;
+          note: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          lead_id?: string;
+          note?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lead_notes_lead_id_fkey";
+            columns: ["lead_id"];
+            isOneToOne: false;
+            referencedRelation: "leads";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       leads: {
         Row: {
           assigned_to: string | null;

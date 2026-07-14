@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/shared/toaster";
 import { AdminSidebar } from "@/features/admin/admin-sidebar";
 import { AdminTopbar } from "@/features/admin/admin-topbar";
 
@@ -13,6 +14,7 @@ export default function AdminLayout({
         <AdminTopbar />
         <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
+      <Toaster />
     </div>
   );
 }
