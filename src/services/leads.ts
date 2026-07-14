@@ -26,24 +26,32 @@ export async function submitCarInquiry(
     };
   }
 
-  const supabase = createClient();
-  const { error } = await supabase.from("leads").insert({
-    full_name: input.fullName.trim(),
-    email: input.email.trim() || null,
-    phone: input.phone.trim() || null,
-    message: input.message.trim(),
-    lead_type: "car_inquiry",
-    source: "website",
-    car_id: input.carId,
-  });
+  try {
+    const supabase = createClient();
+    const { error } = await supabase.from("leads").insert({
+      full_name: input.fullName.trim(),
+      email: input.email.trim() || null,
+      phone: input.phone.trim() || null,
+      message: input.message.trim(),
+      lead_type: "car_inquiry",
+      source: "website",
+      car_id: input.carId,
+    });
 
-  if (error) {
-    console.error("submitCarInquiry failed", error);
+    if (error) {
+      console.error("submitCarInquiry failed", error);
+      return {
+        success: false,
+        error: "Something went wrong sending your inquiry. Please try again.",
+      };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("submitCarInquiry: unexpected failure", err);
     return {
       success: false,
       error: "Something went wrong sending your inquiry. Please try again.",
     };
   }
-
-  return { success: true };
 }
