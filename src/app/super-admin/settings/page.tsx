@@ -8,7 +8,7 @@ import { AdminPageHeader } from "@/features/admin/admin-page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Settings | HK Motors Admin",
+  title: "Settings | HK Motors Super Admin",
 };
 
 // Pre-filled with the same placeholder values used across the public site

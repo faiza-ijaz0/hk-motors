@@ -13,8 +13,8 @@ export function AdminNavLinks({ onNavigate }: { onNavigate?: () => void }) {
     <nav className="flex flex-col gap-1">
       {adminNavItems.map((item) => {
         const isActive =
-          item.href === "/admin"
-            ? pathname === "/admin"
+          item.href === "/super-admin"
+            ? pathname === "/super-admin"
             : pathname.startsWith(item.href);
 
         return (

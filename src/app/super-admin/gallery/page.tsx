@@ -7,7 +7,7 @@ import { AdminPageHeader } from "@/features/admin/admin-page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gallery | HK Motors Admin",
+  title: "Gallery | HK Motors Super Admin",
 };
 
 export default function AdminGalleryPage() {

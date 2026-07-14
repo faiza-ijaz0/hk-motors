@@ -14,7 +14,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard | HK Motors Admin",
+  title: "Dashboard | HK Motors Super Admin",
 };
 
 const LEAD_STATUS_VARIANT = {

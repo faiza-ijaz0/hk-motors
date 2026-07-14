@@ -18,7 +18,7 @@ import { mockCars, type MockCarStatus } from "@/lib/mock/admin";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Cars | HK Motors Admin",
+  title: "Cars | HK Motors Super Admin",
 };
 
 const STATUS_VARIANT: Record<

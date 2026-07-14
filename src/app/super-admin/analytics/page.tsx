@@ -8,7 +8,7 @@ import { mockLeadsByMonth, mockLeadsByStatus } from "@/lib/mock/admin";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Analytics | HK Motors Admin",
+  title: "Analytics | HK Motors Super Admin",
 };
 
 export default function AdminAnalyticsPage() {
