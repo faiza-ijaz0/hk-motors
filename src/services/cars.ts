@@ -33,6 +33,25 @@ export type CarListItem = {
   imageUrl: string | null;
 };
 
+type CarListRow = {
+  id: string;
+  title: string;
+  slug: string;
+  year: number;
+  price: number;
+  currency_code: string;
+  mileage: number | null;
+  condition: Enums<"car_condition">;
+  car_makes: { name: string } | null;
+  car_models: { name: string } | null;
+  car_images: { storage_path: string; is_primary: boolean; position: number }[];
+};
+
+const CAR_LIST_SELECT =
+  `id, title, slug, year, price, currency_code, mileage, condition,
+   car_makes ( name ), car_models ( name ),
+   car_images ( storage_path, is_primary, position )` as const;
+
 // `published_at` isn't guaranteed to be set (no trigger stamps it on
 // publish yet), so "newest" sorts by `created_at`, which always is.
 const SORT_MAP: Record<CarSort, { column: string; ascending: boolean }> = {
@@ -43,6 +62,34 @@ const SORT_MAP: Record<CarSort, { column: string; ascending: boolean }> = {
   mileage_asc: { column: "mileage", ascending: true },
 };
 
+function mapCarListRow(
+  row: CarListRow,
+  supabase: ReturnType<typeof createClient>,
+): CarListItem {
+  const images = Array.isArray(row.car_images) ? row.car_images : [];
+  const primary =
+    images.find((img) => img.is_primary) ??
+    [...images].sort((a, b) => a.position - b.position)[0];
+  const imageUrl = primary
+    ? supabase.storage.from("cars").getPublicUrl(primary.storage_path).data
+        .publicUrl
+    : null;
+
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    year: row.year,
+    price: row.price,
+    currencyCode: row.currency_code,
+    mileage: row.mileage,
+    condition: row.condition,
+    makeName: row.car_makes?.name ?? null,
+    modelName: row.car_models?.name ?? null,
+    imageUrl,
+  };
+}
+
 export async function getCars(filters: CarFilters) {
   const supabase = createClient();
   const page = Math.max(1, Number(filters.page) || 1);
@@ -52,12 +99,7 @@ export async function getCars(filters: CarFilters) {
 
   let query = supabase
     .from("cars")
-    .select(
-      `id, title, slug, year, price, currency_code, mileage, condition,
-       car_makes ( name ), car_models ( name ),
-       car_images ( storage_path, is_primary, position )`,
-      { count: "exact" },
-    )
+    .select(CAR_LIST_SELECT, { count: "exact" })
     .eq("status", "published");
 
   if (filters.q) query = query.ilike("title", `%${filters.q}%`);
@@ -90,8 +132,9 @@ export async function getCars(filters: CarFilters) {
       if (filters.q) countQuery = countQuery.ilike("title", `%${filters.q}%`);
       if (filters.brand) countQuery = countQuery.eq("make_id", filters.brand);
       if (filters.model) countQuery = countQuery.eq("model_id", filters.model);
-      if (filters.year)
+      if (filters.year) {
         countQuery = countQuery.eq("year", Number(filters.year));
+      }
       if (filters.priceMin) {
         countQuery = countQuery.gte("price", Number(filters.priceMin));
       }
@@ -123,30 +166,7 @@ export async function getCars(filters: CarFilters) {
     };
   }
 
-  const cars: CarListItem[] = (data ?? []).map((row) => {
-    const images = Array.isArray(row.car_images) ? row.car_images : [];
-    const primary =
-      images.find((img) => img.is_primary) ??
-      [...images].sort((a, b) => a.position - b.position)[0];
-    const imageUrl = primary
-      ? supabase.storage.from("cars").getPublicUrl(primary.storage_path).data
-          .publicUrl
-      : null;
-
-    return {
-      id: row.id,
-      title: row.title,
-      slug: row.slug,
-      year: row.year,
-      price: row.price,
-      currencyCode: row.currency_code,
-      mileage: row.mileage,
-      condition: row.condition,
-      makeName: row.car_makes?.name ?? null,
-      modelName: row.car_models?.name ?? null,
-      imageUrl,
-    };
-  });
+  const cars = (data ?? []).map((row) => mapCarListRow(row, supabase));
 
   return { cars, total: count ?? 0, page, pageSize: CARS_PAGE_SIZE };
 }
@@ -165,4 +185,120 @@ export async function getCarFilterOptions(): Promise<CarFilterOptions> {
   ]);
 
   return { makes: makes ?? [], models: models ?? [] };
+}
+
+export type CarDetail = {
+  id: string;
+  title: string;
+  slug: string;
+  year: number;
+  price: number;
+  currencyCode: string;
+  mileage: number | null;
+  condition: Enums<"car_condition">;
+  transmission: Enums<"transmission_type"> | null;
+  fuelType: Enums<"fuel_type"> | null;
+  drivetrain: Enums<"drivetrain_type"> | null;
+  exteriorColor: string | null;
+  interiorColor: string | null;
+  engine: string | null;
+  horsepower: number | null;
+  seats: number | null;
+  doors: number | null;
+  description: string | null;
+  makeId: string;
+  makeName: string | null;
+  modelName: string | null;
+  categoryId: string | null;
+  images: { url: string; alt: string | null }[];
+  features: string[];
+};
+
+export async function getCarBySlug(slug: string): Promise<CarDetail | null> {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("cars")
+    .select(
+      `id, title, slug, year, price, currency_code, mileage, condition,
+       transmission, fuel_type, drivetrain, exterior_color, interior_color,
+       engine, horsepower, seats, doors, description, make_id, category_id,
+       car_makes ( name ), car_models ( name ),
+       car_images ( storage_path, alt_text, position, is_primary ),
+       car_feature_map ( car_features ( name ) )`,
+    )
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (error || !data) {
+    if (error) console.error("getCarBySlug failed", error);
+    return null;
+  }
+
+  const images = (data.car_images ?? [])
+    .slice()
+    .sort((a, b) => {
+      if (a.is_primary !== b.is_primary) return a.is_primary ? -1 : 1;
+      return a.position - b.position;
+    })
+    .map((img) => ({
+      url: supabase.storage.from("cars").getPublicUrl(img.storage_path).data
+        .publicUrl,
+      alt: img.alt_text,
+    }));
+
+  const features = (data.car_feature_map ?? [])
+    .map((f) => f.car_features?.name)
+    .filter((name): name is string => Boolean(name));
+
+  return {
+    id: data.id,
+    title: data.title,
+    slug: data.slug,
+    year: data.year,
+    price: data.price,
+    currencyCode: data.currency_code,
+    mileage: data.mileage,
+    condition: data.condition,
+    transmission: data.transmission,
+    fuelType: data.fuel_type,
+    drivetrain: data.drivetrain,
+    exteriorColor: data.exterior_color,
+    interiorColor: data.interior_color,
+    engine: data.engine,
+    horsepower: data.horsepower,
+    seats: data.seats,
+    doors: data.doors,
+    description: data.description,
+    makeId: data.make_id,
+    makeName: data.car_makes?.name ?? null,
+    modelName: data.car_models?.name ?? null,
+    categoryId: data.category_id,
+    images,
+    features,
+  };
+}
+
+export async function getSimilarCars(
+  car: Pick<CarDetail, "id" | "makeId" | "categoryId">,
+  limit = 3,
+): Promise<CarListItem[]> {
+  const supabase = createClient();
+
+  let query = supabase
+    .from("cars")
+    .select(CAR_LIST_SELECT)
+    .eq("status", "published")
+    .neq("id", car.id)
+    .limit(limit);
+
+  query = car.categoryId
+    ? query.or(`category_id.eq.${car.categoryId},make_id.eq.${car.makeId}`)
+    : query.eq("make_id", car.makeId);
+
+  const { data, error } = await query;
+  if (error || !data) return [];
+
+  return data.map((row) => mapCarListRow(row, supabase));
 }
