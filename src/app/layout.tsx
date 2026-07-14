@@ -1,7 +1,5 @@
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 
-import { Footer } from "@/components/layout/footer";
-import { Header } from "@/components/layout/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { siteConfig } from "@/config/site";
 
@@ -55,9 +53,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          {children}
         </ThemeProvider>
       </body>
     </html>
