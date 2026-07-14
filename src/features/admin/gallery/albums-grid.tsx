@@ -1,6 +1,6 @@
 "use client";
 
-import { Images, Pencil, Trash2 } from "lucide-react";
+import { Eye, Images, Pencil, Trash2, Video } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
@@ -11,11 +11,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DeleteAlbumDialog } from "@/features/admin/gallery/delete-album-dialog";
+import { formatRelativeTime } from "@/lib/format";
 import { toggleAlbumPublishedAction } from "@/services/admin-gallery-actions";
 
 import type { AdminAlbumListItem } from "@/services/admin-gallery";
 
-export function AlbumsGrid({ albums }: { albums: AdminAlbumListItem[] }) {
+export function AlbumsGrid({
+  albums,
+  hasFilters,
+}: {
+  albums: AdminAlbumListItem[];
+  hasFilters: boolean;
+}) {
   const [deleteTarget, setDeleteTarget] = useState<AdminAlbumListItem | null>(
     null,
   );
@@ -41,8 +48,12 @@ export function AlbumsGrid({ albums }: { albums: AdminAlbumListItem[] }) {
     return (
       <EmptyState
         icon={Images}
-        title="No albums yet"
-        description="Create your first album to start organizing photos."
+        title={hasFilters ? "No albums match your filters" : "No albums yet"}
+        description={
+          hasFilters
+            ? "Try a different album or category filter."
+            : "Create your first album to start organizing photos and videos."
+        }
       />
     );
   }
@@ -76,9 +87,36 @@ export function AlbumsGrid({ albums }: { albums: AdminAlbumListItem[] }) {
                   {album.isPublished ? "Published" : "Draft"}
                 </Badge>
               </div>
+
+              {album.categories.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {album.categories.map((c) => (
+                    <Badge key={c} variant="outline" className="capitalize">
+                      {c}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+
+              <div className="text-muted-foreground flex items-center gap-3 text-xs">
+                <span className="flex items-center gap-1">
+                  <Images className="size-3.5" />
+                  {album.imageCount}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Video className="size-3.5" />
+                  {album.videoCount}
+                </span>
+                <span>
+                  {album.mediaCount} {album.mediaCount === 1 ? "item" : "items"}{" "}
+                  total
+                </span>
+              </div>
+
               <p className="text-muted-foreground text-xs">
-                {album.imageCount} {album.imageCount === 1 ? "photo" : "photos"}
+                Created {formatRelativeTime(album.createdAt)}
               </p>
+
               <div className="flex items-center justify-between pt-1">
                 <div className="flex items-center gap-2">
                   <Checkbox
@@ -93,6 +131,16 @@ export function AlbumsGrid({ albums }: { albums: AdminAlbumListItem[] }) {
                   </span>
                 </div>
                 <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="View album"
+                    asChild
+                  >
+                    <Link href={`/super-admin/gallery/${album.id}`}>
+                      <Eye />
+                    </Link>
+                  </Button>
                   <Button
                     variant="ghost"
                     size="icon-sm"

@@ -26,17 +26,53 @@ export type AdminAlbumListItem = {
   coverIsExternal: boolean;
   isPublished: boolean;
   imageCount: number;
+  videoCount: number;
+  mediaCount: number;
+  categories: GalleryCategory[];
   createdAt: string;
 };
 
-export async function getAdminAlbums(): Promise<AdminAlbumListItem[]> {
+export type AdminAlbumFilters = {
+  albumId?: string;
+  category?: GalleryCategory;
+};
+
+export async function getAdminAlbums(
+  filters: AdminAlbumFilters = {},
+): Promise<AdminAlbumListItem[]> {
   try {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
+
+    let matchingAlbumIds: string[] | null = null;
+    if (filters.category) {
+      const { data: matches, error: matchError } = await supabase
+        .from("gallery_images")
+        .select("album_id")
+        .eq("category", filters.category);
+      if (matchError) {
+        console.error("getAdminAlbums category lookup failed", matchError);
+        return [];
+      }
+      matchingAlbumIds = [
+        ...new Set(
+          (matches ?? [])
+            .map((row) => row.album_id)
+            .filter((id): id is string => id !== null),
+        ),
+      ];
+      if (matchingAlbumIds.length === 0) return [];
+    }
+
+    let query = supabase
       .from("gallery_albums")
       .select(
-        "id, title, slug, description, cover_image_path, is_published, created_at, gallery_images ( count )",
-      )
+        "id, title, slug, description, cover_image_path, is_published, created_at, gallery_images ( id, category, media_type )",
+      );
+
+    if (filters.albumId) query = query.eq("id", filters.albumId);
+    if (matchingAlbumIds) query = query.in("id", matchingAlbumIds);
+
+    const { data, error } = await query
       .order("position", { ascending: true })
       .order("created_at", { ascending: false });
 
@@ -45,19 +81,50 @@ export async function getAdminAlbums(): Promise<AdminAlbumListItem[]> {
       return [];
     }
 
-    return data.map((row) => ({
-      id: row.id,
-      title: row.title,
-      slug: row.slug,
-      description: row.description,
-      coverUrl: resolveCoverUrl(supabase, row.cover_image_path),
-      coverIsExternal: row.cover_image_path?.startsWith("http") ?? false,
-      isPublished: row.is_published,
-      imageCount: row.gallery_images?.[0]?.count ?? 0,
-      createdAt: row.created_at,
-    }));
+    return data.map((row) => {
+      const media = row.gallery_images ?? [];
+      const imageCount = media.filter((m) => m.media_type === "image").length;
+      const videoCount = media.filter((m) => m.media_type === "video").length;
+      const categories = [...new Set(media.map((m) => m.category))];
+
+      return {
+        id: row.id,
+        title: row.title,
+        slug: row.slug,
+        description: row.description,
+        coverUrl: resolveCoverUrl(supabase, row.cover_image_path),
+        coverIsExternal: row.cover_image_path?.startsWith("http") ?? false,
+        isPublished: row.is_published,
+        imageCount,
+        videoCount,
+        mediaCount: media.length,
+        categories,
+        createdAt: row.created_at,
+      };
+    });
   } catch (err) {
     console.error("getAdminAlbums: unexpected failure", err);
+    return [];
+  }
+}
+
+export type AlbumOption = { id: string; title: string };
+
+export async function getAlbumOptions(): Promise<AlbumOption[]> {
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("gallery_albums")
+      .select("id, title")
+      .order("title", { ascending: true });
+
+    if (error || !data) {
+      if (error) console.error("getAlbumOptions failed", error);
+      return [];
+    }
+    return data;
+  } catch (err) {
+    console.error("getAlbumOptions: unexpected failure", err);
     return [];
   }
 }
@@ -69,6 +136,7 @@ export type AdminAlbumDetail = {
   description: string | null;
   coverImagePath: string | null;
   isPublished: boolean;
+  createdAt: string;
 };
 
 export type AdminAlbumImage = {
@@ -80,6 +148,7 @@ export type AdminAlbumImage = {
   category: GalleryCategory;
   mediaType: GalleryMediaType;
   position: number;
+  createdAt: string;
 };
 
 export async function getAdminAlbumById(id: string): Promise<{
@@ -91,7 +160,7 @@ export async function getAdminAlbumById(id: string): Promise<{
     const { data, error } = await supabase
       .from("gallery_albums")
       .select(
-        "id, title, slug, description, cover_image_path, is_published, gallery_images ( id, storage_path, external_url, caption, category, media_type, position )",
+        "id, title, slug, description, cover_image_path, is_published, created_at, gallery_images ( id, storage_path, external_url, caption, category, media_type, position, created_at )",
       )
       .eq("id", id)
       .maybeSingle();
@@ -116,6 +185,7 @@ export async function getAdminAlbumById(id: string): Promise<{
         category: img.category,
         mediaType: img.media_type,
         position: img.position,
+        createdAt: img.created_at,
       }));
 
     return {
@@ -126,6 +196,7 @@ export async function getAdminAlbumById(id: string): Promise<{
         description: data.description,
         coverImagePath: data.cover_image_path,
         isPublished: data.is_published,
+        createdAt: data.created_at,
       },
       images,
     };

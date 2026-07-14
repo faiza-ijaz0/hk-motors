@@ -62,7 +62,15 @@ export function GalleryImagesManager({
   const [urlValue, setUrlValue] = useState("");
   const [uploading, setUploading] = useState(false);
   const [addingUrl, setAddingUrl] = useState(false);
+  const [viewFilter, setViewFilter] = useState<"all" | GalleryMediaType>("all");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const imageCount = images.filter((i) => i.mediaType === "image").length;
+  const videoCount = images.filter((i) => i.mediaType === "video").length;
+  const visibleImages =
+    viewFilter === "all"
+      ? images
+      : images.filter((i) => i.mediaType === viewFilter);
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
@@ -295,16 +303,44 @@ export function GalleryImagesManager({
         </div>
       </div>
 
-      {images.length === 0 ? (
+      {images.length > 0 && (
+        <div className="border-border inline-flex rounded-lg border p-0.5">
+          {(
+            [
+              { key: "all", label: `All (${images.length})` },
+              { key: "image", label: `Images (${imageCount})` },
+              { key: "video", label: `Videos (${videoCount})` },
+            ] as const
+          ).map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setViewFilter(tab.key)}
+              className={cn(
+                "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                viewFilter === tab.key
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {visibleImages.length === 0 ? (
         <div className="border-border flex flex-col items-center gap-2 rounded-xl border border-dashed py-10">
           <Images className="text-muted-foreground size-8" />
           <p className="text-muted-foreground text-sm">
-            No photos or videos yet — add the first one above.
+            {images.length === 0
+              ? "No photos or videos yet — add the first one above."
+              : "Nothing in this filter yet."}
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {images.map((image, index) => {
+          {visibleImages.map((image, index) => {
             const isCover =
               coverImagePath !== null &&
               coverImagePath === (image.storagePath ?? image.externalUrl);
@@ -340,26 +376,30 @@ export function GalleryImagesManager({
                   {image.category}
                 </span>
                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="icon-sm"
-                    aria-label="Move up"
-                    disabled={index === 0}
-                    onClick={() => handleReorder(image.id, "up")}
-                  >
-                    <ChevronUp />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="icon-sm"
-                    aria-label="Move down"
-                    disabled={index === images.length - 1}
-                    onClick={() => handleReorder(image.id, "down")}
-                  >
-                    <ChevronDown />
-                  </Button>
+                  {viewFilter === "all" && (
+                    <>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="icon-sm"
+                        aria-label="Move up"
+                        disabled={index === 0}
+                        onClick={() => handleReorder(image.id, "up")}
+                      >
+                        <ChevronUp />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="icon-sm"
+                        aria-label="Move down"
+                        disabled={index === visibleImages.length - 1}
+                        onClick={() => handleReorder(image.id, "down")}
+                      >
+                        <ChevronDown />
+                      </Button>
+                    </>
+                  )}
                   {!isCover && image.mediaType === "image" && (
                     <Button
                       type="button"

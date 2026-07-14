@@ -12,7 +12,21 @@ const TABS: { label: string; value: GalleryCategory | undefined }[] = [
   { label: "Events", value: "events" },
 ];
 
-export function GalleryTabs({ active }: { active?: GalleryCategory }) {
+function buildHref(category?: GalleryCategory, album?: string) {
+  const params = new URLSearchParams();
+  if (category) params.set("category", category);
+  if (album) params.set("album", album);
+  const query = params.toString();
+  return query ? `/gallery?${query}` : "/gallery";
+}
+
+export function GalleryTabs({
+  active,
+  activeAlbum,
+}: {
+  active?: GalleryCategory;
+  activeAlbum?: string;
+}) {
   return (
     <nav className="flex flex-wrap gap-2">
       {TABS.map((tab) => {
@@ -20,7 +34,7 @@ export function GalleryTabs({ active }: { active?: GalleryCategory }) {
         return (
           <Link
             key={tab.label}
-            href={tab.value ? `/gallery?category=${tab.value}` : "/gallery"}
+            href={buildHref(tab.value, activeAlbum)}
             className={cn(
               "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
               isActive

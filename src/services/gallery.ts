@@ -13,18 +13,32 @@ export type GalleryImage = {
   mediaType: GalleryMediaType;
 };
 
+export type GalleryFilters = {
+  category?: GalleryCategory;
+  albumSlug?: string;
+};
+
 export async function getGalleryImages(
-  category?: GalleryCategory,
+  filters: GalleryFilters = {},
 ): Promise<GalleryImage[]> {
   try {
     const supabase = createClient();
 
+    // `!inner` is required here — without it, PostgREST silently ignores a
+    // filter on an embedded resource (gallery_albums.is_published), and
+    // draft albums would leak onto the public site.
     let query = supabase
       .from("gallery_images")
-      .select("id, storage_path, external_url, caption, category, media_type")
+      .select(
+        "id, storage_path, external_url, caption, category, media_type, gallery_albums!inner ( slug, is_published )",
+      )
+      .eq("gallery_albums.is_published", true)
       .order("position", { ascending: true });
 
-    if (category) query = query.eq("category", category);
+    if (filters.category) query = query.eq("category", filters.category);
+    if (filters.albumSlug) {
+      query = query.eq("gallery_albums.slug", filters.albumSlug);
+    }
 
     const { data, error } = await query;
 
@@ -45,6 +59,31 @@ export async function getGalleryImages(
     }));
   } catch (err) {
     console.error("getGalleryImages: unexpected failure", err);
+    return [];
+  }
+}
+
+export type GalleryAlbumOption = { slug: string; title: string };
+
+export async function getPublishedAlbumOptions(): Promise<
+  GalleryAlbumOption[]
+> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("gallery_albums")
+      .select("slug, title")
+      .eq("is_published", true)
+      .order("position", { ascending: true })
+      .order("title", { ascending: true });
+
+    if (error || !data) {
+      if (error) console.error("getPublishedAlbumOptions failed", error);
+      return [];
+    }
+    return data;
+  } catch (err) {
+    console.error("getPublishedAlbumOptions: unexpected failure", err);
     return [];
   }
 }
