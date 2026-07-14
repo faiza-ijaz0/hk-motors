@@ -343,3 +343,22 @@ export async function getSimilarCars(
     return [];
   }
 }
+
+// Lightweight — for the sitemap only, no joins/images.
+export async function getAllPublishedCarSlugs(): Promise<
+  { slug: string; updatedAt: string }[]
+> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("cars")
+      .select("slug, updated_at")
+      .eq("status", "published");
+
+    if (error || !data) return [];
+    return data.map((row) => ({ slug: row.slug, updatedAt: row.updated_at }));
+  } catch (err) {
+    console.error("getAllPublishedCarSlugs: unexpected failure", err);
+    return [];
+  }
+}
