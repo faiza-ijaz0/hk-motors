@@ -193,8 +193,13 @@ export function CarForm({
             <Select
               value={makeId}
               onValueChange={(v) => {
+                // Radix fires onValueChange even when re-selecting the
+                // currently-picked item, so only clear the dependent model
+                // when the make actually changed — otherwise re-opening
+                // the dropdown and picking the same make wipes out an
+                // already-selected model for no reason.
+                if (v !== makeId) setModelId("");
                 setMakeId(v);
-                setModelId("");
               }}
             >
               <SelectTrigger className="w-full">
