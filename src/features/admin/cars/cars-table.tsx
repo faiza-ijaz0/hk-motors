@@ -1,6 +1,6 @@
 "use client";
 
-import { CarFront, Pencil, Star, Trash2 } from "lucide-react";
+import { CarFront, Eye, Pencil, Star, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -163,6 +163,16 @@ export function CarsTable({
               </TableCell>
               <TableCell className="pr-6">
                 <div className="flex justify-end gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="View vehicle"
+                    asChild
+                  >
+                    <Link href={`/super-admin/cars/${car.id}`}>
+                      <Eye />
+                    </Link>
+                  </Button>
                   <Button
                     variant="ghost"
                     size="icon-sm"

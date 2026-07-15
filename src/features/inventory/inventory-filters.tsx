@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useInventoryParams } from "@/features/inventory/use-inventory-params";
+import { getYearOptions } from "@/lib/years";
 
 import type { CarFilterOptions } from "@/services/cars";
 
@@ -22,12 +23,12 @@ const CONDITIONS = [
   { value: "certified_pre_owned", label: "Certified Pre-Owned" },
 ];
 
-const currentYear = new Date().getFullYear();
-const YEARS = Array.from({ length: 26 }, (_, i) => currentYear + 1 - i);
+const YEARS = getYearOptions();
 
 export function InventoryFilters({ options }: { options: CarFilterOptions }) {
   const { searchParams, setParams } = useInventoryParams();
 
+  const category = searchParams.get("category") ?? "";
   const brand = searchParams.get("brand") ?? "";
   const model = searchParams.get("model") ?? "";
   const year = searchParams.get("year") ?? "";
@@ -59,7 +60,7 @@ export function InventoryFilters({ options }: { options: CarFilterOptions }) {
   );
 
   const hasActiveFilters = Boolean(
-    brand || model || year || condition || priceMin || priceMax,
+    category || brand || model || year || condition || priceMin || priceMax,
   );
 
   return (
@@ -74,6 +75,7 @@ export function InventoryFilters({ options }: { options: CarFilterOptions }) {
               setPriceMin("");
               setPriceMax("");
               setParams({
+                category: null,
                 brand: null,
                 model: null,
                 year: null,
@@ -86,6 +88,28 @@ export function InventoryFilters({ options }: { options: CarFilterOptions }) {
             Clear
           </Button>
         )}
+      </div>
+
+      <div className="space-y-2">
+        <Label>Category</Label>
+        <Select
+          value={category || "all"}
+          onValueChange={(value) =>
+            setParams({ category: value === "all" ? null : value })
+          }
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="All Categories" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            {options.categories.map((c) => (
+              <SelectItem key={c.id} value={c.id}>
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">

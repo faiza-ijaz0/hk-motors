@@ -8,6 +8,10 @@ export type AdminCarFilters = {
   q?: string;
   status?: string;
   condition?: string;
+  categoryId?: string;
+  makeId?: string;
+  modelId?: string;
+  year?: string;
   page?: string;
 };
 
@@ -59,6 +63,10 @@ export async function getAdminCars(filters: AdminCarFilters) {
     if (filters.q) query = query.ilike("title", `%${filters.q}%`);
     if (filters.status) query = query.eq("status", filters.status);
     if (filters.condition) query = query.eq("condition", filters.condition);
+    if (filters.categoryId) query = query.eq("category_id", filters.categoryId);
+    if (filters.makeId) query = query.eq("make_id", filters.makeId);
+    if (filters.modelId) query = query.eq("model_id", filters.modelId);
+    if (filters.year) query = query.eq("year", filters.year);
     return query;
   }
 
@@ -136,6 +144,9 @@ export type AdminCarDetail = {
   makeId: string;
   modelId: string;
   categoryId: string | null;
+  makeName: string | null;
+  modelName: string | null;
+  categoryName: string | null;
   year: number;
   vin: string | null;
   price: number;
@@ -154,15 +165,21 @@ export type AdminCarDetail = {
   doors: number | null;
   description: string | null;
   isFeatured: boolean;
+  features: string[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type AdminCarImage = {
   id: string;
   url: string;
-  storagePath: string;
+  storagePath: string | null;
+  externalUrl: string | null;
   altText: string | null;
   position: number;
   isPrimary: boolean;
+  mediaType: Enums<"gallery_media_type">;
+  createdAt: string;
 };
 
 export async function getAdminCarById(id: string): Promise<{
@@ -177,8 +194,10 @@ export async function getAdminCarById(id: string): Promise<{
         `id, title, slug, make_id, model_id, category_id, year, vin, price,
          currency_code, mileage, condition, status, transmission, fuel_type,
          drivetrain, exterior_color, interior_color, engine, horsepower,
-         seats, doors, description, is_featured,
-         car_images ( id, storage_path, alt_text, position, is_primary )`,
+         seats, doors, description, is_featured, created_at, updated_at,
+         car_makes ( name ), car_models ( name ), car_categories ( name ),
+         car_images ( id, storage_path, external_url, alt_text, position, is_primary, media_type, created_at ),
+         car_feature_map ( car_features ( name ) )`,
       )
       .eq("id", id)
       .maybeSingle();
@@ -193,13 +212,22 @@ export async function getAdminCarById(id: string): Promise<{
       .sort((a, b) => a.position - b.position)
       .map((img) => ({
         id: img.id,
-        url: supabase.storage.from("cars").getPublicUrl(img.storage_path).data
-          .publicUrl,
+        url:
+          img.external_url ??
+          supabase.storage.from("cars").getPublicUrl(img.storage_path ?? "")
+            .data.publicUrl,
         storagePath: img.storage_path,
+        externalUrl: img.external_url,
         altText: img.alt_text,
         position: img.position,
         isPrimary: img.is_primary,
+        mediaType: img.media_type,
+        createdAt: img.created_at,
       }));
+
+    const features = (data.car_feature_map ?? [])
+      .map((f) => f.car_features?.name)
+      .filter((name): name is string => Boolean(name));
 
     return {
       car: {
@@ -209,6 +237,9 @@ export async function getAdminCarById(id: string): Promise<{
         makeId: data.make_id,
         modelId: data.model_id,
         categoryId: data.category_id,
+        makeName: data.car_makes?.name ?? null,
+        modelName: data.car_models?.name ?? null,
+        categoryName: data.car_categories?.name ?? null,
         year: data.year,
         vin: data.vin,
         price: data.price,
@@ -227,6 +258,9 @@ export async function getAdminCarById(id: string): Promise<{
         doors: data.doors,
         description: data.description,
         isFeatured: data.is_featured,
+        features,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
       },
       images,
     };

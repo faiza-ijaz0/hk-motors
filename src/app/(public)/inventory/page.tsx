@@ -38,6 +38,7 @@ export default async function InventoryPage({
 
   const filters = {
     q: toSingle(params.q),
+    category: toSingle(params.category),
     brand: toSingle(params.brand),
     model: toSingle(params.model),
     year: toSingle(params.year),
@@ -56,6 +57,7 @@ export default async function InventoryPage({
   const totalPages = Math.max(1, Math.ceil(total / CARS_PAGE_SIZE));
   const hasFilters = Boolean(
     filters.q ||
+    filters.category ||
     filters.brand ||
     filters.model ||
     filters.year ||
@@ -66,6 +68,7 @@ export default async function InventoryPage({
 
   const flatSearchParams: Record<string, string | undefined> = {
     q: filters.q,
+    category: filters.category,
     brand: filters.brand,
     model: filters.model,
     year: filters.year,

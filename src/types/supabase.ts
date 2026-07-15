@@ -302,28 +302,34 @@ export type Database = {
           alt_text: string | null;
           car_id: string;
           created_at: string;
+          external_url: string | null;
           id: string;
           is_primary: boolean;
+          media_type: Database["public"]["Enums"]["gallery_media_type"];
           position: number;
-          storage_path: string;
+          storage_path: string | null;
         };
         Insert: {
           alt_text?: string | null;
           car_id: string;
           created_at?: string;
+          external_url?: string | null;
           id?: string;
           is_primary?: boolean;
+          media_type?: Database["public"]["Enums"]["gallery_media_type"];
           position?: number;
-          storage_path: string;
+          storage_path?: string | null;
         };
         Update: {
           alt_text?: string | null;
           car_id?: string;
           created_at?: string;
+          external_url?: string | null;
           id?: string;
           is_primary?: boolean;
+          media_type?: Database["public"]["Enums"]["gallery_media_type"];
           position?: number;
-          storage_path?: string;
+          storage_path?: string | null;
         };
         Relationships: [
           {

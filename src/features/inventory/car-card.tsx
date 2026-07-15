@@ -1,9 +1,8 @@
-import { CarFront } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { CarCardMedia } from "@/features/inventory/car-card-media";
 import { formatMileage, formatPrice } from "@/lib/format";
 
 import type { CarListItem } from "@/services/cars";
@@ -17,21 +16,13 @@ const CONDITION_LABEL: Record<string, string> = {
 export function CarCard({ car }: { car: CarListItem }) {
   return (
     <Link href={`/inventory/${car.slug}`}>
-      <Card variant="elevated" className="h-full overflow-hidden py-0">
+      <Card variant="elevated" className="group h-full overflow-hidden py-0">
         <div className="bg-muted relative aspect-4/3 w-full">
-          {car.imageUrl ? (
-            <Image
-              src={car.imageUrl}
-              alt={car.title}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <CarFront className="text-muted-foreground size-10" />
-            </div>
-          )}
+          <CarCardMedia
+            images={car.images}
+            hasVideo={car.hasVideo}
+            title={car.title}
+          />
           <Badge className="absolute top-3 left-3">
             {CONDITION_LABEL[car.condition] ?? car.condition}
           </Badge>

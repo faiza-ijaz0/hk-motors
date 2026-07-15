@@ -155,6 +155,7 @@ export async function updateCarAction(
     });
     revalidatePath("/super-admin/cars");
     revalidatePath(`/super-admin/cars/${id}/edit`);
+    revalidatePath(`/super-admin/cars/${id}`);
     revalidatePath("/super-admin");
     return { success: true };
   } catch (err) {
@@ -305,6 +306,96 @@ export async function createModelAction(
   }
 }
 
+export async function createCategoryAction(
+  name: string,
+): Promise<{ success: true; id: string } | { success: false; error: string }> {
+  if (!name.trim()) return { success: false, error: "Name is required." };
+
+  try {
+    const supabase = createAdminClient();
+    const slug = name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-");
+    const { data, error } = await supabase
+      .from("car_categories")
+      .insert({ name: name.trim(), slug })
+      .select("id")
+      .single();
+
+    if (error || !data) {
+      return {
+        success: false,
+        error: error?.message ?? "Failed to create category.",
+      };
+    }
+    revalidatePath("/super-admin/cars");
+    return { success: true, id: data.id };
+  } catch (err) {
+    console.error("createCategoryAction failed", err);
+    return { success: false, error: "Something went wrong." };
+  }
+}
+
+export async function updateCategoryAction(
+  id: string,
+  name: string,
+): Promise<ActionResult> {
+  if (!name.trim()) return { success: false, error: "Name is required." };
+
+  try {
+    const supabase = createAdminClient();
+    const slug = name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-");
+    const { error } = await supabase
+      .from("car_categories")
+      .update({ name: name.trim(), slug })
+      .eq("id", id);
+
+    if (error) return { success: false, error: error.message };
+    revalidatePath("/super-admin/cars");
+    return { success: true };
+  } catch (err) {
+    console.error("updateCategoryAction failed", err);
+    return { success: false, error: "Something went wrong." };
+  }
+}
+
+export async function deleteCategoryAction(id: string): Promise<ActionResult> {
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase
+      .from("car_categories")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      // No ON DELETE clause on cars_category_id_fkey (RESTRICT by default)
+      // — surface a friendly message instead of the raw FK violation.
+      if (error.code === "23503") {
+        return {
+          success: false,
+          error: "This category is still assigned to one or more vehicles.",
+        };
+      }
+      return { success: false, error: error.message };
+    }
+    revalidatePath("/super-admin/cars");
+    return { success: true };
+  } catch (err) {
+    console.error("deleteCategoryAction failed", err);
+    return { success: false, error: "Something went wrong." };
+  }
+}
+
+function revalidateCarMediaPaths(carId: string) {
+  revalidatePath(`/super-admin/cars/${carId}/edit`);
+  revalidatePath(`/super-admin/cars/${carId}`);
+  revalidatePath("/super-admin/cars");
+}
+
 export async function uploadCarImageAction(
   carId: string,
   formData: FormData,
@@ -314,6 +405,11 @@ export async function uploadCarImageAction(
     if (!file || file.size === 0) {
       return { success: false, error: "No file selected." };
     }
+    const mediaType: Enums<"gallery_media_type"> = file.type.startsWith(
+      "video/",
+    )
+      ? "video"
+      : "image";
 
     const supabase = createAdminClient();
     const ext = file.name.split(".").pop() ?? "jpg";
@@ -328,23 +424,90 @@ export async function uploadCarImageAction(
       .from("car_images")
       .select("id", { count: "exact", head: true })
       .eq("car_id", carId);
-    const isFirstImage = (count ?? 0) === 0;
+
+    // Only images can stand in for the listing thumbnail, so "is this the
+    // first item" is scoped to existing images, not videos.
+    let isPrimary = false;
+    if (mediaType === "image") {
+      const { count: imageCount } = await supabase
+        .from("car_images")
+        .select("id", { count: "exact", head: true })
+        .eq("car_id", carId)
+        .eq("media_type", "image");
+      isPrimary = (imageCount ?? 0) === 0;
+    }
 
     const { error: insertError } = await supabase.from("car_images").insert({
       car_id: carId,
       storage_path: path,
       position: count ?? 0,
-      is_primary: isFirstImage,
+      media_type: mediaType,
+      is_primary: isPrimary,
     });
     if (insertError) return { success: false, error: insertError.message };
 
-    revalidatePath(`/super-admin/cars/${carId}/edit`);
+    revalidateCarMediaPaths(carId);
     return { success: true };
   } catch (err) {
     console.error("uploadCarImageAction failed", err);
     return {
       success: false,
-      error: "Something went wrong uploading the image.",
+      error: "Something went wrong uploading the media.",
+    };
+  }
+}
+
+export type AddCarMediaUrlInput = {
+  url: string;
+  mediaType: Enums<"gallery_media_type">;
+};
+
+export async function addCarMediaUrlAction(
+  carId: string,
+  input: AddCarMediaUrlInput,
+): Promise<ActionResult> {
+  const url = input.url.trim();
+  if (!url) return { success: false, error: "A URL is required." };
+  try {
+    new URL(url);
+  } catch {
+    return { success: false, error: "That doesn't look like a valid URL." };
+  }
+
+  try {
+    const supabase = createAdminClient();
+
+    const { count } = await supabase
+      .from("car_images")
+      .select("id", { count: "exact", head: true })
+      .eq("car_id", carId);
+
+    let isPrimary = false;
+    if (input.mediaType === "image") {
+      const { count: imageCount } = await supabase
+        .from("car_images")
+        .select("id", { count: "exact", head: true })
+        .eq("car_id", carId)
+        .eq("media_type", "image");
+      isPrimary = (imageCount ?? 0) === 0;
+    }
+
+    const { error: insertError } = await supabase.from("car_images").insert({
+      car_id: carId,
+      external_url: url,
+      position: count ?? 0,
+      media_type: input.mediaType,
+      is_primary: isPrimary,
+    });
+    if (insertError) return { success: false, error: insertError.message };
+
+    revalidateCarMediaPaths(carId);
+    return { success: true };
+  } catch (err) {
+    console.error("addCarMediaUrlAction failed", err);
+    return {
+      success: false,
+      error: "Something went wrong adding the URL.",
     };
   }
 }
@@ -352,24 +515,45 @@ export async function uploadCarImageAction(
 export async function deleteCarImageAction(
   carId: string,
   imageId: string,
-  storagePath: string,
+  storagePath: string | null,
+  externalUrl: string | null,
+  wasPrimary: boolean,
 ): Promise<ActionResult> {
   try {
     const supabase = createAdminClient();
-    await supabase.storage.from("cars").remove([storagePath]);
+    if (storagePath) {
+      await supabase.storage.from("cars").remove([storagePath]);
+    }
     const { error } = await supabase
       .from("car_images")
       .delete()
       .eq("id", imageId);
     if (error) return { success: false, error: error.message };
 
-    revalidatePath(`/super-admin/cars/${carId}/edit`);
+    if (wasPrimary) {
+      const { data: next } = await supabase
+        .from("car_images")
+        .select("id")
+        .eq("car_id", carId)
+        .eq("media_type", "image")
+        .order("position", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (next) {
+        await supabase
+          .from("car_images")
+          .update({ is_primary: true })
+          .eq("id", next.id);
+      }
+    }
+
+    revalidateCarMediaPaths(carId);
     return { success: true };
   } catch (err) {
     console.error("deleteCarImageAction failed", err);
     return {
       success: false,
-      error: "Something went wrong deleting the image.",
+      error: "Something went wrong deleting the media.",
     };
   }
 }
@@ -390,7 +574,7 @@ export async function setPrimaryCarImageAction(
       .eq("id", imageId);
     if (error) return { success: false, error: error.message };
 
-    revalidatePath(`/super-admin/cars/${carId}/edit`);
+    revalidateCarMediaPaths(carId);
     return { success: true };
   } catch (err) {
     console.error("setPrimaryCarImageAction failed", err);

@@ -85,7 +85,7 @@ export default async function CarDetailPage({
             </div>
 
             {/* Gallery */}
-            <CarGallery images={car.images} title={car.title} />
+            <CarGallery media={car.media} title={car.title} />
 
             {car.description && (
               <div>

@@ -7,7 +7,11 @@ import { AdminPageHeader } from "@/features/admin/admin-page-header";
 import { AdminPagination } from "@/features/admin/admin-pagination";
 import { CarsTable } from "@/features/admin/cars/cars-table";
 import { CarsToolbar } from "@/features/admin/cars/cars-toolbar";
-import { ADMIN_CARS_PAGE_SIZE, getAdminCars } from "@/services/admin-cars";
+import {
+  ADMIN_CARS_PAGE_SIZE,
+  getAdminCars,
+  getCarFormOptions,
+} from "@/services/admin-cars";
 
 import type { Metadata } from "next";
 
@@ -31,17 +35,36 @@ export default async function AdminCarsPage({
     q: toSingle(params.q),
     status: toSingle(params.status),
     condition: toSingle(params.condition),
+    categoryId: toSingle(params.category),
+    makeId: toSingle(params.make),
+    modelId: toSingle(params.model),
+    year: toSingle(params.year),
     page: toSingle(params.page),
   };
 
-  const { cars, total, page } = await getAdminCars(filters);
+  const [{ cars, total, page }, options] = await Promise.all([
+    getAdminCars(filters),
+    getCarFormOptions(),
+  ]);
   const totalPages = Math.max(1, Math.ceil(total / ADMIN_CARS_PAGE_SIZE));
-  const hasFilters = Boolean(filters.q || filters.status || filters.condition);
+  const hasFilters = Boolean(
+    filters.q ||
+    filters.status ||
+    filters.condition ||
+    filters.categoryId ||
+    filters.makeId ||
+    filters.modelId ||
+    filters.year,
+  );
 
   const flatSearchParams: Record<string, string | undefined> = {
     q: filters.q,
     status: filters.status,
     condition: filters.condition,
+    category: filters.categoryId,
+    make: filters.makeId,
+    model: filters.modelId,
+    year: filters.year,
   };
 
   return (
@@ -56,7 +79,7 @@ export default async function AdminCarsPage({
       </AdminPageHeader>
 
       <div className="mb-4">
-        <CarsToolbar />
+        <CarsToolbar options={options} />
       </div>
 
       <Card>

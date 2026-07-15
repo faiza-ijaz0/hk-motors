@@ -9,6 +9,7 @@ export type CarSort =
 
 export type CarFilters = {
   q?: string;
+  category?: string; // car_categories.id
   brand?: string; // car_makes.id
   model?: string; // car_models.id
   year?: string;
@@ -30,7 +31,8 @@ export type CarListItem = {
   condition: Enums<"car_condition">;
   makeName: string | null;
   modelName: string | null;
-  imageUrl: string | null;
+  images: { url: string }[];
+  hasVideo: boolean;
 };
 
 type CarListRow = {
@@ -45,16 +47,18 @@ type CarListRow = {
   car_makes: { name: string } | null;
   car_models: { name: string } | null;
   car_images: {
-    storage_path: string;
+    storage_path: string | null;
+    external_url: string | null;
     is_primary: boolean;
     position: number;
+    media_type: Enums<"gallery_media_type">;
   }[];
 };
 
 const CAR_LIST_SELECT =
   `id, title, slug, year, price, currency_code, mileage, condition,
    car_makes ( name ), car_models ( name ),
-   car_images ( storage_path, is_primary, position )` as const;
+   car_images ( storage_path, external_url, is_primary, position, media_type )` as const;
 
 // `published_at` isn't guaranteed to be set (no trigger stamps it on
 // publish yet), so "newest" sorts by `created_at`, which always is.
@@ -70,14 +74,21 @@ function mapCarListRow(
   row: CarListRow,
   supabase: ReturnType<typeof createClient>,
 ): CarListItem {
-  const images = Array.isArray(row.car_images) ? row.car_images : [];
-  const primary =
-    images.find((img) => img.is_primary) ??
-    [...images].sort((a, b) => a.position - b.position)[0];
-  const imageUrl = primary
-    ? supabase.storage.from("cars").getPublicUrl(primary.storage_path).data
-        .publicUrl
-    : null;
+  const media = Array.isArray(row.car_images) ? row.car_images : [];
+  const images = media
+    .filter((m) => m.media_type === "image")
+    .slice()
+    .sort((a, b) => {
+      if (a.is_primary !== b.is_primary) return a.is_primary ? -1 : 1;
+      return a.position - b.position;
+    })
+    .map((img) => ({
+      url:
+        img.external_url ??
+        supabase.storage.from("cars").getPublicUrl(img.storage_path ?? "").data
+          .publicUrl,
+    }));
+  const hasVideo = media.some((m) => m.media_type === "video");
 
   return {
     id: row.id,
@@ -90,7 +101,8 @@ function mapCarListRow(
     condition: row.condition,
     makeName: row.car_makes?.name ?? null,
     modelName: row.car_models?.name ?? null,
-    imageUrl,
+    images,
+    hasVideo,
   };
 }
 
@@ -118,28 +130,35 @@ export async function getCars(filters: CarFilters) {
   const to = from + CARS_PAGE_SIZE - 1;
   const sort = SORT_MAP[filters.sort ?? "newest"] ?? SORT_MAP.newest;
 
-  try {
-    let query = supabase
-      .from("cars")
-      .select(CAR_LIST_SELECT, { count: "exact" })
-      .eq("status", "published");
-
+  function applyFilters<
+    T extends {
+      ilike: (col: string, val: string) => T;
+      eq: (col: string, val: string | number) => T;
+      gte: (col: string, val: number) => T;
+      lte: (col: string, val: number) => T;
+    },
+  >(q: T): T {
+    let query = q;
     if (filters.q) query = query.ilike("title", `%${filters.q}%`);
+    if (filters.category) query = query.eq("category_id", filters.category);
     if (filters.brand) query = query.eq("make_id", filters.brand);
     if (filters.model) query = query.eq("model_id", filters.model);
     if (filters.year) query = query.eq("year", Number(filters.year));
-    if (filters.priceMin) {
-      query = query.gte("price", Number(filters.priceMin));
-    }
-    if (filters.priceMax) {
-      query = query.lte("price", Number(filters.priceMax));
-    }
+    if (filters.priceMin) query = query.gte("price", Number(filters.priceMin));
+    if (filters.priceMax) query = query.lte("price", Number(filters.priceMax));
     if (filters.condition) {
-      query = query.eq(
-        "condition",
-        filters.condition as Enums<"car_condition">,
-      );
+      query = query.eq("condition", filters.condition);
     }
+    return query;
+  }
+
+  try {
+    let query = applyFilters(
+      supabase
+        .from("cars")
+        .select(CAR_LIST_SELECT, { count: "exact" })
+        .eq("status", "published"),
+    );
 
     query = query
       .order(sort.column, { ascending: sort.ascending })
@@ -153,35 +172,12 @@ export async function getCars(filters: CarFilters) {
       // range error instead of an empty page. Get the real count
       // separately so the UI renders "no results" instead of erroring.
       if (error.code === "PGRST103") {
-        let countQuery = supabase
-          .from("cars")
-          .select("id", { count: "exact", head: true })
-          .eq("status", "published");
-
-        if (filters.q) {
-          countQuery = countQuery.ilike("title", `%${filters.q}%`);
-        }
-        if (filters.brand) countQuery = countQuery.eq("make_id", filters.brand);
-        if (filters.model) {
-          countQuery = countQuery.eq("model_id", filters.model);
-        }
-        if (filters.year) {
-          countQuery = countQuery.eq("year", Number(filters.year));
-        }
-        if (filters.priceMin) {
-          countQuery = countQuery.gte("price", Number(filters.priceMin));
-        }
-        if (filters.priceMax) {
-          countQuery = countQuery.lte("price", Number(filters.priceMax));
-        }
-        if (filters.condition) {
-          countQuery = countQuery.eq(
-            "condition",
-            filters.condition as Enums<"car_condition">,
-          );
-        }
-
-        const { count: total } = await countQuery;
+        const { count: total } = await applyFilters(
+          supabase
+            .from("cars")
+            .select("id", { count: "exact", head: true })
+            .eq("status", "published"),
+        );
         return { ...EMPTY_CARS_RESULT(page), total: total ?? 0 };
       }
 
@@ -199,6 +195,7 @@ export async function getCars(filters: CarFilters) {
 }
 
 export type CarFilterOptions = {
+  categories: { id: string; name: string }[];
   makes: { id: string; name: string }[];
   models: { id: string; name: string; make_id: string }[];
 };
@@ -206,15 +203,21 @@ export type CarFilterOptions = {
 export async function getCarFilterOptions(): Promise<CarFilterOptions> {
   try {
     const supabase = createClient();
-    const [{ data: makes }, { data: models }] = await Promise.all([
-      supabase.from("car_makes").select("id, name").order("name"),
-      supabase.from("car_models").select("id, name, make_id").order("name"),
-    ]);
+    const [{ data: categories }, { data: makes }, { data: models }] =
+      await Promise.all([
+        supabase.from("car_categories").select("id, name").order("name"),
+        supabase.from("car_makes").select("id, name").order("name"),
+        supabase.from("car_models").select("id, name, make_id").order("name"),
+      ]);
 
-    return { makes: makes ?? [], models: models ?? [] };
+    return {
+      categories: categories ?? [],
+      makes: makes ?? [],
+      models: models ?? [],
+    };
   } catch (err) {
     console.error("getCarFilterOptions failed", err);
-    return { makes: [], models: [] };
+    return { categories: [], makes: [], models: [] };
   }
 }
 
@@ -241,7 +244,11 @@ export type CarDetail = {
   makeName: string | null;
   modelName: string | null;
   categoryId: string | null;
-  images: { url: string; alt: string | null }[];
+  media: {
+    url: string;
+    alt: string | null;
+    mediaType: Enums<"gallery_media_type">;
+  }[];
   features: string[];
 };
 
@@ -256,7 +263,7 @@ export async function getCarBySlug(slug: string): Promise<CarDetail | null> {
          transmission, fuel_type, drivetrain, exterior_color, interior_color,
          engine, horsepower, seats, doors, description, make_id, category_id,
          car_makes ( name ), car_models ( name ),
-         car_images ( storage_path, alt_text, position, is_primary ),
+         car_images ( storage_path, external_url, alt_text, position, is_primary, media_type ),
          car_feature_map ( car_features ( name ) )`,
       )
       .eq("slug", slug)
@@ -268,16 +275,19 @@ export async function getCarBySlug(slug: string): Promise<CarDetail | null> {
       return null;
     }
 
-    const images = (data.car_images ?? [])
+    const media = (data.car_images ?? [])
       .slice()
       .sort((a, b) => {
         if (a.is_primary !== b.is_primary) return a.is_primary ? -1 : 1;
         return a.position - b.position;
       })
       .map((img) => ({
-        url: supabase.storage.from("cars").getPublicUrl(img.storage_path).data
-          .publicUrl,
+        url:
+          img.external_url ??
+          supabase.storage.from("cars").getPublicUrl(img.storage_path ?? "")
+            .data.publicUrl,
         alt: img.alt_text,
+        mediaType: img.media_type,
       }));
 
     const features = (data.car_feature_map ?? [])
@@ -307,7 +317,7 @@ export async function getCarBySlug(slug: string): Promise<CarDetail | null> {
       makeName: data.car_makes?.name ?? null,
       modelName: data.car_models?.name ?? null,
       categoryId: data.category_id,
-      images,
+      media,
       features,
     };
   } catch (err) {

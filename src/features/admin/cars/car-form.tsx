@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { CategoryManagerDialog } from "@/features/admin/cars/category-manager-dialog";
+import { getYearOptions } from "@/lib/years";
 import {
   createCarAction,
   createMakeAction,
@@ -25,6 +27,8 @@ import {
 
 import type { AdminCarDetail, CarFormOptions } from "@/services/admin-cars";
 import type { Enums } from "@/types/supabase";
+
+const YEARS = getYearOptions();
 
 const CONDITIONS: Enums<"car_condition">[] = [
   "new",
@@ -66,11 +70,13 @@ export function CarForm({
 
   const [makes, setMakes] = useState(options.makes);
   const [models, setModels] = useState(options.models);
-  const categories = options.categories;
+  const [categories, setCategories] = useState(options.categories);
+  const [categoryManagerOpen, setCategoryManagerOpen] = useState(false);
 
   const [makeId, setMakeId] = useState(car?.makeId ?? "");
   const [modelId, setModelId] = useState(car?.modelId ?? "");
   const [categoryId, setCategoryId] = useState(car?.categoryId ?? "");
+  const [year, setYear] = useState(String(car?.year ?? ""));
   const [condition, setCondition] = useState<Enums<"car_condition">>(
     car?.condition ?? "used",
   );
@@ -135,7 +141,7 @@ export function CarForm({
       makeId,
       modelId,
       categoryId,
-      year: String(form.get("year") ?? ""),
+      year,
       vin: String(form.get("vin") ?? ""),
       price: String(form.get("price") ?? ""),
       currencyCode: String(form.get("currency_code") ?? "PKR"),
@@ -258,7 +264,16 @@ export function CarForm({
           </div>
 
           <div className="space-y-2">
-            <Label>Category (optional)</Label>
+            <div className="flex items-center justify-between">
+              <Label>Category (optional)</Label>
+              <button
+                type="button"
+                onClick={() => setCategoryManagerOpen(true)}
+                className="text-primary text-xs font-medium hover:underline"
+              >
+                Manage
+              </button>
+            </div>
             <Select
               value={categoryId || "none"}
               onValueChange={(v) => setCategoryId(v === "none" ? "" : v)}
@@ -275,17 +290,33 @@ export function CarForm({
                 ))}
               </SelectContent>
             </Select>
+            <CategoryManagerDialog
+              open={categoryManagerOpen}
+              onOpenChange={setCategoryManagerOpen}
+              categories={categories}
+              onCategoriesChange={(next) => {
+                setCategories(next);
+                if (categoryId && !next.some((c) => c.id === categoryId)) {
+                  setCategoryId("");
+                }
+              }}
+            />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="year">Year</Label>
-            <Input
-              id="year"
-              name="year"
-              type="number"
-              required
-              defaultValue={car?.year}
-            />
+            <Label>Year</Label>
+            <Select value={year} onValueChange={setYear}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a year" />
+              </SelectTrigger>
+              <SelectContent>
+                {YEARS.map((y) => (
+                  <SelectItem key={y} value={String(y)}>
+                    {y}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
