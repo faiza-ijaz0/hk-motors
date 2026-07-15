@@ -25,7 +25,7 @@ export function LatestInventorySection() {
               </div>
             </div>
             <Button asChild>
-              <Link href="/inventory">View Full Inventory</Link>
+              <Link href="/cars">View All Cars</Link>
             </Button>
           </div>
         </FadeIn>

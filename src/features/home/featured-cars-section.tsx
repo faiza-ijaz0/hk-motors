@@ -27,7 +27,7 @@ export function FeaturedCarsSection() {
             description="Our team is curating a handpicked selection of standout vehicles. Check back shortly."
           >
             <Button asChild variant="outline">
-              <Link href="/inventory">Browse Full Inventory</Link>
+              <Link href="/cars">Browse All Cars</Link>
             </Button>
           </EmptyState>
         </FadeIn>

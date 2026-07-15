@@ -10,7 +10,7 @@ export function AdminContentShell({ children }: { children: React.ReactNode }) {
     <div
       className={cn(
         "flex min-h-screen flex-col transition-[padding] duration-300 ease-in-out",
-        collapsed ? "lg:pl-20" : "lg:pl-64",
+        collapsed ? "lg:pl-16" : "lg:pl-56",
       )}
     >
       {children}

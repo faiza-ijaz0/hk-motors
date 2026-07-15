@@ -36,7 +36,7 @@ export function HeroSection() {
           <FadeIn delay={0.3}>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
-                <Link href="/inventory">Browse Inventory</Link>
+                <Link href="/cars">Browse Cars</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <Link href="/contact">Book a Test Drive</Link>

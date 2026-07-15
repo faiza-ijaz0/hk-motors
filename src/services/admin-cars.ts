@@ -27,6 +27,9 @@ export type AdminCarListItem = {
   isFeatured: boolean;
   makeName: string | null;
   modelName: string | null;
+  categoryName: string | null;
+  imageUrl: string | null;
+  imageIsExternal: boolean;
   createdAt: string;
 };
 
@@ -51,7 +54,7 @@ export async function getAdminCars(filters: AdminCarFilters) {
   const from = (page - 1) * ADMIN_CARS_PAGE_SIZE;
   const to = from + ADMIN_CARS_PAGE_SIZE - 1;
   const select =
-    "id, title, slug, year, price, currency_code, status, condition, is_featured, created_at, car_makes ( name ), car_models ( name )";
+    "id, title, slug, year, price, currency_code, status, condition, is_featured, created_at, car_makes ( name ), car_models ( name ), car_categories ( name ), car_images ( storage_path, external_url, is_primary, position, media_type )";
 
   function applyFilters<
     T extends {
@@ -88,20 +91,41 @@ export async function getAdminCars(filters: AdminCarFilters) {
       return EMPTY_RESULT(page);
     }
 
-    const cars: AdminCarListItem[] = (data ?? []).map((row) => ({
-      id: row.id,
-      title: row.title,
-      slug: row.slug,
-      year: row.year,
-      price: row.price,
-      currencyCode: row.currency_code,
-      status: row.status,
-      condition: row.condition,
-      isFeatured: row.is_featured,
-      makeName: row.car_makes?.name ?? null,
-      modelName: row.car_models?.name ?? null,
-      createdAt: row.created_at,
-    }));
+    const cars: AdminCarListItem[] = (data ?? []).map((row) => {
+      const media = row.car_images ?? [];
+      const primaryImage =
+        media
+          .filter((m) => m.media_type === "image")
+          .slice()
+          .sort((a, b) => {
+            if (a.is_primary !== b.is_primary) return a.is_primary ? -1 : 1;
+            return a.position - b.position;
+          })[0] ?? null;
+      const imageUrl = primaryImage
+        ? (primaryImage.external_url ??
+          supabase.storage
+            .from("cars")
+            .getPublicUrl(primaryImage.storage_path ?? "").data.publicUrl)
+        : null;
+
+      return {
+        id: row.id,
+        title: row.title,
+        slug: row.slug,
+        year: row.year,
+        price: row.price,
+        currencyCode: row.currency_code,
+        status: row.status,
+        condition: row.condition,
+        isFeatured: row.is_featured,
+        makeName: row.car_makes?.name ?? null,
+        modelName: row.car_models?.name ?? null,
+        categoryName: row.car_categories?.name ?? null,
+        imageUrl,
+        imageIsExternal: primaryImage?.external_url != null,
+        createdAt: row.created_at,
+      };
+    });
 
     return { cars, total: count ?? 0, page, pageSize: ADMIN_CARS_PAGE_SIZE };
   } catch (err) {

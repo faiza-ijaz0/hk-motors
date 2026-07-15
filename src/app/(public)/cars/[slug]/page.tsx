@@ -53,11 +53,11 @@ export default async function CarDetailPage({
       <div className="border-border border-b">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <Link
-            href="/inventory"
+            href="/cars"
             className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
           >
             <ChevronLeft className="size-4" />
-            Back to Inventory
+            Back to Cars
           </Link>
         </div>
       </div>

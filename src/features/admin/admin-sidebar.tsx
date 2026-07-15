@@ -16,7 +16,7 @@ export function AdminSidebar() {
     <aside
       className={cn(
         "bg-sidebar border-sidebar-border fixed inset-y-0 left-0 z-30 hidden flex-col border-r transition-[width] duration-300 ease-in-out lg:flex",
-        collapsed ? "w-20" : "w-64",
+        collapsed ? "w-16" : "w-56",
       )}
     >
       <div

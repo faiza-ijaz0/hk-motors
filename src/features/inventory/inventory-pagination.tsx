@@ -23,7 +23,7 @@ export function InventoryPagination({
     if (targetPage > 1) params.set("page", String(targetPage));
     else params.delete("page");
     const query = params.toString();
-    return query ? `/inventory?${query}` : "/inventory";
+    return query ? `/cars?${query}` : "/cars";
   }
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1).filter(
@@ -32,7 +32,7 @@ export function InventoryPagination({
 
   return (
     <nav
-      aria-label="Inventory pagination"
+      aria-label="Cars pagination"
       className="mt-10 flex items-center justify-center gap-1"
     >
       <Button

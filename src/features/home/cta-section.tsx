@@ -20,7 +20,7 @@ export function CtaSection() {
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               <Button asChild size="lg">
-                <Link href="/inventory">Browse Inventory</Link>
+                <Link href="/cars">Browse Cars</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <Link href="/contact">Contact Us</Link>

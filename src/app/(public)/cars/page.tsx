@@ -18,7 +18,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `Inventory | ${siteConfig.name}`,
+  title: `Cars | ${siteConfig.name}`,
   description:
     "Browse the current HK Motors inventory of performance and luxury vehicles.",
 };
@@ -29,7 +29,7 @@ function toSingle(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-export default async function InventoryPage({
+export default async function CarsPage({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
@@ -81,7 +81,7 @@ export default async function InventoryPage({
   return (
     <>
       <PageHero
-        eyebrow="Inventory"
+        eyebrow="Cars"
         title="Find your next vehicle"
         description="Every vehicle in our inventory is inspected, certified, and ready to drive."
       />
@@ -124,7 +124,7 @@ export default async function InventoryPage({
                   title={
                     hasFilters
                       ? "No vehicles match your filters"
-                      : "Inventory coming soon"
+                      : "Cars coming soon"
                   }
                   description={
                     hasFilters

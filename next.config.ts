@@ -38,6 +38,18 @@ const nextConfig: NextConfig = {
         destination: "/super-admin/:path*",
         permanent: true,
       },
+      {
+        // The public listings page was briefly at /inventory before being
+        // renamed to /cars.
+        source: "/inventory",
+        destination: "/cars",
+        permanent: true,
+      },
+      {
+        source: "/inventory/:path*",
+        destination: "/cars/:path*",
+        permanent: true,
+      },
     ];
   },
 };

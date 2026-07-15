@@ -15,7 +15,7 @@ const CONDITION_LABEL: Record<string, string> = {
 
 export function CarCard({ car }: { car: CarListItem }) {
   return (
-    <Link href={`/inventory/${car.slug}`}>
+    <Link href={`/cars/${car.slug}`}>
       <Card variant="elevated" className="group h-full overflow-hidden py-0">
         <div className="bg-muted relative aspect-4/3 w-full">
           <CarCardMedia

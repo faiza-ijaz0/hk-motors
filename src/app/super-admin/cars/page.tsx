@@ -2,10 +2,9 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { AdminPageHeader } from "@/features/admin/admin-page-header";
 import { AdminPagination } from "@/features/admin/admin-pagination";
-import { CarsTable } from "@/features/admin/cars/cars-table";
+import { CarsGrid } from "@/features/admin/cars/cars-grid";
 import { CarsToolbar } from "@/features/admin/cars/cars-toolbar";
 import {
   ADMIN_CARS_PAGE_SIZE,
@@ -82,11 +81,7 @@ export default async function AdminCarsPage({
         <CarsToolbar options={options} />
       </div>
 
-      <Card>
-        <CardContent className={cars.length > 0 ? "px-0" : undefined}>
-          <CarsTable cars={cars} hasFilters={hasFilters} />
-        </CardContent>
-      </Card>
+      <CarsGrid cars={cars} hasFilters={hasFilters} />
 
       <AdminPagination
         basePath="/super-admin/cars"

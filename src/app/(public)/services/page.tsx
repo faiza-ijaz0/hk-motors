@@ -36,7 +36,7 @@ const services = [
     title: "Buy Car",
     description:
       "Browse our certified inventory of new, used, and premium vehicles, hand-picked for condition and value.",
-    cta: { label: "Browse Inventory", href: "/inventory" },
+    cta: { label: "Browse Cars", href: "/cars" },
   },
   {
     icon: HandCoins,
