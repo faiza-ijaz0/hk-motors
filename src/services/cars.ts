@@ -194,6 +194,49 @@ export async function getCars(filters: CarFilters) {
   }
 }
 
+export async function getFeaturedCars(limit = 12): Promise<CarListItem[]> {
+  try {
+    const supabase = createClient();
+
+    const { data, error } = await supabase
+      .from("cars")
+      .select(CAR_LIST_SELECT)
+      .eq("status", "published")
+      .eq("is_featured", true)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error("getFeaturedCars failed", error);
+      return [];
+    }
+
+    if (data && data.length > 0) {
+      return data.map((row) => mapCarListRow(row, supabase));
+    }
+
+    // No cars marked featured yet — fall back to the latest published
+    // vehicles so the homepage section isn't empty.
+    const { data: latest, error: latestError } = await supabase
+      .from("cars")
+      .select(CAR_LIST_SELECT)
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (latestError || !latest) {
+      if (latestError)
+        console.error("getFeaturedCars fallback failed", latestError);
+      return [];
+    }
+
+    return latest.map((row) => mapCarListRow(row, supabase));
+  } catch (err) {
+    console.error("getFeaturedCars: unexpected failure", err);
+    return [];
+  }
+}
+
 export type CarFilterOptions = {
   categories: { id: string; name: string }[];
   makes: { id: string; name: string }[];
