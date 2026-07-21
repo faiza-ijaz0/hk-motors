@@ -1,31 +1,58 @@
 import {
   Award,
+  BadgeCheck,
   Eye,
+  FileCheck,
+  Gem,
   Handshake,
+  MessageCircle,
+  Repeat,
   ShieldCheck,
+  Smile,
   Target,
-  Users,
 } from "lucide-react";
-import Link from "next/link";
 
 import { AnimatedCounter } from "@/components/shared/animated-counter";
-import { EmptyState } from "@/components/shared/empty-state";
 import { FadeIn } from "@/components/shared/fade-in";
-import { PageHero } from "@/components/shared/page-hero";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
-import { companyStats } from "@/constants/company-stats";
+import { aboutAchievements } from "@/constants/about-achievements";
+import { AboutHero } from "@/features/about/about-hero";
+import { FounderSection } from "@/features/about/founder-section";
+import { CtaSection } from "@/features/home/cta-section";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: `About Us | ${siteConfig.name}`,
   description:
-    "Learn about HK Motors — our story, mission, vision, achievements, and the team behind the brand.",
+    "Learn about HK Motors — our story, mission, vision, achievements, and the leadership behind the brand.",
 };
 
-const values = [
+const journey = [
+  {
+    title: "The Beginning",
+    description:
+      "HK Motors opened its doors with a small, carefully chosen inventory and one rule: never list a vehicle we wouldn't buy ourselves.",
+  },
+  {
+    title: "Building Trust",
+    description:
+      "As word spread, so did our standards — a formal multi-point inspection and certification process became non-negotiable for every vehicle on the floor.",
+  },
+  {
+    title: "Expanding the Showroom",
+    description:
+      "Growing demand let us widen our inventory into premium and performance marques, while adding financing, trade-in, and inspection services under one roof.",
+  },
+  {
+    title: "HK Motors Today",
+    description:
+      "Now a full-service dealership trusted by thousands of drivers, still personally guided by the same founder and the same standard it opened with.",
+  },
+];
+
+const whyChooseUs = [
   {
     icon: ShieldCheck,
     title: "Integrity First",
@@ -52,25 +79,60 @@ const values = [
   },
 ];
 
+const trustPillars = [
+  {
+    icon: Gem,
+    title: "Premium Inventory",
+    description:
+      "A curated floor of luxury and performance vehicles, not a lot full of whatever came in on trade.",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Verified Vehicles",
+    description:
+      "Every listing is backed by a documented, multi-point inspection — nothing reaches the floor unverified.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Professional Consultation",
+    description:
+      "Our team advises on fit and value the way we'd want to be advised, not the way that closes fastest.",
+  },
+  {
+    icon: FileCheck,
+    title: "Transparent Process",
+    description:
+      "Pricing, condition, and paperwork are laid out plainly from the first conversation to the last signature.",
+  },
+  {
+    icon: Smile,
+    title: "Customer Satisfaction",
+    description:
+      "Our satisfaction rate isn't a slogan — it's a number we track, and it's why most of our business is referrals.",
+  },
+  {
+    icon: Repeat,
+    title: "Long-Term Relationships",
+    description:
+      "Service and support don't end at delivery. We're still here for the second, third, and fourth car.",
+  },
+];
+
 export default function AboutPage() {
   return (
     <>
-      <PageHero
-        eyebrow="About Us"
-        title="Built by enthusiasts, for enthusiasts."
-        description="HK Motors started with a simple idea: buying and owning a performance vehicle should feel as good as driving one. Today we're a full-service dealership built around that same standard."
-      />
+      <AboutHero />
 
-      {/* Story */}
+      {/* Who We Are */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
             <div className="space-y-4">
               <p className="text-primary tracking-luxury text-xs font-medium uppercase">
-                Our Story
+                Who We Are
               </p>
               <h2 className="font-display text-2xl sm:text-3xl">
-                A dealership built around the drive
+                More Than a Dealership
               </h2>
               <p className="text-muted-foreground">
                 HK Motors was founded by Habibullah Khan on the belief that a
@@ -97,12 +159,42 @@ export default function AboutPage() {
         </FadeIn>
       </section>
 
-      {/* Mission & Vision */}
+      {/* Our Journey */}
       <section className="border-border bg-card border-t">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <FadeIn>
+            <p className="text-primary tracking-luxury text-xs font-medium uppercase">
+              How We Got Here
+            </p>
+            <h2 className="font-display mt-2 text-2xl sm:text-3xl">
+              Our Journey
+            </h2>
+          </FadeIn>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {journey.map((item, index) => (
+              <FadeIn key={item.title} delay={index * 0.05}>
+                <div className="border-border bg-background h-full rounded-2xl border p-6">
+                  <p className="text-primary font-display text-2xl">
+                    {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <p className="mt-3 font-medium">{item.title}</p>
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    {item.description}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Vision */}
+      <section className="border-border border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="grid gap-4 sm:grid-cols-2">
             <FadeIn>
-              <Card className="h-full">
+              <Card variant="elevated" className="h-full">
                 <CardContent className="flex flex-col gap-3">
                   <Target className="text-primary size-7" />
                   <h2 className="font-display text-xl sm:text-2xl">
@@ -117,7 +209,7 @@ export default function AboutPage() {
               </Card>
             </FadeIn>
             <FadeIn delay={0.1}>
-              <Card className="h-full">
+              <Card variant="elevated" className="h-full">
                 <CardContent className="flex flex-col gap-3">
                   <Eye className="text-primary size-7" />
                   <h2 className="font-display text-xl sm:text-2xl">
@@ -135,20 +227,20 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Values */}
-      <section className="border-border border-t">
+      {/* Why Customers Choose HK Motors */}
+      <section className="border-border bg-card border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-primary tracking-luxury text-xs font-medium uppercase">
               What We Stand For
             </p>
             <h2 className="font-display mt-2 text-2xl sm:text-3xl">
-              Our values
+              Why Customers Choose HK Motors
             </h2>
           </FadeIn>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map((value, index) => (
+            {whyChooseUs.map((value, index) => (
               <FadeIn key={value.title} delay={index * 0.05}>
                 <Card className="h-full">
                   <CardContent className="flex flex-col gap-3">
@@ -167,6 +259,36 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Commitment to Excellence */}
+      <section className="border-border border-t">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="grid gap-6 lg:grid-cols-[auto_1fr] lg:items-start lg:gap-10">
+              <div className="border-primary bg-card flex size-14 shrink-0 items-center justify-center rounded-full border-2">
+                <ShieldCheck className="text-primary size-6" />
+              </div>
+              <div>
+                <p className="text-primary tracking-luxury text-xs font-medium uppercase">
+                  Our Standards
+                </p>
+                <h2 className="font-display mt-2 text-2xl sm:text-3xl">
+                  Commitment to Excellence
+                </h2>
+                <p className="text-muted-foreground mt-4 max-w-3xl text-sm sm:text-base">
+                  Excellence at HK Motors isn&apos;t a single inspection —
+                  it&apos;s a standard applied at every stage, from the vehicles
+                  we choose to source, to the specialists who prepare them, to
+                  the way our team follows up long after the sale is signed.
+                  It&apos;s the reason customers send us their friends and
+                  family, and it&apos;s the standard we hold ourselves to
+                  whether anyone is watching or not.
+                </p>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* Achievements */}
       <section className="border-border bg-card border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -175,12 +297,12 @@ export default function AboutPage() {
               Milestones
             </p>
             <h2 className="font-display mt-2 text-2xl sm:text-3xl">
-              Our Achievements
+              HK Motors Achievements
             </h2>
           </FadeIn>
 
-          <div className="mt-8 grid grid-cols-2 gap-8 lg:grid-cols-4">
-            {companyStats.map((stat, index) => (
+          <div className="mt-8 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+            {aboutAchievements.map((stat, index) => (
               <FadeIn key={stat.label} delay={index * 0.05}>
                 <div className="text-center">
                   <p className="font-display text-primary text-3xl sm:text-4xl lg:text-5xl">
@@ -196,33 +318,42 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team */}
-      {/* Pulls from `team_members` once the Supabase data layer is wired
-          up — see docs/ARCHITECTURE.md §7. */}
+      {/* Customer Trust */}
       <section className="border-border border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-primary tracking-luxury text-xs font-medium uppercase">
-              Our People
+              Earned, Not Assumed
             </p>
             <h2 className="font-display mt-2 text-2xl sm:text-3xl">
-              Meet the Team
+              Why Clients Trust HK Motors
             </h2>
           </FadeIn>
 
-          <FadeIn delay={0.1} className="mt-8">
-            <EmptyState
-              icon={Users}
-              title="Team profiles coming soon"
-              description="We're putting together profiles for the people behind HK Motors. In the meantime, say hello to Habibullah Khan, our Founder & CEO."
-            >
-              <Button asChild variant="outline">
-                <Link href="/ceo">Meet Our CEO</Link>
-              </Button>
-            </EmptyState>
-          </FadeIn>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {trustPillars.map((pillar, index) => (
+              <FadeIn key={pillar.title} delay={index * 0.05}>
+                <Card variant="elevated" className="h-full">
+                  <CardContent className="flex flex-col gap-3">
+                    <pillar.icon className="text-primary size-6" />
+                    <div>
+                      <p className="font-medium">{pillar.title}</p>
+                      <p className="text-muted-foreground mt-1 text-sm">
+                        {pillar.description}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </FadeIn>
+            ))}
+          </div>
         </div>
       </section>
+
+      {/* Founder & CEO */}
+      <FounderSection />
+
+      <CtaSection />
     </>
   );
 }
