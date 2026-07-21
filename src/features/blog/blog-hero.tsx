@@ -16,14 +16,15 @@ export function BlogHero() {
           className="object-cover object-[center_69%]"
         />
 
-        <div aria-hidden className="absolute inset-0 bg-black/55" />
+        {/* No flat scrim — just a subtle left-side gradient behind the
+            copy — so the photo stays bright and visible. */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-black/5"
+          className="absolute inset-0 bg-gradient-to-r from-black/58 via-black/18 to-black/0"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/25"
+          className="absolute inset-0 bg-gradient-to-t from-black/32 via-transparent to-black/10"
         />
       </div>
 
