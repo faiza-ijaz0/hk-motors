@@ -4,13 +4,13 @@
  * or swap the `src` values for hosted URLs.
  */
 
-// Direct CDN file (not the pexels.com/download/... redirect page) so the
-// browser skips an extra round trip before the video can start buffering.
 export const heroVideo = {
-  src: "https://videos.pexels.com/video-files/8345152/8345152-uhd_3840_2160_25fps.mp4",
-  poster: "/hkmotors.jpeg",
+  src: "/videos/hero.mp4",
   // Shown (with a slow pan animation) whenever the video errors, is
-  // blocked by the browser, or is taking too long on a slow connection.
+  // blocked by the browser, or is taking too long on a slow connection —
+  // also used as the native <video poster> so there's no other background
+  // image involved at any point.
+  poster: "/car.jpeg",
   fallbackImage: "/car.jpeg",
 };
 

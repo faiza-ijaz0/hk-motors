@@ -2,11 +2,12 @@
 
 ## Hero background
 
-`heroVideo.src` in `src/config/media.ts` points at a hosted Pexels CDN URL —
-no local file needed. Rendered with
-`autoPlay muted loop playsInline preload="auto"`, no controls. If the URL
-ever fails to load, the hero falls back to `/hkmotors.jpeg` as the `poster`
-image.
+`hero.mp4` (this folder) is the hero background video, referenced via
+`heroVideo.src` in `src/config/media.ts`. Rendered with
+`autoPlay muted loop playsInline preload="auto"`, no controls. If it ever
+fails to load, is blocked by the browser, or is too slow to start, the hero
+falls back to `/car.jpeg` (also used as the `<video poster>`), animated with
+a slow pan.
 
 ## "Experience Performance" showcase
 
