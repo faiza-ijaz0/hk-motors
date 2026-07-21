@@ -2,11 +2,10 @@
 
 ## Hero background
 
-Drop `hero-background.mp4` here (or update `heroVideo.src` in
-`src/config/media.ts` to point at a hosted URL instead) — a looping
-background video behind the hero heading. Rendered with
-`autoPlay muted loop playsInline`, so any short, audio-free MP4 works. Until
-a real file is added, the hero falls back to `/hkmotors.jpeg` as a poster
+`heroVideo.src` in `src/config/media.ts` points at a hosted Pexels CDN URL —
+no local file needed. Rendered with
+`autoPlay muted loop playsInline preload="auto"`, no controls. If the URL
+ever fails to load, the hero falls back to `/hkmotors.jpeg` as the `poster`
 image.
 
 ## "Experience Performance" showcase

@@ -4,8 +4,10 @@
  * or swap the `src` values for hosted URLs.
  */
 
+// Direct CDN file (not the pexels.com/download/... redirect page) so the
+// browser skips an extra round trip before the video can start buffering.
 export const heroVideo = {
-  src: "/videos/hero-background.mp4",
+  src: "https://videos.pexels.com/video-files/8345152/8345152-uhd_3840_2160_25fps.mp4",
   poster: "/hkmotors.jpeg",
 };
 
