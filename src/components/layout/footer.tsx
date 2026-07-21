@@ -29,6 +29,9 @@ export function Footer() {
             <p className="text-muted-foreground max-w-xs text-sm">
               {siteConfig.description}
             </p>
+            <p className="text-muted-foreground text-xs">
+              Founded and led by Habibullah Khan, Founder &amp; CEO.
+            </p>
             <div className="flex items-center gap-3 pt-1">
               {socialLinks.map((social) => (
                 <a

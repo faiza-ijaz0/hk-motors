@@ -18,8 +18,11 @@ export function CeoPreviewSection() {
                 Leadership
               </p>
               <h2 className="font-display mt-2 text-2xl sm:text-3xl">
-                Meet Our CEO
+                Meet Habibullah Khan
               </h2>
+              <p className="text-muted-foreground mt-1 text-sm font-medium">
+                Founder &amp; CEO, HK Motors
+              </p>
               <div className="text-muted-foreground mt-4 flex items-start gap-2">
                 <Quote className="text-primary mt-1 size-4 shrink-0" />
                 <p className="italic">

@@ -73,11 +73,12 @@ export default function AboutPage() {
                 A dealership built around the drive
               </h2>
               <p className="text-muted-foreground">
-                HK Motors was founded on the belief that a car dealership should
-                feel like a garage among friends, not a sales floor. We source
-                vehicles we&apos;d want to drive ourselves, inspect them to a
-                standard we&apos;d stake our name on, and back every sale with
-                service that doesn&apos;t stop at the handshake.
+                HK Motors was founded by Habibullah Khan on the belief that a
+                car dealership should feel like a garage among friends, not a
+                sales floor. We source vehicles we&apos;d want to drive
+                ourselves, inspect them to a standard we&apos;d stake our name
+                on, and back every sale with service that doesn&apos;t stop at
+                the handshake.
               </p>
               <p className="text-muted-foreground">
                 From first inquiry to years of ownership after, our team is here
@@ -87,8 +88,9 @@ export default function AboutPage() {
             </div>
             <div className="border-border bg-card flex items-center justify-center rounded-2xl border p-10">
               <p className="font-display text-muted-foreground text-center text-xl">
-                &ldquo;Matte Black. Metallic Silver. Performance Red.
-                That&apos;s not just our palette — it&apos;s how we work.&rdquo;
+                &ldquo;Every vehicle that leaves our showroom carries our name —
+                and our reputation. That&apos;s a promise we take
+                personally.&rdquo;
               </p>
             </div>
           </div>
@@ -212,7 +214,7 @@ export default function AboutPage() {
             <EmptyState
               icon={Users}
               title="Team profiles coming soon"
-              description="We're putting together profiles for the people behind HK Motors. In the meantime, say hello to our CEO."
+              description="We're putting together profiles for the people behind HK Motors. In the meantime, say hello to Habibullah Khan, our Founder & CEO."
             >
               <Button asChild variant="outline">
                 <Link href="/ceo">Meet Our CEO</Link>

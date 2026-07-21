@@ -56,7 +56,7 @@ export function HeroSection() {
         <div className="max-w-2xl">
           <FadeIn>
             <p className="text-primary tracking-luxury text-xs font-medium uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-sm">
-              Matte Black · Metallic Silver · Performance Red
+              Trusted Dealership · Premium Vehicles · Proven Expertise
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>

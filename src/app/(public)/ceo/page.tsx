@@ -1,9 +1,13 @@
 import {
   Award,
   Briefcase,
+  Compass,
   Mail,
   Milestone,
   Quote,
+  Rocket,
+  Sparkles,
+  Users,
   UserRound,
 } from "lucide-react";
 
@@ -14,12 +18,12 @@ import { siteConfig } from "@/config/site";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `Meet Our CEO | ${siteConfig.name}`,
+  title: `Habibullah Khan — Founder & CEO | ${siteConfig.name}`,
   description:
-    "Meet the CEO of HK Motors — biography, experience, achievements, and a personal message.",
+    "Meet Habibullah Khan, Founder & CEO of HK Motors — his story, leadership vision, and personal commitment to premium automotive retail.",
 };
 
-const experience = [
+const journey = [
   {
     title: "Early Beginnings",
     description:
@@ -33,16 +37,16 @@ const experience = [
   {
     title: "Founding HK Motors",
     description:
-      "Set out to build the dealership experience that had always felt missing: transparent, meticulous, and genuinely built around the car and the customer.",
+      "Habibullah Khan set out to build the dealership experience that had always felt missing: transparent, meticulous, and genuinely built around the car and the customer.",
   },
   {
     title: "Leading Today",
     description:
-      "Continues to guide HK Motors' growth and standards personally, from the vehicles sourced to the way every customer is treated.",
+      "Habibullah continues to guide HK Motors' growth and standards personally, from the vehicles sourced to the way every customer is treated.",
   },
 ];
 
-const achievements = [
+const commitments = [
   {
     icon: Award,
     title: "Built a Trusted Name",
@@ -69,13 +73,34 @@ const achievements = [
   },
 ];
 
+const future = [
+  {
+    icon: Rocket,
+    title: "Expanding the Inventory",
+    description:
+      "Widening our reach into more premium and performance marques, without ever loosening the standard a vehicle has to meet to earn a spot on our floor.",
+  },
+  {
+    icon: Users,
+    title: "Deepening Customer Trust",
+    description:
+      "Investing further in transparent pricing, honest inspection, and after-sale service — the fundamentals that built HK Motors' reputation in the first place.",
+  },
+  {
+    icon: Sparkles,
+    title: "Raising the Standard",
+    description:
+      "Continuing to modernize the buying experience itself, so every customer feels the same care whether they're browsing online or walking the showroom floor.",
+  },
+];
+
 export default function CeoPage() {
   return (
     <>
       <PageHero
         eyebrow="Leadership"
-        title="Meet Our CEO"
-        description="The vision, standards, and personal commitment behind HK Motors."
+        title="Habibullah Khan"
+        description="Founder & CEO of HK Motors — the vision, standards, and personal commitment behind every vehicle we sell."
       />
 
       {/* CEO Image + intro */}
@@ -95,9 +120,11 @@ export default function CeoPage() {
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-2xl sm:text-3xl">
-                  Founder & CEO
+                  Habibullah Khan
                 </h1>
-                <p className="text-muted-foreground mt-1 text-sm">HK Motors</p>
+                <p className="text-muted-foreground mt-1 text-sm">
+                  Founder &amp; CEO, HK Motors
+                </p>
               </div>
 
               <div className="border-primary text-muted-foreground border-l-2 pl-4 italic">
@@ -117,14 +144,14 @@ export default function CeoPage() {
                 </p>
                 <p>
                   With a career spent around performance and luxury vehicles,
-                  our CEO founded HK Motors to bring a more personal, more
-                  transparent approach to an industry that often feels neither.
-                  That philosophy still shapes every decision the team makes —
-                  from which vehicles we source to how we treat every customer
-                  who walks through the door.
+                  Habibullah Khan founded HK Motors to bring a more personal,
+                  more transparent approach to an industry that often feels
+                  neither. That philosophy still shapes every decision the team
+                  makes — from which vehicles we source to how we treat every
+                  customer who walks through the door.
                 </p>
                 <p>
-                  Today, that vision continues to guide HK Motors as it grows: a
+                  Today, his vision continues to guide HK Motors as it grows: a
                   dealership built on trust, driven by a genuine passion for the
                   cars we sell.
                 </p>
@@ -134,27 +161,57 @@ export default function CeoPage() {
         </FadeIn>
       </section>
 
-      {/* Experience */}
+      {/* Leadership Vision */}
       <section className="border-border bg-card border-t">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="grid gap-6 lg:grid-cols-[auto_1fr] lg:items-start lg:gap-10">
+              <div className="border-primary bg-background flex size-14 shrink-0 items-center justify-center rounded-full border-2">
+                <Compass className="text-primary size-6" />
+              </div>
+              <div>
+                <p className="text-primary tracking-luxury text-xs font-medium uppercase">
+                  Leadership Vision
+                </p>
+                <h2 className="font-display mt-2 text-2xl sm:text-3xl">
+                  A dealership judged by trust, not just transactions
+                </h2>
+                <p className="text-muted-foreground mt-4 max-w-3xl text-sm sm:text-base">
+                  Habibullah Khan&apos;s standard for HK Motors is simple: every
+                  customer should be treated with the same honesty and attention
+                  to detail he&apos;d want when buying a car himself. That means
+                  no inflated pricing, no rushed inspections, and no vehicle on
+                  the floor he wouldn&apos;t personally stand behind. As HK
+                  Motors grows, that standard — not the size of the showroom —
+                  is what he measures success by.
+                </p>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* Our Journey */}
+      <section className="border-border border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-primary tracking-luxury text-xs font-medium uppercase">
               The Journey
             </p>
             <h2 className="font-display mt-2 text-2xl sm:text-3xl">
-              Experience
+              Our Journey
             </h2>
           </FadeIn>
 
           <div className="mt-10 space-y-8">
-            {experience.map((item, index) => (
+            {journey.map((item, index) => (
               <FadeIn key={item.title} delay={index * 0.05}>
                 <div className="flex gap-5">
                   <div className="flex flex-col items-center">
                     <div className="border-primary bg-background flex size-9 shrink-0 items-center justify-center rounded-full border-2">
                       <Briefcase className="text-primary size-4" />
                     </div>
-                    {index < experience.length - 1 && (
+                    {index < journey.length - 1 && (
                       <div className="bg-border mt-2 w-px flex-1" />
                     )}
                   </div>
@@ -171,27 +228,27 @@ export default function CeoPage() {
         </div>
       </section>
 
-      {/* Achievements */}
-      <section className="border-border border-t">
+      {/* Commitment to Excellence */}
+      <section className="border-border bg-card border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-primary tracking-luxury text-xs font-medium uppercase">
-              Recognition
+              Our Standards
             </p>
             <h2 className="font-display mt-2 text-2xl sm:text-3xl">
-              Achievements
+              Commitment to Excellence
             </h2>
           </FadeIn>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {achievements.map((achievement, index) => (
-              <FadeIn key={achievement.title} delay={index * 0.05}>
-                <div className="border-border bg-card flex h-full gap-4 rounded-2xl border p-6">
-                  <achievement.icon className="text-primary size-6 shrink-0" />
+            {commitments.map((commitment, index) => (
+              <FadeIn key={commitment.title} delay={index * 0.05}>
+                <div className="border-border bg-background flex h-full gap-4 rounded-2xl border p-6">
+                  <commitment.icon className="text-primary size-6 shrink-0" />
                   <div>
-                    <p className="font-medium">{achievement.title}</p>
+                    <p className="font-medium">{commitment.title}</p>
                     <p className="text-muted-foreground mt-1 text-sm">
-                      {achievement.description}
+                      {commitment.description}
                     </p>
                   </div>
                 </div>
@@ -201,14 +258,47 @@ export default function CeoPage() {
         </div>
       </section>
 
-      {/* Message */}
+      {/* Future of HK Motors */}
+      <section className="border-border border-t">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <FadeIn>
+            <p className="text-primary tracking-luxury text-xs font-medium uppercase">
+              What&apos;s Next
+            </p>
+            <h2 className="font-display mt-2 text-2xl sm:text-3xl">
+              Future of HK Motors
+            </h2>
+            <p className="text-muted-foreground mt-3 max-w-2xl text-sm sm:text-base">
+              Under Habibullah Khan&apos;s continued leadership, HK Motors is
+              building toward what&apos;s next — without losing sight of what
+              got us here.
+            </p>
+          </FadeIn>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {future.map((item, index) => (
+              <FadeIn key={item.title} delay={index * 0.05}>
+                <div className="border-border bg-card h-full rounded-2xl border p-6">
+                  <item.icon className="text-primary size-6" />
+                  <p className="mt-3 font-medium">{item.title}</p>
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    {item.description}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Founder Message */}
       <section className="border-border bg-card border-t">
         <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="border-border shadow-luxury bg-background relative rounded-2xl border p-8 sm:p-12">
               <Mail className="text-primary size-8" />
               <p className="text-primary tracking-luxury mt-4 text-xs font-medium uppercase">
-                A Message From Our CEO
+                Founder Message
               </p>
               <div className="text-muted-foreground mt-4 space-y-4 text-base leading-relaxed sm:text-lg">
                 <p>
@@ -232,8 +322,10 @@ export default function CeoPage() {
                   Welcome to HK Motors.
                 </p>
               </div>
-              <p className="font-display mt-8 text-xl">Founder & CEO</p>
-              <p className="text-muted-foreground text-sm">HK Motors</p>
+              <p className="font-display mt-8 text-xl">Habibullah Khan</p>
+              <p className="text-muted-foreground text-sm">
+                Founder &amp; CEO, HK Motors
+              </p>
             </div>
           </FadeIn>
         </div>
