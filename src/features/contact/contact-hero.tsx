@@ -13,7 +13,7 @@ export function ContactHero() {
           priority
           quality={100}
           sizes="100vw"
-          className="object-cover object-[center_38%]"
+          className="object-cover object-[center_44%]"
         />
 
         {/* Compact hero, no large title — subtle overlay only so the
@@ -33,6 +33,10 @@ export function ContactHero() {
           <h1 className="font-display text-lg text-white [text-shadow:0_4px_18px_rgb(0_0_0_/_65%)] sm:text-xl">
             We&apos;d Love to Hear From You
           </h1>
+          <p className="mt-1.5 text-sm text-white/85 [text-shadow:0_2px_10px_rgb(0_0_0_/_65%)]">
+            Have a question about a vehicle, service, or availability? Our team
+            is ready to deliver a premium HK Motors experience.
+          </p>
         </FadeIn>
       </div>
     </section>
