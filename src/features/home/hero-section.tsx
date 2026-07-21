@@ -3,71 +3,22 @@
 import { motion } from "framer-motion";
 import { CalendarClock } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 
 import { FadeIn } from "@/components/shared/fade-in";
 import { Button } from "@/components/ui/button";
 import { heroVideo } from "@/config/media";
-import { HeroFallbackImage } from "@/features/home/hero-fallback-image";
-
-// If autoplay is blocked, the file errors, or the connection is too slow to
-// start playback within this window, the video fades out and the animated
-// fallback image takes over — the fallback layer is always mounted
-// underneath, so there's never a gap between the two.
-const VIDEO_TIMEOUT_MS = 4000;
 
 export function HeroSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoOk, setVideoOk] = useState(true);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    let settled = false;
-    const markFailed = () => {
-      if (!settled) {
-        settled = true;
-        setVideoOk(false);
-      }
-    };
-    const markPlaying = () => {
-      settled = true;
-      clearTimeout(timeout);
-    };
-
-    video.addEventListener("playing", markPlaying);
-    video.addEventListener("error", markFailed);
-    video.addEventListener("stalled", markFailed);
-
-    video.play()?.catch(markFailed);
-
-    const timeout = setTimeout(markFailed, VIDEO_TIMEOUT_MS);
-
-    return () => {
-      video.removeEventListener("playing", markPlaying);
-      video.removeEventListener("error", markFailed);
-      video.removeEventListener("stalled", markFailed);
-      clearTimeout(timeout);
-    };
-  }, []);
-
   return (
     <section className="border-border relative flex min-h-[85vh] items-center overflow-hidden border-b sm:min-h-[92vh]">
-      <div className="absolute inset-0">
-        <HeroFallbackImage src={heroVideo.fallbackImage} />
-
+      <div className="absolute inset-0 bg-black">
         <video
-          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
-          poster={heroVideo.poster}
-          className={`h-full w-full object-cover transition-opacity duration-700 ${
-            videoOk ? "opacity-100" : "opacity-0"
-          }`}
+          className="h-full w-full object-cover"
         >
           <source src={heroVideo.src} type="video/mp4" />
         </video>

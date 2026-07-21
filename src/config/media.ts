@@ -4,14 +4,10 @@
  * or swap the `src` values for hosted URLs.
  */
 
+// No poster/fallback image by design — the video is the only hero
+// background asset, so it's what autoplay always prioritizes loading.
 export const heroVideo = {
   src: "/videos/hero.mp4",
-  // Shown (with a slow pan animation) whenever the video errors, is
-  // blocked by the browser, or is taking too long on a slow connection —
-  // also used as the native <video poster> so there's no other background
-  // image involved at any point.
-  poster: "/car.jpeg",
-  fallbackImage: "/car.jpeg",
 };
 
 // Direct CDN files (not the pexels.com/download/... redirect pages) so the

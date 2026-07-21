@@ -4,10 +4,9 @@
 
 `hero.mp4` (this folder) is the hero background video, referenced via
 `heroVideo.src` in `src/config/media.ts`. Rendered with
-`autoPlay muted loop playsInline preload="auto"`, no controls. If it ever
-fails to load, is blocked by the browser, or is too slow to start, the hero
-falls back to `/car.jpeg` (also used as the `<video poster>`), animated with
-a slow pan.
+`autoPlay muted loop playsInline preload="auto"`, no controls, no poster,
+and no fallback image — by design, the video is the only hero background
+asset.
 
 ## "Experience Performance" showcase
 
