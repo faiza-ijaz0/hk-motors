@@ -9,7 +9,6 @@ import {
 import Link from "next/link";
 
 import { FadeIn } from "@/components/shared/fade-in";
-import { PageHero } from "@/components/shared/page-hero";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
+import { ServicesHero } from "@/features/services/services-hero";
 
 import type { Metadata } from "next";
 
@@ -78,11 +78,7 @@ const services = [
 export default function ServicesPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Services"
-        title="Everything your car needs, under one roof."
-        description="From buying your next vehicle to registering it, HK Motors offers a full suite of services designed to be as premium as the vehicle itself."
-      />
+      <ServicesHero />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
