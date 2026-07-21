@@ -1,11 +1,11 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 
 import { FadeIn } from "@/components/shared/fade-in";
-import { PageHero } from "@/components/shared/page-hero";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { siteConfig } from "@/config/site";
 import { socialLinks } from "@/constants/social-links";
 import { ContactForm } from "@/features/contact/contact-form";
+import { ContactHero } from "@/features/contact/contact-hero";
 import { GoogleMap } from "@/features/contact/google-map";
 
 import type { Metadata } from "next";
@@ -21,17 +21,17 @@ export const metadata: Metadata = {
 const contactDetails = [
   { label: "+92 300 1234567", href: "tel:+923001234567", icon: Phone },
   { label: "info@hkmotors.com", href: "mailto:info@hkmotors.com", icon: Mail },
-  { label: "Lahore, Pakistan", href: undefined, icon: MapPin },
+  {
+    label: "H3W5+HRJ, Murree Rd, Saddar, Rawalpindi, 46000",
+    href: undefined,
+    icon: MapPin,
+  },
 ];
 
 export default function ContactPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Contact"
-        title="Get in touch"
-        description="Have a question about a vehicle or one of our services? Send us a message and our team will respond shortly."
-      />
+      <ContactHero />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1fr_360px] lg:gap-16">

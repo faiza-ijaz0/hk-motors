@@ -16,7 +16,11 @@ const contactDetails = [
     href: "https://wa.me/923001234567",
     icon: MessageCircle,
   },
-  { label: "Lahore, Pakistan", href: undefined, icon: MapPin },
+  {
+    label: "H3W5+HRJ, Murree Rd, Saddar, Rawalpindi, 46000",
+    href: undefined,
+    icon: MapPin,
+  },
 ];
 
 export function Footer() {

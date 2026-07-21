@@ -1,7 +1,6 @@
-// Placeholder location — replace with the real address once one is set
-// (matches the placeholder contact details elsewhere on this page). Uses
-// Google's no-API-key embed endpoint, so nothing else needs configuring.
-const MAP_QUERY = "Lahore, Pakistan";
+// Uses Google's no-API-key embed endpoint, so nothing else needs
+// configuring.
+const MAP_QUERY = "H3W5+HRJ, Murree Rd, Saddar, Rawalpindi, 46000";
 
 export function GoogleMap() {
   return (
