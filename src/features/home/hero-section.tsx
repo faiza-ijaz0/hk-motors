@@ -104,27 +104,26 @@ export function HeroSection() {
         <div className="max-w-2xl">
           <FadeIn>
             <p className="text-primary tracking-luxury text-xs font-medium uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-sm">
-              Pakistan&apos;s Premier Luxury &amp; Performance Dealership
+              Trusted Dealership · Premium Vehicles · Proven Expertise
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
             <h1 className="font-display mt-4 text-4xl leading-tight text-white [text-shadow:0_4px_24px_rgb(0_0_0_/_65%)] sm:text-5xl lg:text-6xl">
-              Exceptional Vehicles. Uncompromising Standards.
+              Find Your Dream Car
             </h1>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mt-5 max-w-xl text-base text-white/90 [text-shadow:0_2px_12px_rgb(0_0_0_/_70%)] sm:text-lg">
-              Step into a curated collection of premium and performance vehicles
-              — each hand-selected, rigorously inspected, and backed by a
-              dealership built on transparency, expertise, and genuine care for
-              every customer who walks through our doors.
+              Explore premium luxury and performance vehicles carefully selected
+              by HK Motors. Discover exceptional quality, expert guidance, and a
+              showroom experience built around your passion for driving.
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button asChild size="lg" className="shadow-luxury">
-                  <Link href="/cars">Explore Our Collection</Link>
+                  <Link href="/cars">Browse Cars</Link>
                 </Button>
                 <Button
                   asChild
