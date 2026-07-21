@@ -11,6 +11,7 @@ import {
   Smile,
   Target,
 } from "lucide-react";
+import Image from "next/image";
 
 import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { FadeIn } from "@/components/shared/fade-in";
@@ -148,8 +149,21 @@ export default function AboutPage() {
                 itself.
               </p>
             </div>
-            <div className="border-border bg-card flex items-center justify-center rounded-2xl border p-10">
-              <p className="font-display text-muted-foreground text-center text-xl">
+            <div className="border-border shadow-elevated relative isolate flex min-h-72 items-center justify-center overflow-hidden rounded-2xl border p-10 sm:min-h-80 lg:min-h-0">
+              <Image
+                src="/aboutus.jpeg"
+                alt=""
+                fill
+                quality={100}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="-z-10 object-cover"
+              />
+              <div aria-hidden className="absolute inset-0 -z-10 bg-black/60" />
+              <div
+                aria-hidden
+                className="absolute inset-0 -z-10 bg-gradient-to-t from-black/70 via-black/25 to-black/40"
+              />
+              <p className="font-display text-center text-xl text-white [text-shadow:0_2px_16px_rgb(0_0_0_/_75%)]">
                 &ldquo;Every vehicle that leaves our showroom carries our name —
                 and our reputation. That&apos;s a promise we take
                 personally.&rdquo;
