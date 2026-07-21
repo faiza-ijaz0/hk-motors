@@ -23,19 +23,20 @@ export function HeroSection() {
           <source src={heroVideo.src} type="video/mp4" />
         </video>
 
-        {/* Flat cinematic scrim — keeps the whole frame at ~65% dark so text
-            never has to fight bright footage, whatever the clip. */}
-        <div aria-hidden className="absolute inset-0 bg-black/65" />
+        {/* Flat cinematic scrim — keeps the whole frame at ~55% dark so text
+            never has to fight bright footage, while letting more of the
+            video read through than a heavier scrim would. */}
+        <div aria-hidden className="absolute inset-0 bg-black/55" />
 
         {/* Directional depth: darkest behind the copy on the left, lifting
             toward the right so the video still reads through. */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/45 to-black/10"
+          className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-black/5"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30"
+          className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/25"
         />
 
         {/* Subtle red accent glow — warmth, not brightness. */}
