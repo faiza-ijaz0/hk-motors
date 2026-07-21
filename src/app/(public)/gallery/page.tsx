@@ -1,23 +1,19 @@
 import { Images } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
-import { PageHero } from "@/components/shared/page-hero";
+import { FadeIn } from "@/components/shared/fade-in";
 import { siteConfig } from "@/config/site";
-import { GalleryAlbumFilter } from "@/features/gallery/gallery-album-filter";
 import { GalleryGrid } from "@/features/gallery/gallery-grid";
+import { GalleryHero } from "@/features/gallery/gallery-hero";
 import { GalleryTabs } from "@/features/gallery/gallery-tabs";
-import {
-  getGalleryImages,
-  getPublishedAlbumOptions,
-  type GalleryCategory,
-} from "@/services/gallery";
+import { getGalleryImages, type GalleryCategory } from "@/services/gallery";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: `Gallery | ${siteConfig.name}`,
   description:
-    "A look inside HK Motors — our showroom, events, deliveries, and the vehicles that pass through it.",
+    "The HK Motors showroom experience — a curated look at our showroom, events, deliveries, and the luxury vehicles that pass through our doors.",
 };
 
 const VALID_CATEGORIES: GalleryCategory[] = [
@@ -45,27 +41,25 @@ export default async function GalleryPage({
     : params.category;
   const category = isGalleryCategory(rawCategory) ? rawCategory : undefined;
 
-  const rawAlbum = Array.isArray(params.album) ? params.album[0] : params.album;
-  const albumSlug = rawAlbum || undefined;
-
-  const [images, albumOptions] = await Promise.all([
-    getGalleryImages({ category, albumSlug }),
-    getPublishedAlbumOptions(),
-  ]);
+  const images = await getGalleryImages({ category });
 
   return (
     <>
-      <PageHero
-        eyebrow="Gallery"
-        title="Inside HK Motors"
-        description="A look at our showroom, events, deliveries, and the vehicles that have passed through our doors."
-      />
+      <GalleryHero />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <GalleryTabs active={category} activeAlbum={albumSlug} />
-          <GalleryAlbumFilter albums={albumOptions} active={albumSlug} />
-        </div>
+        <FadeIn>
+          <p className="text-primary tracking-luxury text-xs font-medium uppercase">
+            Explore
+          </p>
+          <h2 className="font-display mt-2 text-2xl sm:text-3xl">
+            Browse the Collection
+          </h2>
+        </FadeIn>
+
+        <FadeIn delay={0.1} className="mt-6">
+          <GalleryTabs active={category} />
+        </FadeIn>
 
         <div className="mt-8">
           {images.length > 0 ? (
@@ -74,7 +68,7 @@ export default async function GalleryPage({
             <EmptyState
               icon={Images}
               title="No photos or videos yet in this selection"
-              description="We're curating media for this section. Check back shortly, or browse another category or album above."
+              description="We're curating media for this section. Check back shortly, or browse another category above."
             />
           )}
         </div>
