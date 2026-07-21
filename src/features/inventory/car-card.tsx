@@ -27,14 +27,14 @@ export function CarCard({ car }: { car: CarListItem }) {
             {CONDITION_LABEL[car.condition] ?? car.condition}
           </Badge>
         </div>
-        <CardContent className="space-y-1 py-4">
-          <p className="font-medium">{car.title}</p>
+        <CardContent className="space-y-1.5 py-5">
+          <p className="font-medium tracking-tight">{car.title}</p>
           <p className="text-muted-foreground text-sm">
             {[car.makeName, car.modelName].filter(Boolean).join(" ")} ·{" "}
             {car.year}
             {car.mileage != null ? ` · ${formatMileage(car.mileage)}` : ""}
           </p>
-          <p className="text-primary font-display text-lg">
+          <p className="text-primary font-display text-xl">
             {formatPrice(car.price, car.currencyCode)}
           </p>
         </CardContent>

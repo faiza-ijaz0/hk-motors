@@ -1,7 +1,7 @@
 import { CarFront } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
-import { PageHero } from "@/components/shared/page-hero";
+import { FadeIn } from "@/components/shared/fade-in";
 import { siteConfig } from "@/config/site";
 import { CarCard } from "@/features/inventory/car-card";
 import { InventoryFilters } from "@/features/inventory/inventory-filters";
@@ -79,64 +79,71 @@ export default async function CarsPage({
   };
 
   return (
-    <>
-      <PageHero
-        eyebrow="Cars"
-        title="Find your next vehicle"
-        description="Every vehicle in our inventory is inspected, certified, and ready to drive."
-      />
+    <section className="mx-auto max-w-7xl px-4 pt-10 pb-16 sm:px-6 sm:pt-14 sm:pb-20 lg:px-8">
+      <FadeIn>
+        <p className="text-primary tracking-luxury text-xs font-medium uppercase">
+          Inventory
+        </p>
+        <h1 className="font-display mt-2 text-3xl sm:text-4xl">
+          Available Vehicles
+        </h1>
+        <p className="text-muted-foreground mt-3 max-w-2xl text-base sm:text-lg">
+          Every vehicle in our collection is inspected, certified, and ready to
+          drive.
+        </p>
+      </FadeIn>
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
-          <aside className="hidden lg:block">
-            <InventoryFilters options={options} />
-          </aside>
+      <div className="mt-10 grid gap-8 lg:grid-cols-[260px_1fr]">
+        <aside className="hidden lg:block">
+          <InventoryFilters options={options} />
+        </aside>
 
-          <div>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="flex-1">
-                <InventoryToolbar />
-              </div>
-              <InventoryFiltersSheet options={options} />
+        <div>
+          <div className="border-border flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center">
+            <div className="flex-1">
+              <InventoryToolbar />
             </div>
-
-            <p className="text-muted-foreground mt-4 text-sm">
-              {total} {total === 1 ? "vehicle" : "vehicles"} found
-            </p>
-
-            {cars.length > 0 ? (
-              <>
-                <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                  {cars.map((car) => (
-                    <CarCard key={car.id} car={car} />
-                  ))}
-                </div>
-                <InventoryPagination
-                  page={page}
-                  totalPages={totalPages}
-                  searchParams={flatSearchParams}
-                />
-              </>
-            ) : (
-              <div className="mt-6">
-                <EmptyState
-                  icon={CarFront}
-                  title={
-                    hasFilters
-                      ? "No vehicles match your filters"
-                      : "Cars coming soon"
-                  }
-                  description={
-                    hasFilters
-                      ? "Try adjusting or clearing your filters to see more results."
-                      : "Our current lineup is being finalized. Check back shortly, or reach out and our team will help you find the right vehicle."
-                  }
-                />
-              </div>
-            )}
+            <InventoryFiltersSheet options={options} />
           </div>
+
+          <p className="text-muted-foreground mt-4 text-sm">
+            {total} {total === 1 ? "vehicle" : "vehicles"} found
+          </p>
+
+          {cars.length > 0 ? (
+            <>
+              <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {cars.map((car, index) => (
+                  <FadeIn key={car.id} delay={(index % 6) * 0.05}>
+                    <CarCard car={car} />
+                  </FadeIn>
+                ))}
+              </div>
+              <InventoryPagination
+                page={page}
+                totalPages={totalPages}
+                searchParams={flatSearchParams}
+              />
+            </>
+          ) : (
+            <div className="mt-6">
+              <EmptyState
+                icon={CarFront}
+                title={
+                  hasFilters
+                    ? "No vehicles match your filters"
+                    : "Cars coming soon"
+                }
+                description={
+                  hasFilters
+                    ? "Try adjusting or clearing your filters to see more results."
+                    : "Our current lineup is being finalized. Check back shortly, or reach out and our team will help you find the right vehicle."
+                }
+              />
+            </div>
+          )}
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
