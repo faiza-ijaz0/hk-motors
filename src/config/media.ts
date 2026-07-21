@@ -9,6 +9,9 @@
 export const heroVideo = {
   src: "https://videos.pexels.com/video-files/8345152/8345152-uhd_3840_2160_25fps.mp4",
   poster: "/hkmotors.jpeg",
+  // Shown (with a slow pan animation) whenever the video errors, is
+  // blocked by the browser, or is taking too long on a slow connection.
+  fallbackImage: "/car.jpeg",
 };
 
 // Direct CDN files (not the pexels.com/download/... redirect pages) so the

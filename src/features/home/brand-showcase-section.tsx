@@ -16,7 +16,7 @@ export function BrandShowcaseSection() {
           {brands.map((brand, index) => (
             <span
               key={`${brand}-${index}`}
-              className="font-display text-secondary/60 hover:text-secondary shrink-0 text-xl tracking-wide whitespace-nowrap transition-colors sm:text-2xl"
+              className="font-display text-muted-foreground hover:text-foreground shrink-0 text-xl tracking-wide whitespace-nowrap transition-colors sm:text-2xl"
             >
               {brand}
             </span>

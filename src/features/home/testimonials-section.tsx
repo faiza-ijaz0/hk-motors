@@ -1,10 +1,7 @@
-import { MessageSquareQuote } from "lucide-react";
-
-import { EmptyState } from "@/components/shared/empty-state";
 import { FadeIn } from "@/components/shared/fade-in";
+import { testimonials } from "@/config/testimonials";
+import { TestimonialsCarousel } from "@/features/home/testimonials-carousel";
 
-// Pulls from `testimonials` where status = 'approved' once the Supabase
-// data layer is wired up — see docs/ARCHITECTURE.md §10.
 export function TestimonialsSection() {
   return (
     <section className="border-border bg-card border-t">
@@ -16,14 +13,14 @@ export function TestimonialsSection() {
           <h2 className="font-display mt-2 text-2xl sm:text-3xl">
             What Our Customers Say
           </h2>
+          <p className="text-muted-foreground mt-3 max-w-2xl text-base">
+            Real experiences from drivers who found their vehicle — and a
+            dealership they trust — at HK Motors.
+          </p>
         </FadeIn>
 
-        <FadeIn delay={0.1} className="mt-8">
-          <EmptyState
-            icon={MessageSquareQuote}
-            title="Customer stories coming soon"
-            description="We're collecting stories from customers who've found their vehicle with us. Check back shortly."
-          />
+        <FadeIn delay={0.1} className="mt-10">
+          <TestimonialsCarousel testimonials={testimonials} />
         </FadeIn>
       </div>
     </section>

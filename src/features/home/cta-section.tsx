@@ -11,11 +11,11 @@ export function CtaSection() {
           <div className="border-border bg-card flex flex-col items-start gap-6 rounded-2xl border p-8 sm:flex-row sm:items-center sm:justify-between sm:p-12">
             <div>
               <h2 className="font-display text-2xl sm:text-3xl">
-                Ready to find your next car?
+                Your Next Vehicle Is Waiting
               </h2>
               <p className="text-muted-foreground mt-2 max-w-md">
-                Talk to our team or explore the current lineup — no pressure,
-                just straight answers.
+                Explore our current inventory or speak with our team directly —
+                honest guidance, no pressure, every step of the way.
               </p>
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
