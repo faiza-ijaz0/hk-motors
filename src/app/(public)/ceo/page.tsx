@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 
 import { FadeIn } from "@/components/shared/fade-in";
-import { PageHero } from "@/components/shared/page-hero";
 import { siteConfig } from "@/config/site";
 
 import type { Metadata } from "next";
@@ -97,14 +96,8 @@ const future = [
 export default function CeoPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Leadership"
-        title="Habibullah Khan"
-        description="Founder & CEO of HK Motors — the vision, standards, and personal commitment behind every vehicle we sell."
-      />
-
       {/* CEO Image + intro */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pt-10 pb-16 sm:px-6 sm:pt-14 lg:px-8">
         <FadeIn>
           <div className="grid gap-10 lg:grid-cols-[340px_1fr] lg:gap-16">
             {/* Placeholder portrait — swap for a real photo via a `next/image`

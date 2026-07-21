@@ -18,7 +18,7 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        <nav className="hidden items-center gap-5 xl:flex">
+        <nav className="hidden items-center gap-7 xl:flex">
           {mainNav.map((item) => {
             const isActive =
               item.href === "/"
