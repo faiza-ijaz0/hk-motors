@@ -1,5 +1,5 @@
 import { siteConfig } from "@/config/site";
-import { getAllPublishedBlogSlugs } from "@/services/blog";
+import { getAllBlogSlugs } from "@/services/blog";
 import { getAllPublishedCarSlugs } from "@/services/cars";
 
 import type { MetadataRoute } from "next";
@@ -16,10 +16,8 @@ const STATIC_ROUTES = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [cars, posts] = await Promise.all([
-    getAllPublishedCarSlugs(),
-    getAllPublishedBlogSlugs(),
-  ]);
+  const cars = await getAllPublishedCarSlugs();
+  const posts = getAllBlogSlugs();
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((route) => ({
     url: `${siteConfig.url}${route.path}`,

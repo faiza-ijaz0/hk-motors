@@ -1,9 +1,10 @@
 import { Newspaper } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
-import { PageHero } from "@/components/shared/page-hero";
+import { FadeIn } from "@/components/shared/fade-in";
 import { siteConfig } from "@/config/site";
 import { BlogCategoryTabs } from "@/features/blog/blog-category-tabs";
+import { BlogHero } from "@/features/blog/blog-hero";
 import { BlogPostCard } from "@/features/blog/blog-post-card";
 import { getBlogCategories, getBlogPosts } from "@/services/blog";
 
@@ -12,11 +13,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: `Blog | ${siteConfig.name}`,
   description:
-    "News, guides, and stories from HK Motors — insights on performance vehicles, ownership, and more.",
+    "HK Motors Insights & Automotive Journal — expert automotive insights, luxury vehicle reviews, buying guides, and maintenance tips.",
   openGraph: {
     title: `Blog | ${siteConfig.name}`,
     description:
-      "News, guides, and stories from HK Motors — insights on performance vehicles, ownership, and more.",
+      "HK Motors Insights & Automotive Journal — expert automotive insights, luxury vehicle reviews, buying guides, and maintenance tips.",
     url: `${siteConfig.url}/blog`,
     type: "website",
   },
@@ -32,22 +33,15 @@ export default async function BlogPage({
     ? params.category[0]
     : params.category;
 
-  const [categories, posts] = await Promise.all([
-    getBlogCategories(),
-    getBlogPosts(rawCategory),
-  ]);
-
+  const categories = getBlogCategories();
   const activeCategory = categories.some((c) => c.slug === rawCategory)
     ? rawCategory
     : undefined;
+  const posts = getBlogPosts(activeCategory);
 
   return (
     <>
-      <PageHero
-        eyebrow="Blog"
-        title="News & Insights"
-        description="Guides, stories, and updates from the HK Motors team."
-      />
+      <BlogHero />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <BlogCategoryTabs categories={categories} active={activeCategory} />
@@ -55,15 +49,17 @@ export default async function BlogPage({
         <div className="mt-8">
           {posts.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post) => (
-                <BlogPostCard key={post.id} post={post} />
+              {posts.map((post, index) => (
+                <FadeIn key={post.id} delay={(index % 6) * 0.05}>
+                  <BlogPostCard post={post} />
+                </FadeIn>
               ))}
             </div>
           ) : (
             <EmptyState
               icon={Newspaper}
-              title="No posts yet"
-              description="We're working on our first stories. Check back soon for news and guides from the HK Motors team."
+              title="No posts in this category yet"
+              description="Check back soon, or browse all articles instead."
             />
           )}
         </div>

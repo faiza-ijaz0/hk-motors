@@ -1,172 +1,98 @@
-import { createClient } from "@/lib/supabase/server";
+// Public blog runs entirely on local static data — no Supabase, no API
+// route. See `src/data/blogs.ts` for the actual content.
+import { blogCategories, blogPosts } from "@/data/blogs";
 
-export type BlogCategory = {
-  id: string;
-  name: string;
-  slug: string;
-};
+import type { BlogCategory, BlogPost } from "@/data/blogs";
+
+export type { BlogCategory };
 
 export type BlogPostListItem = {
   id: string;
-  title: string;
   slug: string;
-  excerpt: string | null;
-  coverImageUrl: string | null;
+  title: string;
+  excerpt: string;
+  image: string;
   categoryName: string | null;
   categorySlug: string | null;
-  tags: string[];
-  publishedAt: string | null;
+  author: string;
+  date: string;
+  readTime: string;
 };
 
 export type BlogPostDetail = BlogPostListItem & {
-  content: string;
-  seoTitle: string | null;
-  seoDescription: string | null;
+  fullContent: string;
 };
 
-// Public readers have no RLS access to `users`, so author name can't be
-// joined in for anonymous display — bylines are intentionally omitted.
-const LIST_SELECT = `id, title, slug, excerpt, cover_image_path, tags, published_at, created_at,
-   blog_categories ( name, slug )`;
-
-export async function getBlogCategories(): Promise<BlogCategory[]> {
-  try {
-    const supabase = createClient();
-    const { data, error } = await supabase
-      .from("blog_categories")
-      .select("id, name, slug")
-      .order("name");
-
-    if (error || !data) {
-      if (error) console.error("getBlogCategories failed", error);
-      return [];
-    }
-
-    return data;
-  } catch (err) {
-    console.error("getBlogCategories: unexpected failure", err);
-    return [];
-  }
+function categoryName(slug: string): string | null {
+  return blogCategories.find((c) => c.slug === slug)?.name ?? null;
 }
 
-export async function getBlogPosts(
-  categorySlug?: string,
-): Promise<BlogPostListItem[]> {
-  try {
-    const supabase = createClient();
-
-    let categoryId: string | undefined;
-    if (categorySlug) {
-      // Resolve slug -> id first rather than filtering on the embedded
-      // resource's column directly: PostgREST only supports `.eq()` on a
-      // joined table's column when the join is declared `!inner`, and a
-      // plain left-embed (what LIST_SELECT uses) silently ignores it.
-      const { data: category } = await supabase
-        .from("blog_categories")
-        .select("id")
-        .eq("slug", categorySlug)
-        .maybeSingle();
-      if (!category) return [];
-      categoryId = category.id;
-    }
-
-    let query = supabase
-      .from("blog_posts")
-      .select(LIST_SELECT)
-      .eq("status", "published");
-
-    if (categoryId) query = query.eq("category_id", categoryId);
-
-    const { data, error } = await query.order("published_at", {
-      ascending: false,
-      nullsFirst: false,
-    });
-
-    if (error || !data) {
-      if (error) console.error("getBlogPosts failed", error);
-      return [];
-    }
-
-    return data.map((row) => ({
-      id: row.id,
-      title: row.title,
-      slug: row.slug,
-      excerpt: row.excerpt,
-      coverImageUrl: row.cover_image_path
-        ? supabase.storage.from("blogs").getPublicUrl(row.cover_image_path).data
-            .publicUrl
-        : null,
-      categoryName: row.blog_categories?.name ?? null,
-      categorySlug: row.blog_categories?.slug ?? null,
-      tags: row.tags ?? [],
-      publishedAt: row.published_at ?? row.created_at,
-    }));
-  } catch (err) {
-    console.error("getBlogPosts: unexpected failure", err);
-    return [];
-  }
+function toListItem(post: BlogPost): BlogPostListItem {
+  return {
+    id: post.id,
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    image: post.image,
+    categoryName: categoryName(post.category),
+    categorySlug: post.category,
+    author: post.author,
+    date: post.date,
+    readTime: post.readTime,
+  };
 }
 
-export async function getBlogPostBySlug(
-  slug: string,
-): Promise<BlogPostDetail | null> {
-  try {
-    const supabase = createClient();
-
-    const { data, error } = await supabase
-      .from("blog_posts")
-      .select(
-        `id, title, slug, excerpt, content, cover_image_path, tags,
-         published_at, created_at, seo_title, seo_description,
-         blog_categories ( name, slug )`,
-      )
-      .eq("slug", slug)
-      .eq("status", "published")
-      .maybeSingle();
-
-    if (error || !data) {
-      if (error) console.error("getBlogPostBySlug failed", error);
-      return null;
-    }
-
-    return {
-      id: data.id,
-      title: data.title,
-      slug: data.slug,
-      excerpt: data.excerpt,
-      content: data.content,
-      coverImageUrl: data.cover_image_path
-        ? supabase.storage.from("blogs").getPublicUrl(data.cover_image_path)
-            .data.publicUrl
-        : null,
-      categoryName: data.blog_categories?.name ?? null,
-      categorySlug: data.blog_categories?.slug ?? null,
-      tags: data.tags ?? [],
-      publishedAt: data.published_at ?? data.created_at,
-      seoTitle: data.seo_title,
-      seoDescription: data.seo_description,
-    };
-  } catch (err) {
-    console.error("getBlogPostBySlug: unexpected failure", err);
-    return null;
-  }
+export function getBlogCategories(): BlogCategory[] {
+  return blogCategories;
 }
 
-// Lightweight — for the sitemap only, no joins/images.
-export async function getAllPublishedBlogSlugs(): Promise<
-  { slug: string; updatedAt: string }[]
-> {
-  try {
-    const supabase = createClient();
-    const { data, error } = await supabase
-      .from("blog_posts")
-      .select("slug, updated_at")
-      .eq("status", "published");
+export function getBlogPosts(categorySlug?: string): BlogPostListItem[] {
+  const posts = categorySlug
+    ? blogPosts.filter((p) => p.category === categorySlug)
+    : blogPosts;
 
-    if (error || !data) return [];
-    return data.map((row) => ({ slug: row.slug, updatedAt: row.updated_at }));
-  } catch (err) {
-    console.error("getAllPublishedBlogSlugs: unexpected failure", err);
-    return [];
-  }
+  return posts
+    .slice()
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .map(toListItem);
+}
+
+export function getBlogPostBySlug(slug: string): BlogPostDetail | null {
+  const post = blogPosts.find((p) => p.slug === slug);
+  if (!post) return null;
+
+  return { ...toListItem(post), fullContent: post.fullContent };
+}
+
+export function getRelatedPosts(
+  post: BlogPostDetail,
+  limit = 3,
+): BlogPostListItem[] {
+  return blogPosts
+    .filter((p) => p.category === post.categorySlug && p.slug !== post.slug)
+    .slice(0, limit)
+    .map(toListItem);
+}
+
+// Sorted the same way the blog index is, so "previous"/"next" match the
+// order a reader would actually encounter posts in on the listing page.
+export function getAdjacentPosts(slug: string): {
+  previous: BlogPostListItem | null;
+  next: BlogPostListItem | null;
+} {
+  const ordered = blogPosts.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+  const index = ordered.findIndex((p) => p.slug === slug);
+
+  if (index === -1) return { previous: null, next: null };
+
+  return {
+    previous: index > 0 ? toListItem(ordered[index - 1]!) : null,
+    next: index < ordered.length - 1 ? toListItem(ordered[index + 1]!) : null,
+  };
+}
+
+// For the sitemap — every post is always "published" since there's no
+// draft/status concept for static local data.
+export function getAllBlogSlugs(): { slug: string; updatedAt: string }[] {
+  return blogPosts.map((post) => ({ slug: post.slug, updatedAt: post.date }));
 }
