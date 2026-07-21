@@ -3,36 +3,13 @@ import Image from "next/image";
 
 import { FadeIn } from "@/components/shared/fade-in";
 import { Card } from "@/components/ui/card";
-import { getAutoplayEmbedUrl } from "@/lib/video";
+import { GalleryVideo } from "@/features/gallery/gallery-video";
 
 import type { GalleryImage } from "@/services/gallery";
 
 function GalleryMedia({ image }: { image: GalleryImage }) {
   if (image.mediaType === "video") {
-    const embedUrl = getAutoplayEmbedUrl(image.url);
-    if (embedUrl) {
-      return (
-        <iframe
-          src={embedUrl}
-          title={image.caption ?? "HK Motors gallery video"}
-          allow="autoplay; encrypted-media; picture-in-picture"
-          className="pointer-events-none absolute inset-0 size-full border-0"
-        />
-      );
-    }
-    return (
-      // Direct video file (uploaded or a raw .mp4/.webm URL) — no
-      // recognized YouTube/Vimeo watch-page pattern to embed instead.
-      <video
-        src={image.url}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none absolute inset-0 size-full object-cover"
-      />
-    );
+    return <GalleryVideo url={image.url} caption={image.caption} />;
   }
 
   return (

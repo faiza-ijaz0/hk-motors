@@ -1,10 +1,8 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { CalendarClock } from "lucide-react";
 import Link from "next/link";
 
 import { FadeIn } from "@/components/shared/fade-in";
+import { HeroGlow } from "@/components/shared/hero-glow";
 import { Button } from "@/components/ui/button";
 import { heroVideo } from "@/config/media";
 
@@ -35,17 +33,7 @@ export function HeroSection() {
           className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10"
         />
 
-        {/* Subtle red accent glow — warmth, not brightness. */}
-        <motion.div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 15% 75%, color-mix(in oklch, var(--brand-primary), transparent 65%), transparent 55%)",
-          }}
-          animate={{ opacity: [0.5, 0.9, 0.5] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
+        <HeroGlow />
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-8">

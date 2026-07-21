@@ -1,97 +1,28 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CarCard } from "@/features/inventory/car-card";
+import { useInfiniteCarousel } from "@/hooks/use-infinite-carousel";
 
 import type { CarListItem } from "@/services/cars";
 
 const AUTOPLAY_MS = 5000;
-const TRANSITION_MS = 500;
-
-function useVisibleCount() {
-  const [count, setCount] = useState(4);
-
-  useEffect(() => {
-    function update() {
-      const width = window.innerWidth;
-      setCount(width < 640 ? 1 : width < 1024 ? 2 : 4);
-    }
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  return count;
-}
 
 export function FeaturedCarsCarousel({ cars }: { cars: CarListItem[] }) {
-  const visibleCount = useVisibleCount();
-  const total = cars.length;
-  const canLoop = total > visibleCount;
+  const {
+    visibleCount,
+    canLoop,
+    extended,
+    index,
+    animate,
+    next,
+    prev,
+    setPaused,
+    transitionMs,
+  } = useInfiniteCarousel(cars, AUTOPLAY_MS);
 
-  const extended = canLoop
-    ? [
-        ...cars.slice(total - visibleCount),
-        ...cars,
-        ...cars.slice(0, visibleCount),
-      ]
-    : cars;
-
-  const [index, setIndex] = useState(visibleCount);
-  const [animate, setAnimate] = useState(true);
-  const [paused, setPaused] = useState(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Realign the window start whenever the responsive card count (and so the
-  // clone offset) changes, without animating the jump.
-  useEffect(() => {
-    setAnimate(false);
-    setIndex(visibleCount);
-    const raf = requestAnimationFrame(() => setAnimate(true));
-    return () => cancelAnimationFrame(raf);
-  }, [visibleCount]);
-
-  const next = useCallback(() => setIndex((i) => i + 1), []);
-  const prev = useCallback(() => setIndex((i) => i - 1), []);
-
-  useEffect(() => {
-    if (!canLoop || paused) return;
-    intervalRef.current = setInterval(next, AUTOPLAY_MS);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [canLoop, paused, next]);
-
-  // Seamless infinite loop: once the transition into a cloned region ends,
-  // silently snap back into the equivalent real-card position.
-  useEffect(() => {
-    if (!canLoop) return;
-    if (index === visibleCount + total) {
-      const timer = setTimeout(() => {
-        setAnimate(false);
-        setIndex(visibleCount);
-      }, TRANSITION_MS);
-      return () => clearTimeout(timer);
-    }
-    if (index === visibleCount - 1) {
-      const timer = setTimeout(() => {
-        setAnimate(false);
-        setIndex(visibleCount + total - 1);
-      }, TRANSITION_MS);
-      return () => clearTimeout(timer);
-    }
-  }, [index, total, visibleCount, canLoop]);
-
-  useEffect(() => {
-    if (!animate) {
-      const raf = requestAnimationFrame(() => setAnimate(true));
-      return () => cancelAnimationFrame(raf);
-    }
-  }, [animate]);
-
-  if (total === 0) return null;
+  if (cars.length === 0) return null;
 
   if (!canLoop) {
     return (
@@ -116,7 +47,7 @@ export function FeaturedCarsCarousel({ cars }: { cars: CarListItem[] }) {
           className="flex"
           style={{
             transform: `translateX(-${index * itemWidth}%)`,
-            transition: animate ? `transform ${TRANSITION_MS}ms ease` : "none",
+            transition: animate ? `transform ${transitionMs}ms ease` : "none",
           }}
         >
           {extended.map((car, i) => (

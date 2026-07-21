@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { createClient } from "@/lib/supabase/server";
 
 import type { Enums } from "@/types/supabase";
@@ -295,7 +297,12 @@ export type CarDetail = {
   features: string[];
 };
 
-export async function getCarBySlug(slug: string): Promise<CarDetail | null> {
+// Wrapped in React's cache() so generateMetadata and the page body — both
+// of which call this for the same slug within one request — share a
+// single Supabase round trip instead of firing it twice.
+export const getCarBySlug = cache(async function getCarBySlug(
+  slug: string,
+): Promise<CarDetail | null> {
   try {
     const supabase = createClient();
 
@@ -367,7 +374,7 @@ export async function getCarBySlug(slug: string): Promise<CarDetail | null> {
     console.error("getCarBySlug: unexpected failure", err);
     return null;
   }
-}
+});
 
 export async function getSimilarCars(
   car: Pick<CarDetail, "id" | "makeId" | "categoryId">,

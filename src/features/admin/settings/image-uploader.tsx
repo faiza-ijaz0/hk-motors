@@ -52,7 +52,13 @@ export function ImageUploader({
     <div className="flex items-center gap-4">
       <div className="border-border bg-muted relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
         {imageUrl ? (
-          <Image src={imageUrl} alt={label} fill className="object-contain" />
+          <Image
+            src={imageUrl}
+            alt={label}
+            fill
+            sizes="80px"
+            className="object-contain"
+          />
         ) : (
           <ImageIcon className="text-muted-foreground size-6" />
         )}

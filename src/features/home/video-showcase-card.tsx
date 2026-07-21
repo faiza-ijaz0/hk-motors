@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useInViewport } from "@/hooks/use-in-viewport";
 
 export function VideoShowcaseCard({
   src,
@@ -9,32 +9,13 @@ export function VideoShowcaseCard({
   src: string;
   label: string;
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
   // Only start fetching/playing once the card is nearly on screen — keeps
   // four ~30-50MB clips from competing with the initial page load.
-  useEffect(() => {
-    const node = containerRef.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "200px", threshold: 0.1 },
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, isVisible } = useInViewport<HTMLDivElement>();
 
   return (
     <div
-      ref={containerRef}
+      ref={ref}
       className="border-border shadow-elevated hover:shadow-luxury hover:ring-primary/30 group relative aspect-9/16 overflow-hidden rounded-2xl border bg-gradient-to-br from-[#1a1a1a] via-[#0d0d0d] to-black ring-1 ring-transparent transition-shadow duration-300 sm:aspect-3/4"
     >
       {isVisible && (

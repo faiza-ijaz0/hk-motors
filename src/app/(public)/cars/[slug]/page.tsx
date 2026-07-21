@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
+import { siteConfig } from "@/config/site";
 import { CarFeatures } from "@/features/inventory/car-features";
 import { CarGallery } from "@/features/inventory/car-gallery";
 import { CarSpecifications } from "@/features/inventory/car-specifications";
@@ -30,11 +31,30 @@ export async function generateMetadata({
 
   if (!car) return { title: "Vehicle Not Found" };
 
+  const title = `${car.title} | HK Motors`;
+  const description =
+    car.description ??
+    `${car.year} ${car.makeName ?? ""} ${car.modelName ?? ""} — available now at HK Motors.`;
+  const url = `${siteConfig.url}/cars/${car.slug}`;
+  const primaryImage = car.media.find((m) => m.mediaType === "image")?.url;
+
   return {
-    title: `${car.title} | HK Motors`,
-    description:
-      car.description ??
-      `${car.year} ${car.makeName ?? ""} ${car.modelName ?? ""} — available now at HK Motors.`,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "website",
+      images: primaryImage ? [{ url: primaryImage }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: primaryImage ? [primaryImage] : undefined,
+    },
   };
 }
 

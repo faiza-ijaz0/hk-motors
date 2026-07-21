@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { createAdminClient } from "@/lib/supabase/admin";
 
 import type { Enums } from "@/types/supabase";
@@ -151,7 +153,11 @@ export type AdminAlbumImage = {
   createdAt: string;
 };
 
-export async function getAdminAlbumById(id: string): Promise<{
+// Wrapped in React's cache() — generateMetadata and the page body both
+// call this for the same id within one request.
+export const getAdminAlbumById = cache(async function getAdminAlbumById(
+  id: string,
+): Promise<{
   album: AdminAlbumDetail;
   images: AdminAlbumImage[];
 } | null> {
@@ -204,4 +210,4 @@ export async function getAdminAlbumById(id: string): Promise<{
     console.error("getAdminAlbumById: unexpected failure", err);
     return null;
   }
-}
+});
