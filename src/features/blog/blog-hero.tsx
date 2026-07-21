@@ -13,7 +13,7 @@ export function BlogHero() {
           priority
           quality={100}
           sizes="100vw"
-          className="object-cover"
+          className="object-cover object-[center_69%]"
         />
 
         <div aria-hidden className="absolute inset-0 bg-black/55" />
