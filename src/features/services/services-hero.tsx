@@ -16,14 +16,14 @@ export function ServicesHero() {
           className="object-cover object-[center_62%]"
         />
 
-        <div aria-hidden className="absolute inset-0 bg-black/55" />
+        <div aria-hidden className="absolute inset-0 bg-black/32" />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-black/5"
+          className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-black/0"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/25"
+          className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/12"
         />
       </div>
 
