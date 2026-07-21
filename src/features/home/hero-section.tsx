@@ -24,11 +24,11 @@ export function HeroSection() {
         </video>
 
         {/* Subtle gradient overlay only — no flat scrim — so the video stays
-            bright and visible; darkest behind the copy on the left, just
-            enough at the bottom to ground the buttons. */}
+            bright and visible; a touch darker behind the copy on the left
+            for contrast, center/right left essentially untouched. */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/15 to-black/0"
+          className="absolute inset-0 bg-gradient-to-r from-black/62 via-black/15 to-black/0"
         />
         <div
           aria-hidden
@@ -51,7 +51,7 @@ export function HeroSection() {
       <div className="relative mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           <FadeIn>
-            <p className="text-primary tracking-luxury text-xs font-medium uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-sm">
+            <p className="text-primary text-xs font-semibold tracking-[0.22em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] sm:text-sm">
               Trusted Dealership · Premium Vehicles · Proven Expertise
             </p>
           </FadeIn>
