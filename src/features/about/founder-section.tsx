@@ -1,8 +1,6 @@
 import { Compass, Mail, Rocket, ShieldCheck, UserRound } from "lucide-react";
-import Link from "next/link";
 
 import { FadeIn } from "@/components/shared/fade-in";
-import { Button } from "@/components/ui/button";
 
 const highlights = [
   {
@@ -45,9 +43,6 @@ export function FounderSection() {
               <p className="text-muted-foreground text-sm">
                 Founder &amp; CEO, HK Motors
               </p>
-              <Button asChild variant="outline" className="mt-6">
-                <Link href="/ceo">Read the Full Story</Link>
-              </Button>
             </div>
 
             <div>
