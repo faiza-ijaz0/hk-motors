@@ -79,21 +79,14 @@ export default async function CarsPage({
   };
 
   return (
-    <section className="mx-auto max-w-7xl px-4 pt-10 pb-16 sm:px-6 sm:pt-14 sm:pb-20 lg:px-8">
+    <section className="mx-auto max-w-7xl px-4 pt-8 pb-16 sm:px-6 sm:pt-10 sm:pb-20 lg:px-8">
       <FadeIn>
-        <p className="text-primary tracking-luxury text-xs font-medium uppercase">
-          Inventory
-        </p>
-        <h1 className="font-display mt-2 text-3xl sm:text-4xl">
-          Available Vehicles
+        <h1 className="font-display text-center text-3xl sm:text-4xl">
+          Discover Your Perfect Vehicle at HK Motors
         </h1>
-        <p className="text-muted-foreground mt-3 max-w-2xl text-base sm:text-lg">
-          Every vehicle in our collection is inspected, certified, and ready to
-          drive.
-        </p>
       </FadeIn>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[260px_1fr]">
+      <div className="mt-6 grid gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="hidden lg:block">
           <InventoryFilters options={options} />
         </aside>
