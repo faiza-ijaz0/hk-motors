@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ContactLeadsDateRangeFilter } from "@/features/admin/contact-leads/contact-leads-date-range-filter";
 import { useAdminTableParams } from "@/features/admin/use-admin-table-params";
 
 const STATUSES = [
@@ -18,16 +19,9 @@ const STATUSES = [
   { value: "read", label: "Read" },
 ];
 
-const DATE_RANGES = [
-  { value: "today", label: "Today" },
-  { value: "week", label: "This Week" },
-  { value: "month", label: "This Month" },
-];
-
 export function ContactLeadsToolbar() {
   const { searchParams, setParams } = useAdminTableParams();
   const status = searchParams.get("status") ?? "";
-  const date = searchParams.get("date") ?? "";
 
   const [q, setQ] = useState(searchParams.get("q") ?? "");
 
@@ -75,24 +69,7 @@ export function ContactLeadsToolbar() {
         </SelectContent>
       </Select>
 
-      <Select
-        value={date || "all"}
-        onValueChange={(value) =>
-          setParams({ date: value === "all" ? null : value })
-        }
-      >
-        <SelectTrigger className="w-full sm:w-44">
-          <SelectValue placeholder="All Dates" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Dates</SelectItem>
-          {DATE_RANGES.map((d) => (
-            <SelectItem key={d.value} value={d.value}>
-              {d.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <ContactLeadsDateRangeFilter />
     </div>
   );
 }

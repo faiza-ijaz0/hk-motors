@@ -21,6 +21,14 @@ import { setContactMessageReadStatusAction } from "@/services/admin-contact-mess
 
 import type { AdminContactMessageListItem } from "@/services/admin-contact-messages";
 
+/** Keeps the Subject/Message columns compact and prevents them from forcing
+ * horizontal table overflow — full text stays available in View Details. */
+function truncateWords(text: string, wordCount: number) {
+  const words = text.trim().split(/\s+/);
+  if (words.length <= wordCount) return text;
+  return `${words.slice(0, wordCount).join(" ")}...`;
+}
+
 export function ContactLeadsTable({
   messages,
   hasFilters,
@@ -67,17 +75,17 @@ export function ContactLeadsTable({
 
   return (
     <>
-      <Table>
+      <Table className="table-fixed">
         <TableHeader>
           <TableRow>
-            <TableHead className="pl-6">Full Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Subject</TableHead>
-            <TableHead>Message Preview</TableHead>
-            <TableHead>Submitted</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="pr-6 text-right">Actions</TableHead>
+            <TableHead className="w-[14%] pl-6">Full Name</TableHead>
+            <TableHead className="w-[18%]">Email</TableHead>
+            <TableHead className="w-[11%]">Phone</TableHead>
+            <TableHead className="w-[13%]">Subject</TableHead>
+            <TableHead className="w-[17%]">Message Preview</TableHead>
+            <TableHead className="w-[10%]">Submitted</TableHead>
+            <TableHead className="w-[8%]">Status</TableHead>
+            <TableHead className="w-[9%] pr-6 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -87,25 +95,34 @@ export function ContactLeadsTable({
               className={!message.isRead ? "bg-primary/[0.03]" : undefined}
             >
               <TableCell className="pl-6 font-medium">
-                {message.fullName}
+                <span className="block truncate">{message.fullName}</span>
               </TableCell>
               <TableCell className="text-muted-foreground">
-                {message.email}
+                <span className="block truncate">{message.email}</span>
               </TableCell>
               <TableCell className="text-muted-foreground">
-                {message.phone ?? "—"}
+                <span className="block truncate">{message.phone ?? "—"}</span>
               </TableCell>
-              <TableCell className="max-w-[160px]">
-                <span className="block truncate">{message.subject ?? "—"}</span>
+              <TableCell title={message.subject ?? undefined}>
+                <span className="block truncate">
+                  {message.subject ? truncateWords(message.subject, 2) : "—"}
+                </span>
               </TableCell>
-              <TableCell className="text-muted-foreground max-w-[240px]">
-                <span className="block truncate">{message.message}</span>
+              <TableCell
+                className="text-muted-foreground"
+                title={message.message}
+              >
+                <span className="block truncate">
+                  {truncateWords(message.message, 3)}
+                </span>
               </TableCell>
               <TableCell
                 className="text-muted-foreground"
                 title={formatDate(message.createdAt)}
               >
-                {formatRelativeTime(message.createdAt)}
+                <span className="block truncate">
+                  {formatRelativeTime(message.createdAt)}
+                </span>
               </TableCell>
               <TableCell>
                 <Badge variant={message.isRead ? "outline" : "default"}>

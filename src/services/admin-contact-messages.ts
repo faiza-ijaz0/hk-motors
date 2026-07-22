@@ -1,11 +1,15 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export const ADMIN_CONTACT_MESSAGES_PAGE_SIZE = 10;
+export const ADMIN_CONTACT_MESSAGES_PAGE_SIZE = 15;
 
 export type AdminContactMessageFilters = {
   q?: string;
   status?: string;
-  date?: string;
+  /** Inclusive range filter, each a "YYYY-MM-DD" date-only string from the
+   * date-range picker — distinct from the calendar-boundary shortcuts
+   * (today/month) used only for the stat cards below. */
+  dateFrom?: string;
+  dateTo?: string;
   page?: string;
 };
 
@@ -30,13 +34,12 @@ export type ContactMessageStats = {
 const SELECT_COLUMNS =
   "id, full_name, email, phone, subject, message, is_read, created_at";
 
-/** Start-of-range ISO boundary for the "Today / This Week / This Month"
- * filters and stat cards — computed against the server's local clock, which
- * is acceptable here since this is an internal admin view, not a
- * timezone-sensitive customer-facing feature. */
-function rangeStart(range?: string): string | null {
+/** Start-of-range ISO boundary for the "Today / This Month" stat cards —
+ * computed against the server's local clock, which is acceptable here since
+ * this is an internal admin view, not a timezone-sensitive customer-facing
+ * feature. */
+function rangeStart(range: "today" | "month"): string {
   const now = new Date();
-
   if (range === "today") {
     return new Date(
       now.getFullYear(),
@@ -44,17 +47,7 @@ function rangeStart(range?: string): string | null {
       now.getDate(),
     ).toISOString();
   }
-  if (range === "week") {
-    return new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() - 6,
-    ).toISOString();
-  }
-  if (range === "month") {
-    return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  }
-  return null;
+  return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 }
 
 function toListItem(row: {
@@ -107,6 +100,7 @@ export async function getAdminContactMessages(
       or: (filters: string) => T;
       eq: (col: string, val: boolean) => T;
       gte: (col: string, val: string) => T;
+      lte: (col: string, val: string) => T;
     },
   >(q: T): T {
     let query = q;
@@ -119,8 +113,18 @@ export async function getAdminContactMessages(
     if (filters.status === "read") query = query.eq("is_read", true);
     if (filters.status === "unread") query = query.eq("is_read", false);
 
-    const start = rangeStart(filters.date);
-    if (start) query = query.gte("created_at", start);
+    if (filters.dateFrom) {
+      query = query.gte(
+        "created_at",
+        new Date(`${filters.dateFrom}T00:00:00`).toISOString(),
+      );
+    }
+    if (filters.dateTo) {
+      query = query.lte(
+        "created_at",
+        new Date(`${filters.dateTo}T23:59:59.999`).toISOString(),
+      );
+    }
 
     return query;
   }
@@ -164,8 +168,8 @@ export async function getAdminContactMessages(
 export async function getContactMessageStats(): Promise<ContactMessageStats> {
   try {
     const supabase = createAdminClient();
-    const todayStart = rangeStart("today")!;
-    const monthStart = rangeStart("month")!;
+    const todayStart = rangeStart("today");
+    const monthStart = rangeStart("month");
 
     const [total, unread, today, thisMonth] = await Promise.all([
       supabase

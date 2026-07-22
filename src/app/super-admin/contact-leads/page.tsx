@@ -34,7 +34,8 @@ export default async function AdminContactLeadsPage({
   const filters = {
     q: toSingle(params.q),
     status: toSingle(params.status),
-    date: toSingle(params.date),
+    dateFrom: toSingle(params.dateFrom),
+    dateTo: toSingle(params.dateTo),
     page: toSingle(params.page),
   };
 
@@ -47,12 +48,15 @@ export default async function AdminContactLeadsPage({
     1,
     Math.ceil(total / ADMIN_CONTACT_MESSAGES_PAGE_SIZE),
   );
-  const hasFilters = Boolean(filters.q || filters.status || filters.date);
+  const hasFilters = Boolean(
+    filters.q || filters.status || filters.dateFrom || filters.dateTo,
+  );
 
   const flatSearchParams: Record<string, string | undefined> = {
     q: filters.q,
     status: filters.status,
-    date: filters.date,
+    dateFrom: filters.dateFrom,
+    dateTo: filters.dateTo,
   };
 
   return (
@@ -96,6 +100,13 @@ export default async function AdminContactLeadsPage({
           <ContactLeadsTable messages={messages} hasFilters={hasFilters} />
         </CardContent>
       </Card>
+
+      {total > 0 && (
+        <p className="text-muted-foreground mt-4 text-center text-sm">
+          Page {page} of {totalPages} · {total} {total === 1 ? "lead" : "leads"}{" "}
+          total
+        </p>
+      )}
 
       <AdminPagination
         basePath="/super-admin/contact-leads"
