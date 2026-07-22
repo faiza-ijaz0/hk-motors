@@ -14,6 +14,28 @@ export function formatMileage(mileage: number) {
   return `${mileage.toLocaleString()} km`;
 }
 
+/** Employee/payroll figures are stored without a currency code (single
+ * company payroll, not per-record like car listings) — PKR fits the
+ * CNIC-based employee identity fields already in the schema. */
+export function formatSalary(amount: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "PKR",
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+/** Formats a Postgres `time` string ("09:00:00" / "09:00") as "9:00 AM". */
+export function formatTime(time: string) {
+  const [hours, minutes] = time.split(":").map(Number);
+  const date = new Date();
+  date.setHours(hours ?? 0, minutes ?? 0, 0, 0);
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
 export function formatDate(date: string) {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",

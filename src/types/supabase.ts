@@ -581,6 +581,113 @@ export type Database = {
           },
         ];
       };
+      employee_salaries: {
+        Row: {
+          created_at: string;
+          employee_id: string;
+          id: string;
+          notes: string | null;
+          payment_date: string | null;
+          payment_status: Database["public"]["Enums"]["salary_payment_status"];
+          salary_amount: number;
+          salary_month: number;
+          salary_year: number;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          employee_id: string;
+          id?: string;
+          notes?: string | null;
+          payment_date?: string | null;
+          payment_status?: Database["public"]["Enums"]["salary_payment_status"];
+          salary_amount: number;
+          salary_month: number;
+          salary_year: number;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          employee_id?: string;
+          id?: string;
+          notes?: string | null;
+          payment_date?: string | null;
+          payment_status?: Database["public"]["Enums"]["salary_payment_status"];
+          salary_amount?: number;
+          salary_month?: number;
+          salary_year?: number;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "employee_salaries_employee_id_fkey";
+            columns: ["employee_id"];
+            isOneToOne: false;
+            referencedRelation: "employees";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      employees: {
+        Row: {
+          address: string | null;
+          cnic: string | null;
+          created_at: string;
+          department: string;
+          designation: string;
+          email: string;
+          employee_code: string;
+          full_name: string;
+          id: string;
+          joining_date: string;
+          notes: string | null;
+          phone: string;
+          salary: number;
+          status: Database["public"]["Enums"]["employee_status"];
+          updated_at: string;
+          work_end_time: string;
+          work_start_time: string;
+        };
+        Insert: {
+          address?: string | null;
+          cnic?: string | null;
+          created_at?: string;
+          department: string;
+          designation: string;
+          email: string;
+          employee_code?: string;
+          full_name: string;
+          id?: string;
+          joining_date: string;
+          notes?: string | null;
+          phone: string;
+          salary: number;
+          status?: Database["public"]["Enums"]["employee_status"];
+          updated_at?: string;
+          work_end_time?: string;
+          work_start_time?: string;
+        };
+        Update: {
+          address?: string | null;
+          cnic?: string | null;
+          created_at?: string;
+          department?: string;
+          designation?: string;
+          email?: string;
+          employee_code?: string;
+          full_name?: string;
+          id?: string;
+          joining_date?: string;
+          notes?: string | null;
+          phone?: string;
+          salary?: number;
+          status?: Database["public"]["Enums"]["employee_status"];
+          updated_at?: string;
+          work_end_time?: string;
+          work_start_time?: string;
+        };
+        Relationships: [];
+      };
       gallery_albums: {
         Row: {
           cover_image_path: string | null;
@@ -1135,6 +1242,7 @@ export type Database = {
         | "sold"
         | "archived";
       drivetrain_type: "fwd" | "rwd" | "awd" | "4wd";
+      employee_status: "active" | "inactive";
       fuel_type: "petrol" | "diesel" | "hybrid" | "electric" | "lpg";
       gallery_category: "cars" | "showroom" | "deliveries" | "events";
       gallery_media_type: "image" | "video";
@@ -1156,6 +1264,7 @@ export type Database = {
         | "trade_in"
         | "financing"
         | "general";
+      salary_payment_status: "paid" | "unpaid";
       testimonial_status: "pending" | "approved" | "rejected";
       transmission_type: "automatic" | "manual" | "cvt" | "dual_clutch";
       user_role: "super_admin" | "admin" | "employee";
@@ -1306,6 +1415,7 @@ export const Constants = {
         "archived",
       ],
       drivetrain_type: ["fwd", "rwd", "awd", "4wd"],
+      employee_status: ["active", "inactive"],
       fuel_type: ["petrol", "diesel", "hybrid", "electric", "lpg"],
       gallery_category: ["cars", "showroom", "deliveries", "events"],
       gallery_media_type: ["image", "video"],
@@ -1335,6 +1445,7 @@ export const Constants = {
         "financing",
         "general",
       ],
+      salary_payment_status: ["paid", "unpaid"],
       testimonial_status: ["pending", "approved", "rejected"],
       transmission_type: ["automatic", "manual", "cvt", "dual_clutch"],
       user_role: ["super_admin", "admin", "employee"],
