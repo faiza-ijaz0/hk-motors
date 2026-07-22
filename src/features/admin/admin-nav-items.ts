@@ -4,6 +4,7 @@ import {
   Images,
   Inbox,
   LayoutDashboard,
+  MessageSquare,
   Settings,
   Users,
 } from "lucide-react";
@@ -22,6 +23,11 @@ export const adminNavItems: AdminNavItem[] = [
   { label: "Cars", href: "/super-admin/cars", icon: CarFront },
   { label: "Gallery", href: "/super-admin/gallery", icon: Images },
   { label: "Leads", href: "/super-admin/leads", icon: Inbox },
+  {
+    label: "Contact Leads",
+    href: "/super-admin/contact-leads",
+    icon: MessageSquare,
+  },
   { label: "Analytics", href: "/super-admin/analytics", icon: BarChart3 },
   { label: "Settings", href: "/super-admin/settings", icon: Settings },
 ];
