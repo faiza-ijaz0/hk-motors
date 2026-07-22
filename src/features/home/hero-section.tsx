@@ -5,6 +5,7 @@ import { FadeIn } from "@/components/shared/fade-in";
 import { HeroGlow } from "@/components/shared/hero-glow";
 import { Button } from "@/components/ui/button";
 import { heroVideo } from "@/config/media";
+import { HeroCarSearch } from "@/features/home/hero-car-search";
 
 export function HeroSection() {
   return (
@@ -22,22 +23,23 @@ export function HeroSection() {
         </video>
 
         {/* Subtle gradient overlay only — no flat scrim — so the video stays
-            bright and visible; a touch darker behind the copy on the left
-            for contrast, center/right left essentially untouched. */}
+            bright and visible; an even vignette keeps the now-centered copy
+            legible no matter where it sits over the frame. */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-black/62 via-black/15 to-black/0"
+          className="absolute inset-0 bg-gradient-to-t from-black/68 via-black/30 to-black/15"
         />
+        <div aria-hidden className="absolute inset-0 bg-black/25" />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.45)_100%)]"
         />
 
         <HeroGlow />
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8">
+        <div className="flex max-w-2xl flex-col items-center">
           <FadeIn>
             <p className="text-primary text-xs font-semibold tracking-[0.22em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] sm:text-sm">
               Trusted Dealership · Premium Vehicles · Proven Expertise
@@ -56,28 +58,37 @@ export function HeroSection() {
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="shadow-luxury">
-                  <Link href="/cars">Browse Cars</Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="border-white/40 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
-                >
-                  <Link href="/contact">Contact Us</Link>
-                </Button>
-              </div>
-              <Link
-                href="/contact"
-                className="group hover:text-primary inline-flex items-center gap-2 text-sm font-medium text-white/90 underline-offset-4 transition-colors hover:underline"
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+              <Button
+                asChild
+                size="lg"
+                className="shadow-luxury h-12 rounded-lg px-8 text-sm font-semibold tracking-[0.08em] uppercase transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_-10px_rgba(192,0,0,0.6)]"
               >
-                <CalendarClock className="size-4" />
-                Book a Test Drive
-              </Link>
+                <Link href="/cars">Browse Cars</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="h-12 gap-2 rounded-lg border-white/30 bg-white/5 px-8 text-sm font-semibold tracking-[0.08em] text-white uppercase backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/15 hover:text-white hover:shadow-[0_16px_36px_-12px_rgba(255,255,255,0.25)]"
+              >
+                <Link href="/contact">
+                  <CalendarClock className="size-4" />
+                  Book a Test Drive
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="hover:border-primary/60 hover:bg-primary/10 h-12 rounded-lg border-white/20 bg-transparent px-8 text-sm font-semibold tracking-[0.08em] text-white/90 uppercase backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:text-white"
+              >
+                <Link href="/contact">Contact Us</Link>
+              </Button>
             </div>
+          </FadeIn>
+          <FadeIn delay={0.4}>
+            <HeroCarSearch />
           </FadeIn>
         </div>
       </div>
