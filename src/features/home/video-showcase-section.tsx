@@ -7,10 +7,7 @@ export function VideoShowcaseSection() {
     <section className="border-border bg-card/40 border-t">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <FadeIn className="flex flex-col items-center text-center">
-          <p className="text-primary tracking-luxury text-xs font-medium uppercase">
-            In Motion
-          </p>
-          <h2 className="font-display mt-2 text-2xl sm:text-3xl">
+          <h2 className="font-display text-2xl sm:text-3xl">
             Experience Performance
           </h2>
           <p className="text-muted-foreground mt-3 max-w-2xl text-base">

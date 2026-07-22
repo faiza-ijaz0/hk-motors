@@ -20,7 +20,7 @@ export function HeroCarSearch() {
   }
 
   return (
-    <div className="mt-12 w-full max-w-2xl">
+    <div className="w-full">
       <form
         onSubmit={handleSubmit}
         className="focus-within:border-primary/60 flex flex-col gap-2 rounded-xl border border-white/25 bg-white/10 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.7)] backdrop-blur-md transition-colors sm:flex-row sm:items-center sm:rounded-full sm:p-1.5"

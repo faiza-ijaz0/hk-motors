@@ -87,10 +87,10 @@ export function HeroSection() {
               </Button>
             </div>
           </FadeIn>
-          <FadeIn delay={0.4}>
-            <HeroCarSearch />
-          </FadeIn>
         </div>
+        <FadeIn delay={0.4} className="mt-12 w-full max-w-3xl">
+          <HeroCarSearch />
+        </FadeIn>
       </div>
     </section>
   );
