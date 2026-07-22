@@ -28,15 +28,10 @@ export function BlogHero() {
         />
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-        <div className="max-w-2xl">
-          <FadeIn>
-            <p className="text-primary tracking-luxury text-xs font-medium uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-sm">
-              Blog
-            </p>
-          </FadeIn>
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
+        <div className="flex max-w-2xl flex-col items-center">
           <FadeIn delay={0.1}>
-            <h1 className="font-display mt-3 text-3xl text-white [text-shadow:0_4px_24px_rgb(0_0_0_/_65%)] sm:text-4xl lg:text-5xl">
+            <h1 className="font-display text-3xl text-white [text-shadow:0_4px_24px_rgb(0_0_0_/_65%)] sm:text-4xl lg:text-5xl">
               HK Motors Insights &amp; Automotive Journal
             </h1>
           </FadeIn>
