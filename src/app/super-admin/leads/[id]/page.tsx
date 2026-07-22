@@ -40,7 +40,7 @@ export default async function LeadDetailPage({
         className="text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1 text-sm transition-colors"
       >
         <ChevronLeft className="size-4" />
-        Back to Leads
+        Back to Inquiry Leads
       </Link>
 
       <AdminPageHeader

@@ -22,7 +22,7 @@ export const adminNavItems: AdminNavItem[] = [
   { label: "Users", href: "/super-admin/users", icon: Users },
   { label: "Cars", href: "/super-admin/cars", icon: CarFront },
   { label: "Gallery", href: "/super-admin/gallery", icon: Images },
-  { label: "Leads", href: "/super-admin/leads", icon: Inbox },
+  { label: "Inquiry Leads", href: "/super-admin/leads", icon: Inbox },
   {
     label: "Contact Leads",
     href: "/super-admin/contact-leads",

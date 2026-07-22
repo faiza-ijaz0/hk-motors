@@ -1,14 +1,28 @@
+import {
+  CalendarDays,
+  CalendarRange,
+  Inbox,
+  MailCheck,
+  MailWarning,
+  Sparkles,
+} from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { AdminPageHeader } from "@/features/admin/admin-page-header";
 import { AdminPagination } from "@/features/admin/admin-pagination";
+import { AdminStatCard } from "@/features/admin/admin-stat-card";
 import { LeadsTable } from "@/features/admin/leads/leads-table";
 import { LeadsToolbar } from "@/features/admin/leads/leads-toolbar";
-import { ADMIN_LEADS_PAGE_SIZE, getAdminLeads } from "@/services/admin-leads";
+import {
+  ADMIN_LEADS_PAGE_SIZE,
+  getAdminLeads,
+  getLeadStats,
+} from "@/services/admin-leads";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Leads | HK Motors Super Admin",
+  title: "Inquiry Leads | HK Motors Super Admin",
 };
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -26,28 +40,61 @@ export default async function AdminLeadsPage({
   const filters = {
     q: toSingle(params.q),
     status: toSingle(params.status),
-    type: toSingle(params.type),
+    dateFrom: toSingle(params.dateFrom),
+    dateTo: toSingle(params.dateTo),
     page: toSingle(params.page),
   };
 
-  const { leads, total, page } = await getAdminLeads(filters);
+  const [{ leads, total, page }, stats] = await Promise.all([
+    getAdminLeads(filters),
+    getLeadStats(),
+  ]);
+
   const totalPages = Math.max(1, Math.ceil(total / ADMIN_LEADS_PAGE_SIZE));
-  const hasFilters = Boolean(filters.q || filters.status || filters.type);
+  const hasFilters = Boolean(
+    filters.q || filters.status || filters.dateFrom || filters.dateTo,
+  );
 
   const flatSearchParams: Record<string, string | undefined> = {
     q: filters.q,
     status: filters.status,
-    type: filters.type,
+    dateFrom: filters.dateFrom,
+    dateTo: filters.dateTo,
   };
 
   return (
     <>
       <AdminPageHeader
-        title="Leads"
+        title="Inquiry Leads"
         description="Inquiries submitted across the website."
       />
 
-      <div className="mb-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <AdminStatCard
+          icon={Inbox}
+          label="Total Inquiry Leads"
+          value={stats.total}
+        />
+        <AdminStatCard icon={Sparkles} label="New Leads" value={stats.new} />
+        <AdminStatCard icon={MailCheck} label="Read Leads" value={stats.read} />
+        <AdminStatCard
+          icon={MailWarning}
+          label="Unread Leads"
+          value={stats.unread}
+        />
+        <AdminStatCard
+          icon={CalendarDays}
+          label="Today's Leads"
+          value={stats.today}
+        />
+        <AdminStatCard
+          icon={CalendarRange}
+          label="This Month's Leads"
+          value={stats.thisMonth}
+        />
+      </div>
+
+      <div className="mt-6 mb-4">
         <LeadsToolbar />
       </div>
 
@@ -56,6 +103,13 @@ export default async function AdminLeadsPage({
           <LeadsTable leads={leads} hasFilters={hasFilters} />
         </CardContent>
       </Card>
+
+      {total > 0 && (
+        <p className="text-muted-foreground mt-4 text-center text-sm">
+          Page {page} of {totalPages} · {total} {total === 1 ? "lead" : "leads"}{" "}
+          total
+        </p>
+      )}
 
       <AdminPagination
         basePath="/super-admin/leads"

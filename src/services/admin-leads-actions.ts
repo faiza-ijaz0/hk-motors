@@ -37,6 +37,17 @@ export async function updateLeadStatusAction(
   }
 }
 
+/** Read/Unread is derived from `status` (see services/admin-leads.ts) —
+ * this just moves the lead between the "new" (unread) and "contacted"
+ * (read) states so the table/modal can offer a simple toggle without
+ * exposing the full status enum. */
+export async function setLeadReadStatusAction(
+  id: string,
+  isRead: boolean,
+): Promise<ActionResult> {
+  return updateLeadStatusAction(id, isRead ? "contacted" : "new");
+}
+
 export async function assignLeadAction(
   id: string,
   userId: string | null,

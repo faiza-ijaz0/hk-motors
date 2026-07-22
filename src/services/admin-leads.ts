@@ -2,12 +2,20 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 import type { Enums } from "@/types/supabase";
 
-export const ADMIN_LEADS_PAGE_SIZE = 10;
+export const ADMIN_LEADS_PAGE_SIZE = 15;
+
+/** `leads.status` has no dedicated read/unread column — a fresh inquiry
+ * starts as "new", so that's treated as Unread; anything staff has since
+ * moved off "new" (contacted, lost) counts as Read. "Mark as Read" moves a
+ * lead to "contacted"; "Mark as Unread" resets it to "new". */
+const UNREAD_STATUS: Enums<"lead_status"> = "new";
 
 export type AdminLeadFilters = {
   q?: string;
+  /** "read" | "unread" */
   status?: string;
-  type?: string;
+  dateFrom?: string;
+  dateTo?: string;
   page?: string;
 };
 
@@ -17,7 +25,9 @@ export type AdminLeadListItem = {
   email: string | null;
   phone: string | null;
   leadType: Enums<"lead_type">;
+  message: string | null;
   status: Enums<"lead_status">;
+  isRead: boolean;
   assignedToName: string | null;
   createdAt: string;
 };
@@ -28,6 +38,31 @@ const EMPTY_RESULT = (page: number) => ({
   page,
   pageSize: ADMIN_LEADS_PAGE_SIZE,
 });
+
+function toListItem(row: {
+  id: string;
+  full_name: string;
+  email: string | null;
+  phone: string | null;
+  lead_type: Enums<"lead_type">;
+  message: string | null;
+  status: Enums<"lead_status">;
+  created_at: string;
+  users: { full_name: string } | null;
+}): AdminLeadListItem {
+  return {
+    id: row.id,
+    fullName: row.full_name,
+    email: row.email,
+    phone: row.phone,
+    leadType: row.lead_type,
+    message: row.message,
+    status: row.status,
+    isRead: row.status !== UNREAD_STATUS,
+    assignedToName: row.users?.full_name ?? null,
+    createdAt: row.created_at,
+  };
+}
 
 export async function getAdminLeads(filters: AdminLeadFilters) {
   const page = Math.max(1, Number(filters.page) || 1);
@@ -43,12 +78,15 @@ export async function getAdminLeads(filters: AdminLeadFilters) {
   const from = (page - 1) * ADMIN_LEADS_PAGE_SIZE;
   const to = from + ADMIN_LEADS_PAGE_SIZE - 1;
   const select =
-    "id, full_name, email, phone, lead_type, status, created_at, users ( full_name )";
+    "id, full_name, email, phone, lead_type, message, status, created_at, users ( full_name )";
 
   function applyFilters<
     T extends {
       or: (filters: string) => T;
       eq: (col: string, val: string) => T;
+      neq: (col: string, val: string) => T;
+      gte: (col: string, val: string) => T;
+      lte: (col: string, val: string) => T;
     },
   >(q: T): T {
     let query = q;
@@ -58,8 +96,22 @@ export async function getAdminLeads(filters: AdminLeadFilters) {
         `full_name.ilike.%${term}%,email.ilike.%${term}%,phone.ilike.%${term}%`,
       );
     }
-    if (filters.status) query = query.eq("status", filters.status);
-    if (filters.type) query = query.eq("lead_type", filters.type);
+    if (filters.status === "read") query = query.neq("status", UNREAD_STATUS);
+    if (filters.status === "unread") query = query.eq("status", UNREAD_STATUS);
+
+    if (filters.dateFrom) {
+      query = query.gte(
+        "created_at",
+        new Date(`${filters.dateFrom}T00:00:00`).toISOString(),
+      );
+    }
+    if (filters.dateTo) {
+      query = query.lte(
+        "created_at",
+        new Date(`${filters.dateTo}T23:59:59.999`).toISOString(),
+      );
+    }
+
     return query;
   }
 
@@ -81,21 +133,73 @@ export async function getAdminLeads(filters: AdminLeadFilters) {
       return EMPTY_RESULT(page);
     }
 
-    const leads: AdminLeadListItem[] = (data ?? []).map((row) => ({
-      id: row.id,
-      fullName: row.full_name,
-      email: row.email,
-      phone: row.phone,
-      leadType: row.lead_type,
-      status: row.status,
-      assignedToName: row.users?.full_name ?? null,
-      createdAt: row.created_at,
-    }));
+    const leads = (data ?? []).map(toListItem);
 
     return { leads, total: count ?? 0, page, pageSize: ADMIN_LEADS_PAGE_SIZE };
   } catch (err) {
     console.error("getAdminLeads: unexpected failure", err);
     return EMPTY_RESULT(page);
+  }
+}
+
+export type LeadStats = {
+  total: number;
+  new: number;
+  read: number;
+  unread: number;
+  today: number;
+  thisMonth: number;
+};
+
+function rangeStart(range: "today" | "month"): string {
+  const now = new Date();
+  if (range === "today") {
+    return new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    ).toISOString();
+  }
+  return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+}
+
+export async function getLeadStats(): Promise<LeadStats> {
+  try {
+    const supabase = createAdminClient();
+    const todayStart = rangeStart("today");
+    const monthStart = rangeStart("month");
+
+    const [total, unread, read, today, thisMonth] = await Promise.all([
+      supabase.from("leads").select("id", { count: "exact", head: true }),
+      supabase
+        .from("leads")
+        .select("id", { count: "exact", head: true })
+        .eq("status", UNREAD_STATUS),
+      supabase
+        .from("leads")
+        .select("id", { count: "exact", head: true })
+        .neq("status", UNREAD_STATUS),
+      supabase
+        .from("leads")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", todayStart),
+      supabase
+        .from("leads")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", monthStart),
+    ]);
+
+    return {
+      total: total.count ?? 0,
+      new: unread.count ?? 0,
+      unread: unread.count ?? 0,
+      read: read.count ?? 0,
+      today: today.count ?? 0,
+      thisMonth: thisMonth.count ?? 0,
+    };
+  } catch (err) {
+    console.error("getLeadStats failed", err);
+    return { total: 0, new: 0, read: 0, unread: 0, today: 0, thisMonth: 0 };
   }
 }
 

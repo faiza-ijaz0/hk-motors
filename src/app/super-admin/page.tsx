@@ -51,7 +51,7 @@ export default async function AdminDashboardPage() {
         />
         <AdminStatCard
           icon={Inbox}
-          label="Total Leads"
+          label="Total Inquiry Leads"
           value={stats.totalLeads}
         />
         <AdminStatCard
@@ -96,7 +96,7 @@ export default async function AdminDashboardPage() {
 
         <Card>
           <CardContent>
-            <h2 className="font-display text-lg">Recent Leads</h2>
+            <h2 className="font-display text-lg">Recent Inquiry Leads</h2>
             {recentLeads.length === 0 ? (
               <p className="text-muted-foreground mt-4 text-sm">
                 No leads yet — inquiries submitted on the website will show up

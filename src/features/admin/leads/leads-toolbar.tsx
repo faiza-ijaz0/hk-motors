@@ -11,28 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { LeadsDateRangeFilter } from "@/features/admin/leads/leads-date-range-filter";
 import { useAdminTableParams } from "@/features/admin/use-admin-table-params";
 
 const STATUSES = [
-  { value: "new", label: "New" },
-  { value: "contacted", label: "Contacted" },
-  { value: "qualified", label: "Qualified" },
-  { value: "converted", label: "Converted" },
-  { value: "lost", label: "Lost" },
-];
-
-const TYPES = [
-  { value: "car_inquiry", label: "Car Inquiry" },
-  { value: "service_inquiry", label: "Service Inquiry" },
-  { value: "trade_in", label: "Trade-In" },
-  { value: "financing", label: "Financing" },
-  { value: "general", label: "General" },
+  { value: "unread", label: "Unread" },
+  { value: "read", label: "Read" },
 ];
 
 export function LeadsToolbar() {
   const { searchParams, setParams } = useAdminTableParams();
   const status = searchParams.get("status") ?? "";
-  const type = searchParams.get("type") ?? "";
 
   const [q, setQ] = useState(searchParams.get("q") ?? "");
 
@@ -57,7 +46,7 @@ export function LeadsToolbar() {
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search by name, email, or phone…"
           className="pl-9"
-          aria-label="Search leads"
+          aria-label="Search inquiry leads"
         />
       </div>
 
@@ -67,11 +56,11 @@ export function LeadsToolbar() {
           setParams({ status: value === "all" ? null : value })
         }
       >
-        <SelectTrigger className="w-full sm:w-48">
-          <SelectValue placeholder="All Statuses" />
+        <SelectTrigger className="w-full sm:w-44">
+          <SelectValue placeholder="All Status" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Statuses</SelectItem>
+          <SelectItem value="all">All Status</SelectItem>
           {STATUSES.map((s) => (
             <SelectItem key={s.value} value={s.value}>
               {s.label}
@@ -80,24 +69,7 @@ export function LeadsToolbar() {
         </SelectContent>
       </Select>
 
-      <Select
-        value={type || "all"}
-        onValueChange={(value) =>
-          setParams({ type: value === "all" ? null : value })
-        }
-      >
-        <SelectTrigger className="w-full sm:w-48">
-          <SelectValue placeholder="All Types" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Types</SelectItem>
-          {TYPES.map((t) => (
-            <SelectItem key={t.value} value={t.value}>
-              {t.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <LeadsDateRangeFilter />
     </div>
   );
 }

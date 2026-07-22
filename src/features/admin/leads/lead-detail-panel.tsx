@@ -30,13 +30,7 @@ import type {
 } from "@/services/admin-leads";
 import type { Enums } from "@/types/supabase";
 
-const STATUS_OPTIONS: Enums<"lead_status">[] = [
-  "new",
-  "contacted",
-  "qualified",
-  "converted",
-  "lost",
-];
+const STATUS_OPTIONS: Enums<"lead_status">[] = ["new", "contacted", "lost"];
 
 export function LeadDetailPanel({
   lead,
