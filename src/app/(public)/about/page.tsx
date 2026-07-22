@@ -176,7 +176,7 @@ export default function AboutPage() {
       {/* Our Journey */}
       <section className="border-border bg-card border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <FadeIn>
+          <FadeIn className="flex flex-col items-center text-center">
             <p className="text-primary tracking-luxury text-xs font-medium uppercase">
               How We Got Here
             </p>
@@ -244,7 +244,7 @@ export default function AboutPage() {
       {/* Why Customers Choose HK Motors */}
       <section className="border-border bg-card border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <FadeIn>
+          <FadeIn className="flex flex-col items-center text-center">
             <p className="text-primary tracking-luxury text-xs font-medium uppercase">
               What We Stand For
             </p>
@@ -306,7 +306,7 @@ export default function AboutPage() {
       {/* Achievements */}
       <section className="border-border bg-card border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <FadeIn>
+          <FadeIn className="flex flex-col items-center text-center">
             <p className="text-primary tracking-luxury text-xs font-medium uppercase">
               Milestones
             </p>
@@ -335,7 +335,7 @@ export default function AboutPage() {
       {/* Customer Trust */}
       <section className="border-border border-t">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <FadeIn>
+          <FadeIn className="flex flex-col items-center text-center">
             <p className="text-primary tracking-luxury text-xs font-medium uppercase">
               Earned, Not Assumed
             </p>

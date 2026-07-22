@@ -21,22 +21,19 @@ export function AboutHero() {
 
         {/* Lighter scrim than the other page heroes by design — this photo
             is bright, and the goal is to let it show through while keeping
-            the copy on the left readable. */}
-        <div aria-hidden className="absolute inset-0 bg-black/35" />
+            the now-centered copy readable. Trimmed slightly further so the
+            image reads a touch brighter without losing contrast. */}
+        <div aria-hidden className="absolute inset-0 bg-black/20" />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-black/0"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/15"
+          className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-black/10"
         />
 
         <HeroGlow />
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-20 text-center sm:px-6 lg:px-8">
+        <div className="flex max-w-2xl flex-col items-center">
           <FadeIn>
             <p className="text-primary tracking-luxury text-xs font-medium uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-sm">
               About HK Motors
