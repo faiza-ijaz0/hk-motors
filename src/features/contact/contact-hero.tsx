@@ -16,24 +16,25 @@ export function ContactHero() {
           className="object-cover object-[center_44%]"
         />
 
-        {/* Compact hero, no large title — subtle overlay only so the
-            photo stays clearly visible. */}
+        {/* Compact hero, no large title — overlay stays subtle enough to
+            keep the photo clearly visible, just deepened slightly for
+            better contrast behind the centered copy. */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/18 to-black/0"
+          className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/28 to-black/8"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10"
+          className="absolute inset-0 bg-gradient-to-t from-black/38 via-black/10 to-black/16"
         />
       </div>
 
       <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-8 text-center sm:px-6 lg:px-8">
         <FadeIn className="max-w-2xl">
-          <h1 className="font-display text-lg text-white [text-shadow:0_4px_18px_rgb(0_0_0_/_65%)] sm:text-xl">
+          <h1 className="font-display text-lg font-semibold text-white [text-shadow:0_4px_20px_rgb(0_0_0_/_78%)] sm:text-xl">
             We&apos;d Love to Hear From You
           </h1>
-          <p className="mt-1.5 text-sm text-white/85 [text-shadow:0_2px_10px_rgb(0_0_0_/_65%)]">
+          <p className="mt-1.5 text-sm font-medium text-white/95 [text-shadow:0_2px_12px_rgb(0_0_0_/_75%)]">
             Have a question about a vehicle, service, or availability? Our team
             is ready to deliver a premium HK Motors experience. Reach out and
             expect a prompt, personal response — the same attention you&apos;d
