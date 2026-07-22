@@ -25,18 +25,22 @@ export function GalleryVideo({
             src={embedUrl}
             title={caption ?? "HK Motors gallery video"}
             allow="autoplay; encrypted-media; picture-in-picture"
+            loading="lazy"
             className="pointer-events-none absolute inset-0 size-full border-0"
           />
         ) : (
           // Direct video file (uploaded or a raw .mp4/.webm URL) — no
           // recognized YouTube/Vimeo watch-page pattern to embed instead.
+          // `preload="metadata"` (rather than `auto`) avoids fetching the
+          // full file the instant the card mounts — the browser still
+          // buffers enough to honor `autoPlay` once it does.
           <video
             src={url}
             autoPlay
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             className="pointer-events-none absolute inset-0 size-full object-cover"
           />
         ))}

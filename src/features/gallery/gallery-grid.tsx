@@ -18,6 +18,8 @@ function GalleryMedia({ image }: { image: GalleryImage }) {
       alt={image.caption ?? "HK Motors gallery photo"}
       fill
       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+      loading="lazy"
+      fetchPriority="low"
       unoptimized={!image.url.includes("/storage/v1/object/public/")}
       className="object-cover transition-transform duration-500 group-hover:scale-105"
     />
