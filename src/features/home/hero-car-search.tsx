@@ -21,17 +21,9 @@ export function HeroCarSearch() {
 
   return (
     <div className="mt-12 w-full max-w-xl">
-      <h2 className="font-display text-xl text-white [text-shadow:0_2px_14px_rgb(0_0_0_/_75%)] sm:text-2xl">
-        Find Your Dream Car at HK Motors
-      </h2>
-      <p className="mt-2 text-sm text-white/80 [text-shadow:0_2px_10px_rgb(0_0_0_/_70%)] sm:text-base">
-        Search by brand or model such as Honda, Toyota, BMW, Mercedes, Lexus,
-        Audi and more.
-      </p>
-
       <form
         onSubmit={handleSubmit}
-        className="focus-within:border-primary/60 mt-5 flex flex-col gap-2 rounded-xl border border-white/25 bg-white/10 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.7)] backdrop-blur-md transition-colors sm:flex-row sm:items-center sm:rounded-full sm:p-1.5"
+        className="focus-within:border-primary/60 flex flex-col gap-2 rounded-xl border border-white/25 bg-white/10 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.7)] backdrop-blur-md transition-colors sm:flex-row sm:items-center sm:rounded-full sm:p-1.5"
       >
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-white/50" />
