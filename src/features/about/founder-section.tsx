@@ -39,7 +39,7 @@ export function FounderSection() {
               <div className="border-border from-background to-background shadow-luxury relative flex aspect-square w-40 items-center justify-center overflow-hidden rounded-full border bg-gradient-to-b lg:w-full lg:max-w-56">
                 <UserRound className="text-muted-foreground size-16" />
               </div>
-              <p className="font-display mt-6 text-xl">Habibullah Khan</p>
+              <p className="font-display mt-6 text-xl">Our Founder</p>
               <p className="text-muted-foreground text-sm">
                 Founder &amp; CEO, HK Motors
               </p>

@@ -13,7 +13,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: `Contact | ${siteConfig.name}`,
   description:
-    "Get in touch with HK Motors — visit our showroom, call, message us on WhatsApp, or send a message and our team will respond shortly.",
+    "Get in touch with HK Motors in Dubai, United Arab Emirates — call, message us on WhatsApp, or send a message and our team will respond shortly.",
 };
 
 // Placeholder values — replace with a `website_settings` fetch once that
@@ -22,7 +22,7 @@ const contactDetails = [
   { label: "+92 300 1234567", href: "tel:+923001234567", icon: Phone },
   { label: "info@hkmotors.com", href: "mailto:info@hkmotors.com", icon: Mail },
   {
-    label: "H3W5+HRJ, Murree Rd, Saddar, Rawalpindi, 46000",
+    label: "Dubai, United Arab Emirates",
     href: undefined,
     icon: MapPin,
   },
@@ -88,7 +88,7 @@ export default function ContactPage() {
         </div>
 
         <FadeIn delay={0.15} className="mt-10">
-          <h2 className="font-display text-xl">Find Us</h2>
+          <h2 className="font-display text-xl">Our Location</h2>
           <div className="mt-4">
             <GoogleMap />
           </div>

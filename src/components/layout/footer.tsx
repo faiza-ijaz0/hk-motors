@@ -17,7 +17,7 @@ const contactDetails = [
     icon: MessageCircle,
   },
   {
-    label: "H3W5+HRJ, Murree Rd, Saddar, Rawalpindi, 46000",
+    label: "Dubai, United Arab Emirates",
     href: undefined,
     icon: MapPin,
   },
@@ -34,7 +34,7 @@ export function Footer() {
               {siteConfig.description}
             </p>
             <p className="text-muted-foreground text-xs">
-              Founded and led by Habibullah Khan, Founder &amp; CEO.
+              Founder-led, with the same standards since day one.
             </p>
             <div className="flex items-center gap-3 pt-1">
               {socialLinks.map((social) => (

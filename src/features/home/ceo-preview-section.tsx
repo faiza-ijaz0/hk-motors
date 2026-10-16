@@ -18,7 +18,7 @@ export function CeoPreviewSection() {
                 Leadership
               </p>
               <h2 className="font-display mt-2 text-2xl sm:text-3xl">
-                Meet Habibullah Khan
+                Meet Our CEO
               </h2>
               <p className="text-muted-foreground mt-1 text-sm font-medium">
                 Founder &amp; CEO, HK Motors

@@ -12,14 +12,15 @@ import {
 } from "lucide-react";
 
 import { FadeIn } from "@/components/shared/fade-in";
+import { HeroFadeIn } from "@/components/shared/hero-fade-in";
 import { siteConfig } from "@/config/site";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `Habibullah Khan — Founder & CEO | ${siteConfig.name}`,
+  title: `Meet Our CEO | ${siteConfig.name}`,
   description:
-    "Meet Habibullah Khan, Founder & CEO of HK Motors — his story, leadership vision, and personal commitment to premium automotive retail.",
+    "Meet the Founder & CEO of HK Motors — the story, leadership vision, and personal commitment behind our approach to premium automotive retail.",
 };
 
 const journey = [
@@ -36,12 +37,12 @@ const journey = [
   {
     title: "Founding HK Motors",
     description:
-      "Habibullah Khan set out to build the dealership experience that had always felt missing: transparent, meticulous, and genuinely built around the car and the customer.",
+      "Our founder set out to build the dealership experience that had always felt missing: transparent, meticulous, and genuinely built around the car and the customer.",
   },
   {
     title: "Leading Today",
     description:
-      "Habibullah continues to guide HK Motors' growth and standards personally, from the vehicles sourced to the way every customer is treated.",
+      "Our CEO continues to guide HK Motors' growth and standards personally, from the vehicles sourced to the way every customer is treated.",
   },
 ];
 
@@ -98,7 +99,7 @@ export default function CeoPage() {
     <>
       {/* CEO Image + intro */}
       <section className="mx-auto max-w-7xl px-4 pt-10 pb-16 sm:px-6 sm:pt-14 lg:px-8">
-        <FadeIn>
+        <HeroFadeIn>
           <div className="grid gap-10 lg:grid-cols-[340px_1fr] lg:gap-16">
             {/* Placeholder portrait — swap for a real photo via a `next/image`
                 once one is available. Deliberately not using the showroom
@@ -113,7 +114,7 @@ export default function CeoPage() {
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-2xl sm:text-3xl">
-                  Habibullah Khan
+                  Meet Our CEO
                 </h1>
                 <p className="text-muted-foreground mt-1 text-sm">
                   Founder &amp; CEO, HK Motors
@@ -137,11 +138,11 @@ export default function CeoPage() {
                 </p>
                 <p>
                   With a career spent around performance and luxury vehicles,
-                  Habibullah Khan founded HK Motors to bring a more personal,
-                  more transparent approach to an industry that often feels
-                  neither. That philosophy still shapes every decision the team
-                  makes — from which vehicles we source to how we treat every
-                  customer who walks through the door.
+                  our founder started HK Motors to bring a more personal, more
+                  transparent approach to an industry that often feels neither.
+                  That philosophy still shapes every decision the team makes —
+                  from which vehicles we source to how we treat every customer
+                  who walks through the door.
                 </p>
                 <p>
                   Today, his vision continues to guide HK Motors as it grows: a
@@ -151,7 +152,7 @@ export default function CeoPage() {
               </div>
             </div>
           </div>
-        </FadeIn>
+        </HeroFadeIn>
       </section>
 
       {/* Leadership Vision */}
@@ -170,7 +171,7 @@ export default function CeoPage() {
                   A dealership judged by trust, not just transactions
                 </h2>
                 <p className="text-muted-foreground mt-4 max-w-3xl text-sm sm:text-base">
-                  Habibullah Khan&apos;s standard for HK Motors is simple: every
+                  Our CEO&apos;s standard for HK Motors is simple: every
                   customer should be treated with the same honesty and attention
                   to detail he&apos;d want when buying a car himself. That means
                   no inflated pricing, no rushed inspections, and no vehicle on
@@ -262,9 +263,9 @@ export default function CeoPage() {
               Future of HK Motors
             </h2>
             <p className="text-muted-foreground mt-3 max-w-2xl text-sm sm:text-base">
-              Under Habibullah Khan&apos;s continued leadership, HK Motors is
-              building toward what&apos;s next — without losing sight of what
-              got us here.
+              Under our CEO&apos;s continued leadership, HK Motors is building
+              toward what&apos;s next — without losing sight of what got us
+              here.
             </p>
           </FadeIn>
 
@@ -315,7 +316,7 @@ export default function CeoPage() {
                   Welcome to HK Motors.
                 </p>
               </div>
-              <p className="font-display mt-8 text-xl">Habibullah Khan</p>
+              <p className="font-display mt-8 text-xl">Founder &amp; CEO</p>
               <p className="text-muted-foreground text-sm">
                 Founder &amp; CEO, HK Motors
               </p>

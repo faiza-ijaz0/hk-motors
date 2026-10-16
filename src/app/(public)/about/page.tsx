@@ -136,12 +136,11 @@ export default function AboutPage() {
                 More Than a Dealership
               </h2>
               <p className="text-muted-foreground">
-                HK Motors was founded by Habibullah Khan on the belief that a
-                car dealership should feel like a garage among friends, not a
-                sales floor. We source vehicles we&apos;d want to drive
-                ourselves, inspect them to a standard we&apos;d stake our name
-                on, and back every sale with service that doesn&apos;t stop at
-                the handshake.
+                HK Motors was founded on the belief that a car dealership should
+                feel like a garage among friends, not a sales floor. We source
+                vehicles we&apos;d want to drive ourselves, inspect them to a
+                standard we&apos;d stake our name on, and back every sale with
+                service that doesn&apos;t stop at the handshake.
               </p>
               <p className="text-muted-foreground">
                 From first inquiry to years of ownership after, our team is here
