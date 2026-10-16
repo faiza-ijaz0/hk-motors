@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { FadeIn } from "@/components/shared/fade-in";
+import { HeroFadeIn } from "@/components/shared/hero-fade-in";
 
 export function GalleryHero() {
   return (
@@ -30,19 +30,19 @@ export function GalleryHero() {
 
       <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
         <div className="flex max-w-2xl flex-col items-center">
-          <FadeIn delay={0.1}>
+          <HeroFadeIn delay={0.1}>
             <h1 className="font-display text-3xl text-white [text-shadow:0_4px_24px_rgb(0_0_0_/_65%)] sm:text-4xl lg:text-5xl">
               The HK Motors Showroom Experience
             </h1>
-          </FadeIn>
-          <FadeIn delay={0.2}>
+          </HeroFadeIn>
+          <HeroFadeIn delay={0.2}>
             <p className="mt-4 max-w-xl text-base text-white/90 [text-shadow:0_2px_12px_rgb(0_0_0_/_70%)] sm:text-lg">
               Step inside the world of HK Motors — a curated visual journey
               through our showroom, our events, and the luxury vehicles
               delivered to owners who expect nothing less than automotive
               excellence.
             </p>
-          </FadeIn>
+          </HeroFadeIn>
         </div>
       </div>
     </section>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FadeIn } from "@/components/shared/fade-in";
 import { Card } from "@/components/ui/card";
 import { GalleryVideo } from "@/features/gallery/gallery-video";
+import { canOptimizeImage } from "@/lib/images";
 
 import type { GalleryImage } from "@/services/gallery";
 
@@ -20,7 +21,7 @@ function GalleryMedia({ image }: { image: GalleryImage }) {
       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
       loading="lazy"
       fetchPriority="low"
-      unoptimized={!image.url.includes("/storage/v1/object/public/")}
+      unoptimized={!canOptimizeImage(image.url)}
       className="object-cover transition-transform duration-500 group-hover:scale-105"
     />
   );

@@ -1,7 +1,7 @@
 import { CalendarClock } from "lucide-react";
 import Link from "next/link";
 
-import { FadeIn } from "@/components/shared/fade-in";
+import { HeroFadeIn } from "@/components/shared/hero-fade-in";
 import { HeroGlow } from "@/components/shared/hero-glow";
 import { Button } from "@/components/ui/button";
 import { heroVideo } from "@/config/media";
@@ -40,24 +40,24 @@ export function HeroSection() {
 
       <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8">
         <div className="flex max-w-2xl flex-col items-center">
-          <FadeIn>
+          <HeroFadeIn>
             <p className="text-primary text-xs font-semibold tracking-[0.22em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] sm:text-sm">
               Trusted Dealership · Premium Vehicles · Proven Expertise
             </p>
-          </FadeIn>
-          <FadeIn delay={0.1}>
+          </HeroFadeIn>
+          <HeroFadeIn delay={0.1}>
             <h1 className="font-display mt-4 text-4xl leading-tight text-white [text-shadow:0_4px_24px_rgb(0_0_0_/_65%)] sm:text-5xl lg:text-6xl">
               Find Your Dream Car
             </h1>
-          </FadeIn>
-          <FadeIn delay={0.2}>
+          </HeroFadeIn>
+          <HeroFadeIn delay={0.2}>
             <p className="mt-5 max-w-xl text-base text-white/90 [text-shadow:0_2px_12px_rgb(0_0_0_/_70%)] sm:text-lg">
               Explore premium luxury and performance vehicles carefully selected
               by HK Motors. Discover exceptional quality, expert guidance, and a
               showroom experience built around your passion for driving.
             </p>
-          </FadeIn>
-          <FadeIn delay={0.3}>
+          </HeroFadeIn>
+          <HeroFadeIn delay={0.3}>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
               <Button
                 asChild
@@ -86,11 +86,11 @@ export function HeroSection() {
                 <Link href="/contact">Contact Us</Link>
               </Button>
             </div>
-          </FadeIn>
+          </HeroFadeIn>
         </div>
-        <FadeIn delay={0.4} className="mt-12 w-full max-w-3xl">
+        <HeroFadeIn delay={0.4} className="mt-12 w-full max-w-3xl">
           <HeroCarSearch />
-        </FadeIn>
+        </HeroFadeIn>
       </div>
     </section>
   );

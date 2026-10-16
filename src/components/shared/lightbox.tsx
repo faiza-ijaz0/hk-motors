@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
 
+import { canOptimizeImage } from "@/lib/images";
 import { getVideoEmbedUrl } from "@/lib/video";
 
 export type LightboxItem = {
@@ -120,7 +121,7 @@ export function Lightbox({
               alt={item.alt ?? "Preview"}
               fill
               sizes="100vw"
-              unoptimized={!item.url.includes("/storage/v1/object/public/")}
+              unoptimized={!canOptimizeImage(item.url)}
               className="object-contain"
               quality={100}
             />

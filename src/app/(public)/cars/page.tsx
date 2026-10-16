@@ -1,7 +1,7 @@
 import { CarFront } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
-import { FadeIn } from "@/components/shared/fade-in";
+import { HeroFadeIn } from "@/components/shared/hero-fade-in";
 import { siteConfig } from "@/config/site";
 import { CarCard } from "@/features/inventory/car-card";
 import { InventoryFilters } from "@/features/inventory/inventory-filters";
@@ -80,11 +80,11 @@ export default async function CarsPage({
 
   return (
     <section className="mx-auto max-w-7xl px-4 pt-8 pb-16 sm:px-6 sm:pt-10 sm:pb-20 lg:px-8">
-      <FadeIn>
+      <HeroFadeIn>
         <h1 className="font-display text-center text-3xl sm:text-4xl">
           Discover Your Perfect Vehicle at HK Motors
         </h1>
-      </FadeIn>
+      </HeroFadeIn>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="hidden lg:block">
@@ -107,9 +107,9 @@ export default async function CarsPage({
             <>
               <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {cars.map((car, index) => (
-                  <FadeIn key={car.id} delay={(index % 6) * 0.05}>
+                  <HeroFadeIn key={car.id} delay={(index % 6) * 0.05}>
                     <CarCard car={car} />
-                  </FadeIn>
+                  </HeroFadeIn>
                 ))}
               </div>
               <InventoryPagination

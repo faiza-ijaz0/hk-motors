@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { FadeIn } from "@/components/shared/fade-in";
+import { HeroFadeIn } from "@/components/shared/hero-fade-in";
 
 export function ContactHero() {
   return (
@@ -30,7 +30,7 @@ export function ContactHero() {
       </div>
 
       <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-8 text-center sm:px-6 lg:px-8">
-        <FadeIn className="max-w-2xl">
+        <HeroFadeIn className="max-w-2xl">
           <h1 className="font-display text-lg font-semibold text-white [text-shadow:0_4px_20px_rgb(0_0_0_/_78%)] sm:text-xl">
             We&apos;d Love to Hear From You
           </h1>
@@ -40,7 +40,7 @@ export function ContactHero() {
             expect a prompt, personal response — the same attention you&apos;d
             receive on our showroom floor.
           </p>
-        </FadeIn>
+        </HeroFadeIn>
       </div>
     </section>
   );

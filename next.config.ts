@@ -15,15 +15,23 @@ const nextConfig: NextConfig = {
   },
   images: {
     qualities: [75, 100],
-    remotePatterns: supabaseHostname
-      ? [
-          {
-            protocol: "https",
-            hostname: supabaseHostname,
-            pathname: "/storage/v1/object/public/**",
-          },
-        ]
-      : [],
+    remotePatterns: [
+      ...(supabaseHostname
+        ? [
+            {
+              protocol: "https" as const,
+              hostname: supabaseHostname,
+              pathname: "/storage/v1/object/public/**",
+            },
+          ]
+        : []),
+      // Demo content photos (blog covers, demo cars/gallery) — Unsplash CDN.
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/photo-*",
+      },
+    ],
   },
   async redirects() {
     return [

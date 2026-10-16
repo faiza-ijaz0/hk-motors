@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { FadeIn } from "@/components/shared/fade-in";
+import { HeroFadeIn } from "@/components/shared/hero-fade-in";
 import { HeroGlow } from "@/components/shared/hero-glow";
 import { Button } from "@/components/ui/button";
 
@@ -34,30 +34,30 @@ export function AboutHero() {
 
       <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-20 text-center sm:px-6 lg:px-8">
         <div className="flex max-w-2xl flex-col items-center">
-          <FadeIn>
+          <HeroFadeIn>
             <p className="text-primary tracking-luxury text-xs font-medium uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-sm">
               About HK Motors
             </p>
-          </FadeIn>
-          <FadeIn delay={0.1}>
+          </HeroFadeIn>
+          <HeroFadeIn delay={0.1}>
             <h1 className="font-display mt-4 text-4xl leading-tight text-white [text-shadow:0_4px_24px_rgb(0_0_0_/_65%)] sm:text-5xl lg:text-6xl">
               A Dealership Built Around the Drive
             </h1>
-          </FadeIn>
-          <FadeIn delay={0.2}>
+          </HeroFadeIn>
+          <HeroFadeIn delay={0.2}>
             <p className="mt-5 max-w-xl text-base text-white/90 [text-shadow:0_2px_12px_rgb(0_0_0_/_70%)] sm:text-lg">
               For over a decade, HK Motors has been home to discerning drivers
               who expect more — where every vehicle is chosen, inspected, and
               delivered to a standard we&apos;d stake our name on.
             </p>
-          </FadeIn>
-          <FadeIn delay={0.3}>
+          </HeroFadeIn>
+          <HeroFadeIn delay={0.3}>
             <div className="mt-8">
               <Button asChild size="lg" className="shadow-luxury">
                 <Link href="/cars">Browse Cars</Link>
               </Button>
             </div>
-          </FadeIn>
+          </HeroFadeIn>
         </div>
       </div>
     </section>

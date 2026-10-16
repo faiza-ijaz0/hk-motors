@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { Lightbox } from "@/components/shared/lightbox";
+import { canOptimizeImage } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import { getVideoEmbedUrl } from "@/lib/video";
 
@@ -103,7 +104,7 @@ export function CarGallery({
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 60vw"
-              unoptimized={!active.url.includes("/storage/v1/object/public/")}
+              unoptimized={!canOptimizeImage(active.url)}
               className="object-cover"
             />
           )}
@@ -168,7 +169,7 @@ export function CarGallery({
                   alt={item.alt ?? `${title} thumbnail ${index + 1}`}
                   fill
                   sizes="80px"
-                  unoptimized={!item.url.includes("/storage/v1/object/public/")}
+                  unoptimized={!canOptimizeImage(item.url)}
                   className="object-cover"
                 />
               )}

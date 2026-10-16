@@ -4,6 +4,8 @@ import { CarFront, ChevronLeft, ChevronRight, Video } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
+import { canOptimizeImage } from "@/lib/images";
+
 export function CarCardMedia({
   images,
   hasVideo,
@@ -38,7 +40,7 @@ export function CarCardMedia({
         alt={title}
         fill
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        unoptimized={!current.url.includes("/storage/v1/object/public/")}
+        unoptimized={!canOptimizeImage(current.url)}
         className="object-cover"
       />
 
