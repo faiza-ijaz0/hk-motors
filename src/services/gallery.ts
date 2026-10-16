@@ -3,6 +3,7 @@ import {
   demoAlbumOptions,
   demoFallback,
   demoGallery,
+  logReadFailure,
   shouldSkipSupabase,
 } from "@/services/demo-catalog";
 
@@ -50,7 +51,7 @@ export async function getGalleryImages(
     const { data, error } = await query;
 
     if (error) {
-      console.error("getGalleryImages failed", error);
+      logReadFailure("getGalleryImages failed", error);
       return demoFallback(() => demoGallery(filters), []);
     }
     if (!data) return [];
@@ -66,7 +67,7 @@ export async function getGalleryImages(
       mediaType: row.media_type,
     }));
   } catch (err) {
-    console.error("getGalleryImages: unexpected failure", err);
+    logReadFailure("getGalleryImages: unexpected failure", err);
     return demoFallback(() => demoGallery(filters), []);
   }
 }
@@ -87,13 +88,13 @@ export async function getPublishedAlbumOptions(): Promise<
       .order("title", { ascending: true });
 
     if (error) {
-      console.error("getPublishedAlbumOptions failed", error);
+      logReadFailure("getPublishedAlbumOptions failed", error);
       return demoFallback(() => demoAlbumOptions(), []);
     }
     if (!data) return [];
     return data;
   } catch (err) {
-    console.error("getPublishedAlbumOptions: unexpected failure", err);
+    logReadFailure("getPublishedAlbumOptions: unexpected failure", err);
     return demoFallback(() => demoAlbumOptions(), []);
   }
 }

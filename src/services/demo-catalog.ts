@@ -26,7 +26,52 @@ import type {
 import type { GalleryFilters, GalleryImage } from "@/services/gallery";
 
 export function isDemoFallbackEnabled() {
-  return process.env.DEMO_DATA_FALLBACK === "true";
+  // Tolerate stray whitespace/casing from dashboard-entered values
+  // ("true ", "TRUE") — anything else, including unset, means disabled.
+  return process.env.DEMO_DATA_FALLBACK?.trim().toLowerCase() === "true";
+}
+
+/**
+ * Logs a failed public read with its actual message and code. Supabase
+ * errors are plain objects (or Error instances whose fields aren't
+ * enumerable), which some log viewers render as a bare `{}`. Only the
+ * message and codes are logged — never request details, URLs or keys.
+ */
+export function logReadFailure(context: string, err: unknown) {
+  const e = (err ?? {}) as {
+    message?: unknown;
+    code?: unknown;
+    details?: unknown;
+    cause?: { code?: unknown };
+  };
+  const message =
+    typeof e.message === "string" && e.message
+      ? e.message
+      : typeof err === "string"
+        ? err
+        : "unknown error (no message)";
+  const code = typeof e.code === "string" && e.code ? e.code : undefined;
+  // Network failures carry the underlying errno (ENOTFOUND, ECONNREFUSED…)
+  // in `cause` (thrown) or only inside `details` (returned by postgrest-js).
+  const causeCode =
+    (typeof e.cause?.code === "string" ? e.cause.code : undefined) ??
+    (typeof e.details === "string"
+      ? e.details.match(/\((E[A-Z_]+)\)/)?.[1]
+      : undefined);
+
+  const parts = [
+    message,
+    code && `code=${code}`,
+    causeCode && `cause=${causeCode}`,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  if (isDemoFallbackEnabled()) {
+    console.warn(`${context}: ${parts} — serving demo data`);
+  } else {
+    console.error(`${context}: ${parts}`);
+  }
 }
 
 // supabase-js retries failed reads with backoff (~7s per query when the

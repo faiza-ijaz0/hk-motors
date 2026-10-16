@@ -10,6 +10,7 @@ import {
   demoGetCars,
   demoSimilarCars,
   isDemoFallbackEnabled,
+  logReadFailure,
   shouldSkipSupabase,
 } from "@/services/demo-catalog";
 
@@ -145,7 +146,7 @@ export async function getCars(filters: CarFilters) {
   } catch (err) {
     // Misconfigured/unavailable Supabase shouldn't crash the whole page —
     // render the existing "no results" empty state instead.
-    console.error("getCars: Supabase client unavailable", err);
+    logReadFailure("getCars: Supabase client unavailable", err);
     return unavailableCarsResult(filters, page);
   }
 
@@ -204,7 +205,7 @@ export async function getCars(filters: CarFilters) {
         return { ...EMPTY_CARS_RESULT(page), total: total ?? 0 };
       }
 
-      console.error("getCars failed", error);
+      logReadFailure("getCars failed", error);
       return unavailableCarsResult(filters, page);
     }
 
@@ -212,7 +213,7 @@ export async function getCars(filters: CarFilters) {
 
     return { cars, total: count ?? 0, page, pageSize: CARS_PAGE_SIZE };
   } catch (err) {
-    console.error("getCars: unexpected failure", err);
+    logReadFailure("getCars: unexpected failure", err);
     return unavailableCarsResult(filters, page);
   }
 }
@@ -231,7 +232,7 @@ export async function getFeaturedCars(limit = 12): Promise<CarListItem[]> {
       .limit(limit);
 
     if (error) {
-      console.error("getFeaturedCars failed", error);
+      logReadFailure("getFeaturedCars failed", error);
       return demoFallback(() => demoFeaturedCars(limit), []);
     }
 
@@ -248,15 +249,15 @@ export async function getFeaturedCars(limit = 12): Promise<CarListItem[]> {
       .order("created_at", { ascending: false })
       .limit(limit);
 
-    if (latestError || !latest) {
-      if (latestError)
-        console.error("getFeaturedCars fallback failed", latestError);
-      return [];
+    if (latestError) {
+      logReadFailure("getFeaturedCars fallback failed", latestError);
+      return demoFallback(() => demoFeaturedCars(limit), []);
     }
+    if (!latest) return [];
 
     return latest.map((row) => mapCarListRow(row, supabase));
   } catch (err) {
-    console.error("getFeaturedCars: unexpected failure", err);
+    logReadFailure("getFeaturedCars: unexpected failure", err);
     return demoFallback(() => demoFeaturedCars(limit), []);
   }
 }
@@ -282,9 +283,11 @@ export async function getCarFilterOptions(): Promise<CarFilterOptions> {
     ]);
 
     const error = categoriesError ?? makesError ?? modelsError;
-    if (error && isDemoFallbackEnabled()) {
-      console.error("getCarFilterOptions failed", error);
-      return demoFallback(() => demoFilterOptions(), demoFilterOptions());
+    if (error) {
+      logReadFailure("getCarFilterOptions failed", error);
+      if (isDemoFallbackEnabled()) {
+        return demoFallback(() => demoFilterOptions(), demoFilterOptions());
+      }
     }
 
     return {
@@ -293,7 +296,7 @@ export async function getCarFilterOptions(): Promise<CarFilterOptions> {
       models: models ?? [],
     };
   } catch (err) {
-    console.error("getCarFilterOptions failed", err);
+    logReadFailure("getCarFilterOptions failed", err);
     return demoFallback(() => demoFilterOptions(), {
       categories: [],
       makes: [],
@@ -358,7 +361,7 @@ export const getCarBySlug = cache(async function getCarBySlug(
       .maybeSingle();
 
     if (error) {
-      console.error("getCarBySlug failed", error);
+      logReadFailure("getCarBySlug failed", error);
       return demoFallback(() => demoCarBySlug(slug), null);
     }
     if (!data) return null;
@@ -409,7 +412,7 @@ export const getCarBySlug = cache(async function getCarBySlug(
       features,
     };
   } catch (err) {
-    console.error("getCarBySlug: unexpected failure", err);
+    logReadFailure("getCarBySlug: unexpected failure", err);
     return demoFallback(() => demoCarBySlug(slug), null);
   }
 });
@@ -435,13 +438,14 @@ export async function getSimilarCars(
 
     const { data, error } = await query;
     if (error) {
+      logReadFailure("getSimilarCars failed", error);
       return demoFallback(() => demoSimilarCars(car, limit), []);
     }
     if (!data) return [];
 
     return data.map((row) => mapCarListRow(row, supabase));
   } catch (err) {
-    console.error("getSimilarCars: unexpected failure", err);
+    logReadFailure("getSimilarCars: unexpected failure", err);
     return demoFallback(() => demoSimilarCars(car, limit), []);
   }
 }
@@ -458,11 +462,14 @@ export async function getAllPublishedCarSlugs(): Promise<
       .select("slug, updated_at")
       .eq("status", "published");
 
-    if (error) return demoFallback(() => demoCarSlugs(), []);
+    if (error) {
+      logReadFailure("getAllPublishedCarSlugs failed", error);
+      return demoFallback(() => demoCarSlugs(), []);
+    }
     if (!data) return [];
     return data.map((row) => ({ slug: row.slug, updatedAt: row.updated_at }));
   } catch (err) {
-    console.error("getAllPublishedCarSlugs: unexpected failure", err);
+    logReadFailure("getAllPublishedCarSlugs: unexpected failure", err);
     return demoFallback(() => demoCarSlugs(), []);
   }
 }

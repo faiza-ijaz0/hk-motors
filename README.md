@@ -240,10 +240,17 @@ on Node 22.18+ works.
 2. Add the environment variables above in the project settings. Keep
    `SUPABASE_SERVICE_ROLE_KEY` server-side only, and leave
    `DEMO_DATA_FALLBACK` unset in production.
+   - **Demo deployment while Supabase is unavailable (temporary):** add
+     `DEMO_DATA_FALLBACK` = `true` (no `NEXT_PUBLIC_` prefix) for Production
+     and, if wanted, Preview, then **redeploy**. Environment variable changes
+     only apply to new deployments, and the homepage is prerendered during
+     the build, so the value must be present at build time. Failed reads are
+     then logged as warnings ending in "serving demo data".
 3. Set `NEXT_PUBLIC_SITE_URL` to the final domain so canonical URLs and the
    sitemap are correct.
-4. Re-deploy after inventory changes if you want the statically rendered
-   homepage to reflect them immediately.
+4. The homepage is static and regenerates hourly (`revalidate = 3600`);
+   re-deploy after inventory changes if you want it to reflect them
+   immediately.
 
 ## Performance and images
 
