@@ -8,8 +8,10 @@ blog and company information, and turns visitor interest into inquiries. The
 `/super-admin` console lets staff manage inventory, gallery albums, inquiry
 leads, contact messages, users, employees, salaries and site settings.
 
-> **Status:** client-demo ready, not yet production-ready. See
-> [Current limitations](#current-limitations) before deploying publicly.
+> **Status:** feature-complete for client demonstration; **not yet
+> production-ready**. The `/super-admin` console has no authentication and
+> must not be exposed publicly until access control is added — see
+> [Security](#security) and [Before a public launch](#before-a-public-launch).
 
 ---
 
@@ -27,6 +29,7 @@ leads, contact messages, users, employees, salaries and site settings.
 - [Performance and images](#performance-and-images)
 - [Security](#security)
 - [Current limitations](#current-limitations)
+- [Before a public launch](#before-a-public-launch)
 - [Replacing demo content with client content](#replacing-demo-content-with-client-content)
 
 ---
@@ -228,6 +231,11 @@ The app is configured for **Vercel** (the default `siteConfig.url` is a
 `vercel.app` domain), though any host that runs `next build` / `next start`
 on Node 22.18+ works.
 
+> **Warning:** deploying as-is publishes the unauthenticated `/super-admin`
+> console with service-role (full database) privileges. Only deploy to a
+> private or access-restricted environment (for example, Vercel Deployment
+> Protection) until authentication is implemented.
+
 1. Import the GitHub repository into Vercel.
 2. Add the environment variables above in the project settings. Keep
    `SUPABASE_SERVICE_ROLE_KEY` server-side only, and leave
@@ -262,11 +270,12 @@ on Node 22.18+ works.
 - `SUPABASE_SERVICE_ROLE_KEY` bypasses Row-Level Security. It is only read in
   server code (`src/lib/supabase/admin.ts` imports `server-only`) and the
   seed script.
-- **The `/super-admin` console has no authentication yet.** It is hidden from
-  search engines via `robots.txt`, but anyone with the URL can use it, with
-  service-role privileges. Add Supabase Auth (or equivalent) with role checks
-  before any public deployment that is not a controlled demo. See
-  `docs/ARCHITECTURE.md` for the intended role model.
+- **The `/super-admin` console has no authentication yet.** `robots.txt` only
+  asks search engines not to crawl it; it does not restrict access. Anyone
+  with the URL can view and change all data, with service-role privileges.
+  It must not be exposed publicly until Supabase Auth (or equivalent) with
+  server-side role checks is implemented. See `docs/ARCHITECTURE.md` for the
+  intended role model.
 - If a key is ever exposed, rotate it in the Supabase dashboard immediately.
 
 ## Current limitations
@@ -285,6 +294,20 @@ on Node 22.18+ works.
 - Demo prices are in PKR and some blog posts cover the Pakistani market; review
   both against the Dubai positioning.
 - There is no automated test suite.
+
+## Before a public launch
+
+These items are outstanding; none of them is solved by this repository yet.
+
+1. Add authentication and role-based access control to `/super-admin`
+   (and to the Server Actions it calls).
+2. Restore the Supabase project and re-verify admin CRUD, uploads, contact
+   and inquiry submissions, and realtime leads against the live database.
+3. Replace demo vehicles, gallery, testimonials, statistics and contact
+   details with verified client information (see below), and confirm the
+   currency and market focus of listings and blog posts.
+4. Unset `DEMO_DATA_FALLBACK` and set `NEXT_PUBLIC_SITE_URL` to the real
+   domain.
 
 ## Replacing demo content with client content
 
