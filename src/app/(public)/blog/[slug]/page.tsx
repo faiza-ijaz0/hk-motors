@@ -83,7 +83,13 @@ export default async function BlogPostPage({
     description: post.excerpt,
     image: post.image,
     datePublished: post.date,
-    author: { "@type": "Person", name: post.author },
+    // Team/department bylines ("HK Motors Editorial Team") aren't people.
+    author: {
+      "@type": post.author.startsWith(siteConfig.name)
+        ? "Organization"
+        : "Person",
+      name: post.author,
+    },
     publisher: { "@type": "Organization", name: siteConfig.name },
     mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
   };

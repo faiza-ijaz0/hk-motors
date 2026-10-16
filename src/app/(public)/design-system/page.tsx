@@ -72,6 +72,15 @@ const statusVariant = {
   Sold: "outline",
 } as const;
 
+import type { Metadata } from "next";
+
+// Internal component reference for developers — keep it out of search
+// results (it isn't linked from the site or listed in the sitemap).
+export const metadata: Metadata = {
+  title: "Design System",
+  robots: { index: false, follow: false },
+};
+
 export default function DesignSystemPage() {
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-12 px-6 py-16">
