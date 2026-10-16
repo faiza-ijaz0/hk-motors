@@ -1,6 +1,17 @@
 import { cache } from "react";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  demoCarBySlug,
+  demoCarSlugs,
+  demoFallback,
+  demoFeaturedCars,
+  demoFilterOptions,
+  demoGetCars,
+  demoSimilarCars,
+  isDemoFallbackEnabled,
+  shouldSkipSupabase,
+} from "@/services/demo-catalog";
 
 import type { Enums } from "@/types/supabase";
 
@@ -115,8 +126,18 @@ const EMPTY_CARS_RESULT = (page: number) => ({
   pageSize: CARS_PAGE_SIZE,
 });
 
+// Supabase unreachable: serve the demo catalogue if explicitly enabled
+// (see services/demo-catalog.ts), otherwise the normal empty state.
+function unavailableCarsResult(filters: CarFilters, page: number) {
+  return demoFallback(
+    () => demoGetCars(filters, CARS_PAGE_SIZE),
+    EMPTY_CARS_RESULT(page),
+  );
+}
+
 export async function getCars(filters: CarFilters) {
   const page = Math.max(1, Number(filters.page) || 1);
+  if (shouldSkipSupabase()) return demoGetCars(filters, CARS_PAGE_SIZE);
 
   let supabase: ReturnType<typeof createClient>;
   try {
@@ -125,7 +146,7 @@ export async function getCars(filters: CarFilters) {
     // Misconfigured/unavailable Supabase shouldn't crash the whole page —
     // render the existing "no results" empty state instead.
     console.error("getCars: Supabase client unavailable", err);
-    return EMPTY_CARS_RESULT(page);
+    return unavailableCarsResult(filters, page);
   }
 
   const from = (page - 1) * CARS_PAGE_SIZE;
@@ -184,7 +205,7 @@ export async function getCars(filters: CarFilters) {
       }
 
       console.error("getCars failed", error);
-      return EMPTY_CARS_RESULT(page);
+      return unavailableCarsResult(filters, page);
     }
 
     const cars = (data ?? []).map((row) => mapCarListRow(row, supabase));
@@ -192,11 +213,12 @@ export async function getCars(filters: CarFilters) {
     return { cars, total: count ?? 0, page, pageSize: CARS_PAGE_SIZE };
   } catch (err) {
     console.error("getCars: unexpected failure", err);
-    return EMPTY_CARS_RESULT(page);
+    return unavailableCarsResult(filters, page);
   }
 }
 
 export async function getFeaturedCars(limit = 12): Promise<CarListItem[]> {
+  if (shouldSkipSupabase()) return demoFeaturedCars(limit);
   try {
     const supabase = createClient();
 
@@ -210,7 +232,7 @@ export async function getFeaturedCars(limit = 12): Promise<CarListItem[]> {
 
     if (error) {
       console.error("getFeaturedCars failed", error);
-      return [];
+      return demoFallback(() => demoFeaturedCars(limit), []);
     }
 
     if (data && data.length > 0) {
@@ -235,7 +257,7 @@ export async function getFeaturedCars(limit = 12): Promise<CarListItem[]> {
     return latest.map((row) => mapCarListRow(row, supabase));
   } catch (err) {
     console.error("getFeaturedCars: unexpected failure", err);
-    return [];
+    return demoFallback(() => demoFeaturedCars(limit), []);
   }
 }
 
@@ -246,14 +268,24 @@ export type CarFilterOptions = {
 };
 
 export async function getCarFilterOptions(): Promise<CarFilterOptions> {
+  if (shouldSkipSupabase()) return demoFilterOptions();
   try {
     const supabase = createClient();
-    const [{ data: categories }, { data: makes }, { data: models }] =
-      await Promise.all([
-        supabase.from("car_categories").select("id, name").order("name"),
-        supabase.from("car_makes").select("id, name").order("name"),
-        supabase.from("car_models").select("id, name, make_id").order("name"),
-      ]);
+    const [
+      { data: categories, error: categoriesError },
+      { data: makes, error: makesError },
+      { data: models, error: modelsError },
+    ] = await Promise.all([
+      supabase.from("car_categories").select("id, name").order("name"),
+      supabase.from("car_makes").select("id, name").order("name"),
+      supabase.from("car_models").select("id, name, make_id").order("name"),
+    ]);
+
+    const error = categoriesError ?? makesError ?? modelsError;
+    if (error && isDemoFallbackEnabled()) {
+      console.error("getCarFilterOptions failed", error);
+      return demoFallback(() => demoFilterOptions(), demoFilterOptions());
+    }
 
     return {
       categories: categories ?? [],
@@ -262,7 +294,11 @@ export async function getCarFilterOptions(): Promise<CarFilterOptions> {
     };
   } catch (err) {
     console.error("getCarFilterOptions failed", err);
-    return { categories: [], makes: [], models: [] };
+    return demoFallback(() => demoFilterOptions(), {
+      categories: [],
+      makes: [],
+      models: [],
+    });
   }
 }
 
@@ -303,6 +339,7 @@ export type CarDetail = {
 export const getCarBySlug = cache(async function getCarBySlug(
   slug: string,
 ): Promise<CarDetail | null> {
+  if (shouldSkipSupabase()) return demoCarBySlug(slug);
   try {
     const supabase = createClient();
 
@@ -320,10 +357,11 @@ export const getCarBySlug = cache(async function getCarBySlug(
       .eq("status", "published")
       .maybeSingle();
 
-    if (error || !data) {
-      if (error) console.error("getCarBySlug failed", error);
-      return null;
+    if (error) {
+      console.error("getCarBySlug failed", error);
+      return demoFallback(() => demoCarBySlug(slug), null);
     }
+    if (!data) return null;
 
     const media = (data.car_images ?? [])
       .slice()
@@ -372,7 +410,7 @@ export const getCarBySlug = cache(async function getCarBySlug(
     };
   } catch (err) {
     console.error("getCarBySlug: unexpected failure", err);
-    return null;
+    return demoFallback(() => demoCarBySlug(slug), null);
   }
 });
 
@@ -380,6 +418,7 @@ export async function getSimilarCars(
   car: Pick<CarDetail, "id" | "makeId" | "categoryId">,
   limit = 3,
 ): Promise<CarListItem[]> {
+  if (shouldSkipSupabase()) return demoSimilarCars(car, limit);
   try {
     const supabase = createClient();
 
@@ -395,12 +434,15 @@ export async function getSimilarCars(
       : query.eq("make_id", car.makeId);
 
     const { data, error } = await query;
-    if (error || !data) return [];
+    if (error) {
+      return demoFallback(() => demoSimilarCars(car, limit), []);
+    }
+    if (!data) return [];
 
     return data.map((row) => mapCarListRow(row, supabase));
   } catch (err) {
     console.error("getSimilarCars: unexpected failure", err);
-    return [];
+    return demoFallback(() => demoSimilarCars(car, limit), []);
   }
 }
 
@@ -408,6 +450,7 @@ export async function getSimilarCars(
 export async function getAllPublishedCarSlugs(): Promise<
   { slug: string; updatedAt: string }[]
 > {
+  if (shouldSkipSupabase()) return demoCarSlugs();
   try {
     const supabase = createClient();
     const { data, error } = await supabase
@@ -415,10 +458,11 @@ export async function getAllPublishedCarSlugs(): Promise<
       .select("slug, updated_at")
       .eq("status", "published");
 
-    if (error || !data) return [];
+    if (error) return demoFallback(() => demoCarSlugs(), []);
+    if (!data) return [];
     return data.map((row) => ({ slug: row.slug, updatedAt: row.updated_at }));
   } catch (err) {
     console.error("getAllPublishedCarSlugs: unexpected failure", err);
-    return [];
+    return demoFallback(() => demoCarSlugs(), []);
   }
 }

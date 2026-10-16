@@ -1,18 +1,19 @@
 // Brands represented in HK Motors inventory, shown as a scrolling wordmark
-// strip on the homepage.
+// strip on the homepage. Brands stocked in the demo inventory come first,
+// followed by other makes regularly handled for trade-ins and sourcing.
 export const featuredBrands = [
-  "BMW",
-  "Mercedes-Benz",
-  "Audi",
-  "Lexus",
-  "Honda",
   "Toyota",
-  "Porsche",
-  "Nissan",
-  "Hyundai",
+  "Honda",
+  "Suzuki",
   "Kia",
+  "Hyundai",
+  "Lexus",
+  "Mercedes-Benz",
+  "BMW",
+  "Audi",
   "Land Rover",
-  "Jeep",
-  "Ford",
-  "Chevrolet",
+  "Nissan",
+  "MG",
+  "Changan",
+  "Haval",
 ] as const;

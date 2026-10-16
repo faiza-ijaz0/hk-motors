@@ -1,4 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
+import {
+  demoAlbumOptions,
+  demoFallback,
+  demoGallery,
+  shouldSkipSupabase,
+} from "@/services/demo-catalog";
 
 import type { Enums } from "@/types/supabase";
 
@@ -21,6 +27,7 @@ export type GalleryFilters = {
 export async function getGalleryImages(
   filters: GalleryFilters = {},
 ): Promise<GalleryImage[]> {
+  if (shouldSkipSupabase()) return demoGallery(filters);
   try {
     const supabase = createClient();
 
@@ -42,10 +49,11 @@ export async function getGalleryImages(
 
     const { data, error } = await query;
 
-    if (error || !data) {
-      if (error) console.error("getGalleryImages failed", error);
-      return [];
+    if (error) {
+      console.error("getGalleryImages failed", error);
+      return demoFallback(() => demoGallery(filters), []);
     }
+    if (!data) return [];
 
     return data.map((row) => ({
       id: row.id,
@@ -59,7 +67,7 @@ export async function getGalleryImages(
     }));
   } catch (err) {
     console.error("getGalleryImages: unexpected failure", err);
-    return [];
+    return demoFallback(() => demoGallery(filters), []);
   }
 }
 
@@ -68,6 +76,7 @@ export type GalleryAlbumOption = { slug: string; title: string };
 export async function getPublishedAlbumOptions(): Promise<
   GalleryAlbumOption[]
 > {
+  if (shouldSkipSupabase()) return demoAlbumOptions();
   try {
     const supabase = createClient();
     const { data, error } = await supabase
@@ -77,13 +86,14 @@ export async function getPublishedAlbumOptions(): Promise<
       .order("position", { ascending: true })
       .order("title", { ascending: true });
 
-    if (error || !data) {
-      if (error) console.error("getPublishedAlbumOptions failed", error);
-      return [];
+    if (error) {
+      console.error("getPublishedAlbumOptions failed", error);
+      return demoFallback(() => demoAlbumOptions(), []);
     }
+    if (!data) return [];
     return data;
   } catch (err) {
     console.error("getPublishedAlbumOptions: unexpected failure", err);
-    return [];
+    return demoFallback(() => demoAlbumOptions(), []);
   }
 }

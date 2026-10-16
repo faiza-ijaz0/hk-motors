@@ -1,6 +1,11 @@
 // Curated sample reviews for the homepage testimonial carousel — not sourced
 // from the database. Swap for a `testimonials` table fetch once that part
 // of the data layer is wired up (see docs/ARCHITECTURE.md §10).
+// While these are sample reviews, the homepage labels them as such so they
+// can't be mistaken for genuine customer endorsements. Flip to `false` only
+// after replacing the entries below with real, consented reviews.
+export const testimonialsAreSamples = true;
+
 export type Testimonial = {
   id: string;
   name: string;

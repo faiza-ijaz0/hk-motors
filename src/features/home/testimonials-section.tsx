@@ -1,5 +1,5 @@
 import { FadeIn } from "@/components/shared/fade-in";
-import { testimonials } from "@/config/testimonials";
+import { testimonials, testimonialsAreSamples } from "@/config/testimonials";
 import { TestimonialsCarousel } from "@/features/home/testimonials-carousel";
 
 export function TestimonialsSection() {
@@ -14,13 +14,19 @@ export function TestimonialsSection() {
             What Our Customers Say
           </h2>
           <p className="text-muted-foreground mt-3 max-w-2xl text-base">
-            Real experiences from drivers who found their vehicle — and a
-            dealership they trust — at HK Motors.
+            {testimonialsAreSamples
+              ? "The kind of experience we aim to give every driver who finds their vehicle — and a dealership they trust — at HK Motors."
+              : "Real experiences from drivers who found their vehicle — and a dealership they trust — at HK Motors."}
           </p>
         </FadeIn>
 
         <FadeIn delay={0.1} className="mt-10">
           <TestimonialsCarousel testimonials={testimonials} />
+          {testimonialsAreSamples && (
+            <p className="text-muted-foreground mt-6 text-center text-xs">
+              Sample reviews shown for illustration.
+            </p>
+          )}
         </FadeIn>
       </div>
     </section>

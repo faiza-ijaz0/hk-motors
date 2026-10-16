@@ -42,9 +42,13 @@ export const blogCategories: BlogCategory[] = [
   },
 ];
 
-const IMAGES = ["/car.jpeg", "/service.jpeg", "/aboutus.jpeg"] as const;
+// Cover photos: Unsplash (free Unsplash License), one unique image per
+// post, each chosen to match the article's subject.
+function cover(photoId: string) {
+  return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=1600&q=80`;
+}
 const AUTHORS = [
-  "Habibullah Khan",
+  "HK Motors Leadership",
   "HK Motors Editorial Team",
   "Ayesha Malik",
   "Daniyal Rashid",
@@ -52,6 +56,143 @@ const AUTHORS = [
 ] as const;
 
 export const blogPosts: BlogPost[] = [
+  // ---- Pakistan market & ownership ----
+  {
+    id: "31",
+    slug: "car-registration-and-transfer-in-pakistan",
+    title:
+      "Car Registration and Ownership Transfer in Pakistan: A Step-by-Step Guide",
+    category: "buying-guides",
+    author: AUTHORS[3],
+    date: "2026-10-12",
+    readTime: "7 min read",
+    image: cover("photo-1761014586555-947a9555d302"),
+    excerpt:
+      "Buying a used car is only half the job — the transfer is what makes it legally yours. Here's how the process works and where buyers get caught out.",
+    fullContent: `In Pakistan, paying for a car and owning it are two different things. Until the vehicle is transferred into your name at the Excise & Taxation office, the previous owner remains legally responsible for it — and you remain exposed to anything attached to its history. Treat the transfer as part of the purchase, not paperwork for later.
+
+Before any money changes hands, verify the vehicle online through the relevant provincial Excise portal (Punjab, Islamabad Capital Territory, Sindh or Khyber Pakhtunkhwa, depending on where it's registered). Check that the registration number, chassis number and engine number match the physical car and the registration book or smart card. A mismatch on any of the three is a reason to stop, not to negotiate.
+
+The core documents are the original registration book or smart card, the original sale invoice or previous transfer letters, copies of both parties' CNICs, and token tax receipts showing the car is up to date. For a car being transferred from another province, you'll also need a no-objection certificate from the original registering authority. Missing original files are the single most common cause of delays and are worth chasing before signing anything.
+
+The transfer itself requires biometric verification of both buyer and seller at an Excise counter, so plan for the seller to attend in person or arrange it in advance. Transfer fees, withholding tax (which differs for filers and non-filers) and any outstanding token tax are all payable at this stage — ask for an estimate before you agree on a final price, because the difference can be significant.
+
+Finally, keep copies of everything and collect your new smart card or registration book in person. At HK Motors, every vehicle we sell comes with its file pre-verified and our team handles the Excise appointment, biometrics and fee calculation on the buyer's behalf — so the car is legally yours on the day you take the keys.`,
+  },
+  {
+    id: "32",
+    slug: "monsoon-car-care-pakistan",
+    title: "Monsoon Car Care: Protecting Your Vehicle Through Pakistan's Rains",
+    category: "ownership-maintenance",
+    author: AUTHORS[1],
+    date: "2026-09-24",
+    readTime: "6 min read",
+    image: cover("photo-1761252986744-b7ab91376257"),
+    excerpt:
+      "Flooded underpasses, hidden potholes and weeks of humidity are hard on any car. A little preparation prevents most monsoon damage.",
+    fullContent: `Every monsoon, workshops in every major city fill up with the same three problems: water-damaged engines, failing electricals and rust that took hold during the wet months. Almost all of it is preventable with a pre-season check and a few habits on the road.
+
+Start with what keeps you safe: tyres and wipers. Tread depth matters far more on standing water than on dry tarmac, and tyres approaching the wear indicators are much more likely to aquaplane. Wiper blades harden in summer heat and smear rather than clear by July — replace them before the first heavy rain, not during it.
+
+Never drive through water you can't see the bottom of. Water drawn into the air intake can hydrolock an engine in seconds, and the repair often costs more than a year's depreciation. If an underpass or low road is flooded, wait or take another route. If you must cross shallow water, go slowly in a low gear without stopping, and test your brakes gently afterwards to dry them out.
+
+Humidity is the quieter threat. Keep drain holes in the doors and sunroof clear, check for damp carpets after heavy rain, and run the air-conditioning regularly — it dehumidifies the cabin and prevents the musty smell that signals mould. A fresh coat of wax or a ceramic top-up before the season helps paint shed water and road grime.
+
+After the monsoon, an underbody wash and inspection is worth every rupee. Mud packed into suspension components and wheel arches holds moisture for weeks. If your car did end up in floodwater, have it inspected before restarting it — and if you're buying a used car in autumn, ask specifically about flood exposure. Every vehicle we list goes through a flood-damage check as part of our inspection.`,
+  },
+  {
+    id: "33",
+    slug: "summer-heat-car-maintenance-pakistan",
+    title: "Beating the Heat: Summer Car Maintenance for Pakistani Roads",
+    category: "ownership-maintenance",
+    author: AUTHORS[4],
+    date: "2026-08-30",
+    readTime: "5 min read",
+    image: cover("photo-1487754180451-c456f719a1fc"),
+    excerpt:
+      "When temperatures pass 45°C, cooling systems, batteries and tyres work harder than at any other time of year.",
+    fullContent: `Pakistani summers push cars closer to their engineering limits than almost anywhere else they're sold. A cooling system that copes comfortably in April can struggle in June city traffic, and the failures that follow are rarely cheap.
+
+Coolant is the first line of defence. It should be the manufacturer-specified type, mixed correctly, and changed at the interval in your service book — topping up with plain water dilutes the corrosion inhibitors and lowers the boiling point. Glance at the temperature gauge regularly: a needle creeping above its normal position in traffic is an early warning, not something to drive through.
+
+Engine oil thins at high temperatures, so summer is the wrong time to stretch a service interval. Use the grade your manual recommends for hot climates and check the level monthly; older engines in particular consume more oil when worked hard in the heat.
+
+Batteries fail more often in summer than in winter, because heat accelerates internal corrosion and evaporation. If your battery is more than two to three years old, have it load-tested before the hottest months. Tyres also deserve attention — check pressures in the morning before driving, because readings taken on a hot afternoon are misleadingly high.
+
+Finally, protect the cabin. Sunshades and window film within legal limits keep dashboards from cracking and reduce the load on the air-conditioning, which itself benefits from a gas and filter check before peak season. Our service team offers a summer readiness inspection that covers all of the above in under an hour.`,
+  },
+  {
+    id: "34",
+    slug: "fuel-efficiency-tips-pakistan",
+    title: "Practical Ways to Improve Fuel Efficiency at Today's Petrol Prices",
+    category: "ownership-maintenance",
+    author: AUTHORS[2],
+    date: "2026-08-14",
+    readTime: "6 min read",
+    image: cover("photo-1498887960847-2a5e46312788"),
+    excerpt:
+      "Small changes in maintenance and driving style can cut fuel bills noticeably — no special additives required.",
+    fullContent: `With petrol prices where they are, the difference between 11 km/l and 13 km/l adds up to a meaningful sum every month. The good news is that most of that gap comes down to maintenance and habits rather than the car itself.
+
+Tyre pressure is the easiest win. Under-inflated tyres increase rolling resistance and quietly raise consumption — check them every fortnight when cold, using the figures on the driver's door pillar rather than the maximum printed on the tyre.
+
+Keep the engine breathing and burning properly. A clogged air filter, worn spark plugs or an overdue oil change all increase consumption. On modern fuel-injected cars these items are inexpensive, and replacing them on schedule often pays for itself within a few tanks.
+
+How you drive matters more than what you drive. Smooth acceleration, anticipating traffic lights instead of braking late, and holding a steady speed on the Motorway all reduce consumption. Most cars are at their most efficient at moderate highway speeds; above 110–120 km/h aerodynamic drag rises sharply.
+
+Avoid carrying unnecessary weight — the toolbox or cricket kit that lives in the boot costs fuel every day. Roof carriers left on after a trip add drag even when empty. Extended idling is also wasteful; if you're waiting more than a minute or two, switch off.
+
+Air-conditioning does use fuel, but at highway speeds it is usually more efficient than driving with the windows down. In city traffic, switching to recirculation once the cabin has cooled reduces the load considerably.
+
+If fuel cost is a long-term priority, consider a hybrid. Cars like the Toyota Corolla Hybrid, Prius and Honda Vezel Hybrid regularly return 18–25 km/l in city use — our team is happy to talk you through real-world running costs against conventional petrol models.`,
+  },
+  {
+    id: "35",
+    slug: "pakistan-car-market-trends-2026",
+    title:
+      "Pakistan's Car Market in 2026: Hybrids, Crossovers and What Buyers Should Expect",
+    category: "technology-market",
+    author: AUTHORS[0],
+    date: "2026-08-05",
+    readTime: "7 min read",
+    image: cover("photo-1770756248904-6031ad07223f"),
+    excerpt:
+      "New entrants, more hybrids and a maturing used-car market are reshaping how Pakistanis buy cars.",
+    fullContent: `Pakistan's car market looks very different from five years ago. Buyers who once had a choice between a handful of Japanese nameplates now compare Korean, Chinese and Japanese options across almost every segment — and that competition has changed what good value looks like.
+
+The biggest shift is electrification arriving through hybrids rather than pure EVs. Hybrids now cover the family sedan, crossover and SUV segments, and buyers increasingly judge cars on total running cost rather than sticker price alone. Charging infrastructure for full EVs is growing in the major cities, but for most households a hybrid remains the practical step.
+
+Crossovers and compact SUVs continue to take share from traditional sedans. Higher ground clearance suits local roads, and features once reserved for luxury models — 360-degree cameras, adaptive cruise control and connected infotainment — are now common at mid-range price points.
+
+The used-car market has matured alongside it. Buyers are more willing to pay for verified mileage, documented service history and independent inspection reports, and less willing to gamble on a private sale with unclear paperwork. Certified pre-owned vehicles in particular have become a mainstream choice rather than a niche one.
+
+For buyers, the practical takeaway is that research pays off. Nearly-new used cars can sit surprisingly close to new prices, so compare both carefully. Factor in insurance, fuel and maintenance over three to five years, and prioritise models with strong resale demand.
+
+At HK Motors we follow these shifts daily across our own sales and trade-ins. If you're weighing up what to buy — or when to sell — our team can share current pricing for the specific models you're considering.`,
+  },
+  {
+    id: "36",
+    slug: "corolla-vs-civic-vs-city-comparison",
+    title: "Corolla vs. Civic vs. City: Choosing Pakistan's Favourite Sedan",
+    category: "vehicle-reviews",
+    author: AUTHORS[3],
+    date: "2026-07-26",
+    readTime: "8 min read",
+    image: cover("photo-1621979787123-daf3ba3187e2"),
+    excerpt:
+      "Three nameplates dominate Pakistan's sedan market. Each suits a different kind of driver — here's how to tell which one is yours.",
+    fullContent: `Walk into any car bazaar in the country and you'll find the same three sedans dominating the lot: the Toyota Corolla, the Honda Civic and the Honda City. All three are dependable and easy to resell, but they're built around different priorities, and the right choice depends on how you actually drive.
+
+The Toyota Corolla is the default for a reason. Its reputation for reliability is earned, parts are available everywhere, and it holds its value better than almost anything else on the road. The ride is soft and quiet, which suits long family drives and rough city surfaces. Where it gives ground is driver engagement — it's comfortable rather than exciting — and top variants are priced close to the Civic.
+
+The Honda Civic is the choice for people who enjoy driving. The turbocharged versions are noticeably quicker, the steering is sharper, and the cabin feels a step more premium. The trade-offs are a higher purchase price, a lower ride height that needs care over speed breakers, and slightly higher running costs as the car ages.
+
+The Honda City is the value pick. It offers much of the space and practicality of its bigger siblings, excellent fuel economy and low running costs at a significantly lower price. It's ideal for first-time buyers, young families or anyone who mainly drives in town, though it feels less settled than the Corolla or Civic at Motorway speeds.
+
+On resale, the Corolla and City are the safest bets; the Civic's resale is strong but more sensitive to condition and variant. On running costs, the City wins comfortably, followed by the Corolla.
+
+Our short version: for the least risk, choose the Corolla; for the most enjoyment, the Civic; for the most sensible value, the City. HK Motors usually has all three in stock, and the best way to decide is to drive them back to back — something we're always happy to arrange.`,
+  },
   // ---- Buying Guides ----
   {
     id: "1",
@@ -61,7 +202,7 @@ export const blogPosts: BlogPost[] = [
     author: AUTHORS[0],
     date: "2026-07-18",
     readTime: "7 min read",
-    image: IMAGES[0],
+    image: cover("photo-1580273916550-e323be2ae537"),
     excerpt:
       "From the 3 Series to the X7, BMW's lineup covers everything from daily commuters to full-size luxury SUVs. Here's how to narrow it down.",
     fullContent: `BMW's range is wide enough that "I want a BMW" isn't really a starting point — it's a destination with several very different roads to it. The 3 and 4 Series prioritize handling and daily usability; the 5 and 7 Series trade some of that agility for cabin refinement and long-distance comfort; the X-series SUVs trade it for practicality and ride height. Before comparing trims, decide which of those three trade-offs actually matches how you drive.
@@ -80,7 +221,7 @@ Finally, service history matters enormously with BMW specifically, since mainten
     author: AUTHORS[2],
     date: "2026-07-13",
     readTime: "6 min read",
-    image: IMAGES[1],
+    image: cover("photo-1704932500000-17b8445307d1"),
     excerpt:
       "Owning a Mercedes-Benz is a different experience than owning most other cars — here's what actually changes once you're behind the wheel.",
     fullContent: `Mercedes-Benz ownership tends to surprise first-time buyers in two directions at once: the cabin experience is often better than expected, while the running costs are often higher than expected. Understanding both up front makes for a much smoother transition.
@@ -99,7 +240,7 @@ One detail newer buyers often miss: air suspension and adaptive damping, common 
     author: AUTHORS[1],
     date: "2026-07-08",
     readTime: "8 min read",
-    image: IMAGES[2],
+    image: cover("photo-1510776817148-07252939cf4d"),
     excerpt:
       "The luxury SUV segment has never been more competitive. We break down which models actually earn their price tag.",
     fullContent: `The luxury SUV segment has quietly become the most competitive category in the entire premium market, which is good news for buyers — the bar for cabin quality, technology, and ride comfort keeps rising across the board. That also makes the decision harder, since the differences between top contenders are now often about character rather than outright capability.
@@ -118,7 +259,7 @@ Whichever direction you lean, resist choosing purely on badge. Spend a full test
     author: AUTHORS[0],
     date: "2026-07-03",
     readTime: "6 min read",
-    image: IMAGES[0],
+    image: cover("photo-1576411666423-53e284986604"),
     excerpt:
       "Financing a premium vehicle works differently than financing an economy car. Here's what to actually pay attention to.",
     fullContent: `Financing a luxury vehicle isn't simply "the same process with bigger numbers." Depreciation curves, insurance costs, and loan terms all behave differently at the premium end of the market, and understanding those differences up front prevents unpleasant surprises later.
@@ -137,7 +278,7 @@ Finally, get pre-approved before you start seriously shopping. Walking into a de
     author: AUTHORS[3],
     date: "2026-06-28",
     readTime: "7 min read",
-    image: IMAGES[1],
+    image: cover("photo-1771340012378-3c86cb649193"),
     excerpt:
       "A confident seller and a clean interior aren't proof of a sound vehicle. Here's what an inspection should actually cover.",
     fullContent: `A clean interior and a confident seller tell you almost nothing about the mechanical condition of a used vehicle — they tell you about presentation. A proper inspection needs to look past both.
@@ -158,7 +299,7 @@ Every vehicle that reaches HK Motors' floor goes through a formal multi-point ve
     author: AUTHORS[2],
     date: "2026-06-23",
     readTime: "5 min read",
-    image: IMAGES[2],
+    image: cover("photo-1656685299734-52a0bb4425aa"),
     excerpt:
       "Certified pre-owned programs have closed much of the gap with new vehicles — but the right choice still depends on how you value certain things.",
     fullContent: `The gap between buying new and buying certified pre-owned has narrowed considerably over the past decade. Extended warranties, multi-point inspections, and reconditioning standards mean a well-documented CPO vehicle today carries far less risk than "used" implied a generation ago.
@@ -179,7 +320,7 @@ The honest answer for most buyers comes down to priorities rather than a univers
     author: AUTHORS[1],
     date: "2026-06-18",
     readTime: "6 min read",
-    image: IMAGES[0],
+    image: cover("photo-1702757329647-f628b9ff2262"),
     excerpt:
       "Lexus consistently tops long-term reliability studies. The reasons come down to engineering philosophy as much as build quality.",
     fullContent: `Lexus's reputation for reliability isn't accidental — it's a direct extension of Toyota's engineering philosophy, which prioritizes proven mechanical components over chasing every new technology trend. Where some luxury brands introduce complex new systems generation over generation, Lexus tends to refine what already works, and that conservatism pays off in long-term durability.
@@ -198,7 +339,7 @@ For buyers who want luxury-cabin comfort without the maintenance unpredictabilit
     author: AUTHORS[3],
     date: "2026-06-13",
     readTime: "6 min read",
-    image: IMAGES[1],
+    image: cover("photo-1615906655593-ad0386982a0f"),
     excerpt:
       "Treating maintenance as a year-round schedule rather than a reaction to warning lights keeps repair costs predictable.",
     fullContent: `Most costly repairs on a premium vehicle trace back to a small maintenance item that was delayed rather than a sudden failure. Treating service as a seasonal schedule rather than a reaction to warning lights is the single biggest thing an owner can do to keep long-term costs predictable.
@@ -219,7 +360,7 @@ Winter itself should be about vigilance rather than new work — watching for th
     author: AUTHORS[4],
     date: "2026-06-08",
     readTime: "5 min read",
-    image: IMAGES[2],
+    image: cover("photo-1780586585338-c56fe47b49f4"),
     excerpt:
       "The difference between a car that ages gracefully and one that doesn't often comes down to habits, not luck.",
     fullContent: `A vehicle that still looks and drives like new after several years of ownership is rarely a matter of luck — it's the result of consistent habits that most owners underestimate the value of until they compare resale offers with someone who skipped them.
@@ -238,7 +379,7 @@ Mechanically, the biggest long-term protector is simply driving the car. Vehicle
     author: AUTHORS[0],
     date: "2026-06-03",
     readTime: "5 min read",
-    image: IMAGES[0],
+    image: cover("photo-1649136378672-b965cb9935d5"),
     excerpt:
       "Warranty terms are full of exclusions most owners never read until they need them. Here's what to actually check.",
     fullContent: `Most owners only read their warranty documentation closely after something has already gone wrong — by which point it's too late to have made a more informed purchase decision. Understanding coverage up front avoids that gap entirely.
@@ -257,7 +398,7 @@ Finally, understand what voids coverage. Aftermarket modifications, missed sched
     author: AUTHORS[3],
     date: "2026-05-29",
     readTime: "5 min read",
-    image: IMAGES[1],
+    image: cover("photo-1601411101851-ea0e07766235"),
     excerpt:
       "Performance tires wear differently than standard ones, and treating them the same way costs owners money and grip.",
     fullContent: `Performance-oriented tires are engineered around a different set of trade-offs than standard touring tires, and treating them identically in terms of care shortens their life and compromises the grip they're designed to deliver.
@@ -276,7 +417,7 @@ Alignment deserves more frequent attention as well. Performance suspension setup
     author: AUTHORS[2],
     date: "2026-05-24",
     readTime: "6 min read",
-    image: IMAGES[2],
+    image: cover("photo-1486262715619-67b85e0b08d3"),
     excerpt:
       "There's a point where continuing to repair an aging luxury vehicle stops making financial sense. Here's how to know when you've reached it.",
     fullContent: `Every long-term owner eventually faces the same question: is this next repair worth making, or is it time to move on? For luxury vehicles specifically, the answer depends less on the vehicle's age and more on the pattern the repairs are forming.
@@ -297,7 +438,7 @@ Electrical and software-related issues on modern luxury vehicles deserve extra w
     author: AUTHORS[1],
     date: "2026-05-19",
     readTime: "7 min read",
-    image: IMAGES[0],
+    image: cover("photo-1594051673969-172a6f721d3c"),
     excerpt:
       "Two of the segment's most cross-shopped SUVs, compared on the details that actually differ once you're living with either one.",
     fullContent: `The Audi Q7 and BMW X5 are cross-shopped more than almost any other pair of luxury SUVs, and for good reason — both are genuinely excellent at nearly everything a buyer in this segment cares about. The differences that matter live in the details rather than the headline specs.
@@ -316,7 +457,7 @@ Third-row usability is close but not identical — the Q7's third row is margina
     author: AUTHORS[0],
     date: "2026-05-14",
     readTime: "7 min read",
-    image: IMAGES[1],
+    image: cover("photo-1611651336487-802fe164d3e5"),
     excerpt:
       "The 911 has a reputation as one of the most usable supercars in the world. Daily ownership mostly confirms it.",
     fullContent: `Few performance cars carry a reputation as consistent as the 911's — a genuine sports car that's also, remarkably, usable as daily transportation. Living with one day to day mostly confirms that reputation, with a few caveats worth knowing before buying.
@@ -335,7 +476,7 @@ Depreciation is where the 911 genuinely stands apart from most performance cars:
     author: AUTHORS[4],
     date: "2026-05-09",
     readTime: "6 min read",
-    image: IMAGES[2],
+    image: cover("photo-1760130426888-7c15a56a7f2b"),
     excerpt:
       "Few SUVs blend genuine off-road capability with a first-class cabin as convincingly as the Range Rover Sport.",
     fullContent: `The Range Rover Sport occupies an unusual position in the luxury SUV market: it's one of the few vehicles in its class with genuine off-road capability that most owners will never fully use, paired with an on-road cabin experience that competes directly with far more road-focused rivals.
@@ -354,7 +495,7 @@ The honest trade-off is complexity. Air suspension, adaptive terrain systems, an
     author: AUTHORS[2],
     date: "2026-05-04",
     readTime: "5 min read",
-    image: IMAGES[0],
+    image: cover("photo-1748392029242-19b20e799ec8"),
     excerpt:
       "The RX built Lexus's reputation for dependable luxury, and the current generation continues to earn it.",
     fullContent: `The RX is the vehicle that arguably built Lexus's entire reputation for dependable, low-drama luxury, and decades later it remains the clearest expression of that identity in the current lineup.
@@ -373,7 +514,7 @@ Where the RX gives up ground is outright interior space relative to some three-r
     author: AUTHORS[3],
     date: "2026-04-29",
     readTime: "6 min read",
-    image: IMAGES[1],
+    image: cover("photo-1618373444305-3a77b7719a59"),
     excerpt:
       "AMG's engineering signature turns the everyday C-Class into something genuinely capable of embarrassing far more expensive cars.",
     fullContent: `Mercedes-AMG's approach to the C63 has always been the same: take a genuinely comfortable, everyday-usable C-Class and rebuild its heart and reflexes around serious performance, without sacrificing the parts that make it livable day to day.
@@ -394,7 +535,7 @@ The trade-off, as with most high-performance AMG models, is running cost. Tires,
     author: AUTHORS[0],
     date: "2026-04-24",
     readTime: "6 min read",
-    image: IMAGES[2],
+    image: cover("photo-1542362567-b07e54358753"),
     excerpt:
       "Horsepower gets the attention, but the fundamentals that actually define a sports car go far deeper than a spec sheet.",
     fullContent: `Horsepower figures dominate marketing copy, but they're one of the least reliable indicators of whether a car actually deserves to be called a sports car. The real fundamentals are about how a car communicates with its driver, not how quickly it accelerates in a straight line.
@@ -414,7 +555,7 @@ Finally, a true sports car rewards being driven precisely rather than aggressive
     author: AUTHORS[1],
     date: "2026-04-19",
     readTime: "6 min read",
-    image: IMAGES[0],
+    image: cover("photo-1583121274602-3e2820c69888"),
     excerpt:
       "The industry has largely moved to turbocharging, but naturally aspirated engines still offer something turbos can't fully replicate.",
     fullContent: `The performance car industry has shifted heavily toward turbocharging over the past decade, driven mostly by efficiency and emissions regulations rather than pure performance preference — and understanding why helps explain what's actually gained and lost in the trade.
@@ -433,7 +574,7 @@ Neither approach is objectively superior — they're simply different tools suit
     author: AUTHORS[4],
     date: "2026-04-14",
     readTime: "5 min read",
-    image: IMAGES[1],
+    image: cover("photo-1517026575980-3e1e2dedeab4"),
     excerpt:
       "Automatics are objectively faster now. Here's why manual transmissions still matter to a meaningful segment of drivers.",
     fullContent: `By almost every objective performance metric, modern dual-clutch and torque-converter automatics have surpassed manual transmissions — they shift faster, launch more consistently, and require less driver skill to extract a car's full performance. And yet manual transmissions haven't disappeared, because the case for them was never really about lap times.
@@ -452,7 +593,7 @@ The practical reality is that manuals are increasingly a deliberate choice rathe
     author: AUTHORS[3],
     date: "2026-04-09",
     readTime: "6 min read",
-    image: IMAGES[2],
+    image: cover("photo-1625231334168-35067f8853ed"),
     excerpt:
       "A track day is hard on a car in ways street driving never is. Proper preparation is the difference between a great day and an expensive one.",
     fullContent: `A track day places sustained stress on a car's brakes, tires, and cooling system in ways street driving simply never does, and preparation is the single biggest factor separating a great day from an expensive one.
@@ -471,7 +612,7 @@ Cooling system health deserves a check as well; both engine coolant and, on cars
     author: AUTHORS[2],
     date: "2026-04-04",
     readTime: "5 min read",
-    image: IMAGES[0],
+    image: cover("photo-1603584173870-7f23fdae1b7a"),
     excerpt:
       "More horsepower is easy to market and hard to use. Handling is where most real-world driving satisfaction actually comes from.",
     fullContent: `Horsepower is the easiest performance metric to market and, for most drivers in most conditions, one of the hardest to actually use. On public roads, where speed limits and traffic constrain how much of a car's power can realistically be deployed, handling is where the vast majority of real-world driving satisfaction actually comes from.
@@ -492,7 +633,7 @@ None of this means horsepower doesn't matter — it clearly does, particularly f
     author: AUTHORS[1],
     date: "2026-03-30",
     readTime: "6 min read",
-    image: IMAGES[1],
+    image: cover("photo-1639302610362-4c86747e8680"),
     excerpt:
       "Electric vehicles have moved from a niche curiosity to a central part of the luxury conversation. Here's what's actually changing.",
     fullContent: `Electric vehicles have moved well past their early "curiosity" phase in the luxury segment — nearly every major premium brand now offers at least one genuinely competitive EV, and the technology has matured enough to compete on more than just novelty.
@@ -511,7 +652,7 @@ The remaining friction points are less about the vehicles themselves and more ab
     author: AUTHORS[4],
     date: "2026-03-25",
     readTime: "5 min read",
-    image: IMAGES[2],
+    image: cover("photo-1671785253964-bdb43087ed99"),
     excerpt:
       "The right answer isn't universal — it depends on your actual driving patterns more than any spec sheet comparison.",
     fullContent: `The hybrid-versus-full-electric decision gets debated as if there's a universally correct answer, but the right choice depends far more on individual driving patterns than on any spec sheet comparison between the two technologies.
@@ -530,7 +671,7 @@ The honest advice for most buyers is to track actual driving patterns for a few 
     author: AUTHORS[3],
     date: "2026-03-20",
     readTime: "5 min read",
-    image: IMAGES[0],
+    image: cover("photo-1593941707874-ef25b8b4a92b"),
     excerpt:
       "Charging speed claims can be misleading. Here's how to actually evaluate what an EV's charging capability means for your life.",
     fullContent: `Charging capability is one of the most commonly misunderstood specifications in EV shopping, largely because manufacturer figures describe best-case conditions that rarely reflect everyday charging reality.
@@ -550,7 +691,7 @@ Network reliability and coverage vary significantly by region and charging netwo
     author: AUTHORS[0],
     date: "2026-03-15",
     readTime: "6 min read",
-    image: IMAGES[1],
+    image: cover("photo-1615829386703-e2bb66a7cb7d"),
     excerpt:
       "Electrification is reshaping what a performance car can do — and forcing a rethink of what makes one satisfying to drive.",
     fullContent: `Electrification is arguably reshaping the performance car category more fundamentally than any development in decades — not just changing what these cars can do, but forcing a genuine rethink of what makes a performance car satisfying to drive in the first place.
@@ -571,7 +712,7 @@ Hybrid performance systems, which pair a combustion engine with electric motors 
     author: AUTHORS[2],
     date: "2026-03-10",
     readTime: "6 min read",
-    image: IMAGES[2],
+    image: cover("photo-1599912027667-755b68b4dd3b"),
     excerpt:
       "Not every new feature is worth paying for. Here's which current automotive technology genuinely improves ownership.",
     fullContent: `Every model year brings a fresh wave of marketed technology, and not all of it meaningfully improves ownership. Separating genuine value from marketing requires looking past the feature list to how each technology actually performs in daily use.
@@ -592,7 +733,7 @@ The most useful approach when evaluating a heavily optioned vehicle is to weight
     author: AUTHORS[1],
     date: "2026-03-05",
     readTime: "6 min read",
-    image: IMAGES[0],
+    image: cover("photo-1541348263662-e068662d82af"),
     excerpt:
       "ADAS features are now standard across most premium vehicles. Here's what each one actually does — and doesn't do.",
     fullContent: `Advanced driver-assistance systems, commonly grouped under the acronym ADAS, are now standard equipment across most of the premium market, but the terminology varies enough between manufacturers that understanding what each feature actually does — and doesn't — matters more than the marketing name attached to it.
@@ -611,7 +752,7 @@ It's important to understand that none of these systems, even when marketed with
     author: AUTHORS[4],
     date: "2026-02-28",
     readTime: "6 min read",
-    image: IMAGES[1],
+    image: cover("photo-1621808752171-531c30903889"),
     excerpt:
       "Depreciation is the single largest cost of vehicle ownership, and it varies dramatically by brand, model, and even color.",
     fullContent: `Depreciation is, for most owners, the single largest cost of vehicle ownership — larger than fuel, insurance, and maintenance combined over a typical ownership period — and yet it's the cost most buyers think about least at the point of purchase.
@@ -630,7 +771,7 @@ Limited-production and enthusiast-focused models sometimes buck depreciation tre
     author: AUTHORS[0],
     date: "2026-02-23",
     readTime: "5 min read",
-    image: IMAGES[2],
+    image: cover("photo-1574023278969-abb7ab49945c"),
     excerpt:
       "Certified pre-owned demand has grown steadily for years. Here's what's actually driving the shift.",
     fullContent: `Demand for certified pre-owned luxury vehicles has grown steadily for years, and the shift reflects real changes in how buyers evaluate value — not simply a reaction to new-vehicle pricing.
